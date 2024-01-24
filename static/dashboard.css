@@ -1,0 +1,38 @@
+/* Add the following CSS styles to position the user icon in the top right corner */
+.header {
+    position: relative;
+  }
+
+  .user-section {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 10px;
+  }
+
+  /* Additional styles for the friends list section */
+  .friends-list {
+    position: absolute;
+    top: 50px; /* Adjust the top position as needed */
+    right: 0;
+    padding: 10px;
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .friends-list h2 {
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+
+  .friends-list ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .friends-list li {
+    margin-bottom: 5px;
+  }
+  /* Additional styles can be added based on your design requirements */

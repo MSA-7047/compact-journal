@@ -1,10 +1,41 @@
 {% extends 'base_content.html' %}
+{% load static %}
+
 {% block content %}
 <div class="container">
+  <link rel="stylesheet" href="{% static 'dashboard.css' %}">
   <div class="row">
     <div class="col-12">
-      <h1>Welcome to your dashboard {{ user.username }}!</h1>
+      <div class="header">
+        <h1>Welcome to your dashboard {{ user.username }}!</h1>
+        <div class="user-section">
+          <!-- Placeholder for user icon -->
+          <span class="user-icon-placeholder">User</span>
+          
+          <!-- Additional user information or actions can be added here -->
+        </div>
+
+        <!-- Friends list section -->
+        <div class="friends-list">
+          <h2>Friends List</h2>
+          <!-- Add content related to the friends list here (placeholders for now) -->
+          <ul>
+            <li>Friend 1</li>
+            <li>Friend 2</li>
+            <li>Friend 3</li>
+            <!-- Add more friends as needed -->
+          </ul>
+        </div>
+      </div>
+
+      <button href="#" class="create-journal-button">Create Journal</button>
+
+      <h2>Personal Journals</h2>
+      <!-- Content related to personal journals goes here -->
+      <h2>Group Journals</h2>
+      <!-- Content related to group journals goes here -->
     </div>
   </div>
 </div>
+
 {% endblock %}
