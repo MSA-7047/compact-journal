@@ -27,6 +27,18 @@ def home(request):
     return render(request, 'home.html')
 
 
+@login_required
+def group(request):
+    """Display the list of groups the current user is in"""
+    return render(request, 'group.html', {'user': request.user})
+
+
+@login_required
+def create_group(request):
+    """Display create group screen and handles create group form"""
+    pass
+
+
 class LoginProhibitedMixin:
     """Mixin that redirects when a user is logged in."""
 
