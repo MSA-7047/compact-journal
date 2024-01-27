@@ -108,3 +108,6 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
             password=self.cleaned_data.get('new_password'),
         )
         return user
+    
+class SendFriendRequestForm(forms.Form):
+    user = forms.ModelChoiceField(queryset=User.objects.all(), label='Select User')

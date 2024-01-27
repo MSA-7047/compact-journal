@@ -1,0 +1,81 @@
+{% extends 'base_content.html' %}
+<!-- HTML page describing sent and recieved team invites-->
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1>Pending friend requests:</h1>
+        {% if requests %}
+          <ul>
+            {% for request in requests %}
+              <li>
+                {{ request.sender.username }} has sent you a friend request ({{request.created_at}})
+                {% if request.status == 'pending' %}
+                  <a href="{% url 'accept_friend_request' friend_request_id=request.id %}" class="btn btn-primary btn-sm">Accept</a>
+                  <a href="{% url 'reject_friend_request' friend_request_id=request.id %}" class="btn btn-primary btn-sm">Reject</a>
+                {% elif request.status == 'accepted' %}
+                  <span class="text-success">Accepted</span>
+                  <a href="{% url 'delete_sent_request' request_id=request.id %}" class="btn btn-danger btn-sm">Delete</a>
+                {% elif request.status == 'rejected' %}
+                  <span class="text-danger">Rejected</span>
+                  <a href="{% url 'delete_sent_request' request_id=request.id %}" class="btn btn-danger btn-sm">Delete</a>
+                {% endif %}
+                
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No pending friend requests.</p>
+        {% endif %}
+
+        <h2>Sent requests</h2>
+        <h3>Pending</h3>
+        {% if sent_pending_invitations %}
+          <ul>
+            {% for request in sent_pending_invitations %}
+              <li>
+                You sent {{ request.user.username }} a friend request ({{request.created_at}})
+                <span class="badge badge-warning text-dark">Pending</span>
+                <a href="{% url 'delete_sent_request' request_id=request.id %}" class="btn btn-danger btn-sm">Delete</a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No pending sent friend requests.</p>
+        {% endif %}
+
+        <h3>Accepted</h3>
+        {% if sent_accepted_invitations %}
+          <ul>
+            {% for request in sent_accepted_invitations %}
+              <li>
+                You sent {{ request.user.username }} a friend request ({{request.created_at}})
+                <span class="text-success">Accepted</span>
+                <a href="{% url 'delete_sent_request' request_id=request.id %}" class="btn btn-danger btn-sm">Delete</a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No accepted sent friend requests.</p>
+        {% endif %}
+
+        <h3>Rejected</h3>
+        {% if sent_rejected_invitations %}
+          <ul>
+            {% for request in sent_rejected_invitations %}
+              <li>
+                You sent {{ request.user.username }} a friend request ({{request.created_at}})
+                <span class="text-danger">Rejected</span>
+                <a href="{% url 'delete_sent_request' request_id=request.id %}" class="btn btn-danger btn-sm">Delete</a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No rejected sent friend requests.</p>
+        {% endif %}
+
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}
