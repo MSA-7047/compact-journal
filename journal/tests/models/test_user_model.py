@@ -1,14 +1,14 @@
 """Unit tests for the User model."""
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from tasks.models import User
+from journal.models import User
 
 class UserModelTestCase(TestCase):
     """Unit tests for the User model."""
 
     fixtures = [
-        'tasks/tests/fixtures/default_user.json',
-        'tasks/tests/fixtures/other_users.json'
+        'journal/tests/fixtures/default_user.json',
+        'journal/tests/fixtures/other_users.json'
     ]
 
     GRAVATAR_URL = "https://www.gravatar.com/avatar/363c1b0cd64dadffb867236a00e62986"

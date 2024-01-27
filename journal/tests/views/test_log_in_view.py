@@ -2,14 +2,14 @@
 from django.contrib import messages
 from django.test import TestCase
 from django.urls import reverse
-from tasks.forms import LogInForm
-from tasks.models import User
-from tasks.tests.helpers import LogInTester, MenuTesterMixin, reverse_with_next
+from journal.forms import LogInForm
+from journal.models import User
+from journal.tests.helpers import LogInTester, MenuTesterMixin, reverse_with_next
 
 class LogInViewTestCase(TestCase, LogInTester, MenuTesterMixin):
     """Tests of the log in view."""
 
-    fixtures = ['tasks/tests/fixtures/default_user.json']
+    fixtures = ['journal/tests/fixtures/default_user.json']
 
     def setUp(self):
         self.url = reverse('log_in')

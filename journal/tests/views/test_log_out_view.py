@@ -1,13 +1,13 @@
 """Tests of the log out view."""
 from django.test import TestCase
 from django.urls import reverse
-from tasks.models import User
-from tasks.tests.helpers import LogInTester
+from journal.models import User
+from journal.tests.helpers import LogInTester
 
 class LogOutViewTestCase(TestCase, LogInTester):
     """Tests of the log out view."""
 
-    fixtures = ['tasks/tests/fixtures/default_user.json']
+    fixtures = ['journal/tests/fixtures/default_user.json']
 
     def setUp(self):
         self.url = reverse('log_out')
