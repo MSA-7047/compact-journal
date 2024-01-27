@@ -58,4 +58,7 @@ class GroupMembership(models.Model):
     """Model used to check whether a user is a member of a group"""
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
-    is_member = group.is_user_member(user)
+    is_owner = models.BooleanField(blank=False, default=False)
+
+    class Meta:
+        unique_together = "user", "group"
