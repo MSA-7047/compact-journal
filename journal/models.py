@@ -40,3 +40,22 @@ class User(AbstractUser):
         """Return a URL to a miniature version of the user's gravatar."""
         
         return self.gravatar(size=60)
+
+class Group(models.Model):
+    """Model used for information about a group"""
+
+    name = models.CharField(max_length=30, blank=False, validators=[RegexValidator(regex=r'^[a-zA-Z]+$', message='Name must consist of letters only')])
+    group_id = models.AutoField(primary_key=True)
+
+    def is_user_member(self, user):
+        """Check if a user is a member of the group"""
+        return self.groupmembership_set.filter(user=user).exists()
+
+    def __str__(self):
+        return self.name
+
+class GroupMembership(models.Model):
+    """Model used to check whether a user is a member of a group"""
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    is_member = group.is_user_member(user)
