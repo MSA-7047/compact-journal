@@ -114,11 +114,14 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
             password=self.cleaned_data.get('new_password'),
         )
         return user
+    
+class SendFriendRequestForm(forms.Form):
+    user = forms.ModelChoiceField(queryset=User.objects.all(), label='Select User')
 
 class CreateJournalForm(forms.ModelForm):
     journal_title = forms.CharField(label="Title")
-    journal_description = forms.TextField(label="Description")
-    journal_bio = forms.TextField(label="Bio")
+    journal_description = forms.CharField(label="Description")
+    journal_bio = forms.CharField(label="Bio")
     journal_mood = forms.CharField(label="Mood")
     class Meta:
         model = Journal

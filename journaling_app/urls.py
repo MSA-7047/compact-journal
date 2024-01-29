@@ -28,4 +28,11 @@ urlpatterns = [
     path('profile/', views.ProfileUpdateView.as_view(), name='profile'),
     path('view_profile/', views.ProfileView.as_view(), name='view_profile'),
     path('sign_up/', views.SignUpView.as_view(), name='sign_up'),
+    path('friend_requests/', views.view_friend_requests, name='view_friend_requests'),
+    path('friends/', views.view_friends, name='friends'),
+    path('send_friend_request/<int:user_id>', views.send_friend_request, name='send_request'),
+    path('freind_request/accept/<int:friend_request_id>', views.accept_invitation, name='accept_friend_request'),
+    path('freind_request/reject/<int:friend_request_id>', views.reject_invitation, name='reject_friend_request'),
+    path('delete_sent_request/<int:friend_request_id>/', views.delete_sent_request, name='delete_sent_request'),
+    path('remove_friend/<int:user_id>', views.remove_friend, name='remove_friend'),
 ]
