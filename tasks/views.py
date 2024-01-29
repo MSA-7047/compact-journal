@@ -8,8 +8,9 @@ from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
-from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm
+from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, CreateJournalForm
 from tasks.helpers import login_prohibited
+from .models import Journal
 
 
 @login_required
@@ -151,3 +152,29 @@ class SignUpView(LoginProhibitedMixin, FormView):
 
     def get_success_url(self):
         return reverse(settings.REDIRECT_URL_WHEN_LOGGED_IN)
+@login_required    
+def CreateJournalView(request):
+    form = CreateJournalForm()
+    current_user = request.user
+    if (request.method == 'POST'):
+        form = CreateJournalForm(request.POST)
+        if (form.is_valid()):
+            journal_title = form.cleaned_data.get(label="journal_title")
+            journal_description = form.cleaned_data.get(label="journal_description")
+            journal_bio = form.cleaned_data.get(label="journal_bio")
+            journal_mood = form.cleaned_data.get(label="journal_mood")
+            journal = Journal.objects.create(journal_title = journal_title, journal_description = journal_description, journal_bio = journal_bio, journal_mood = journal_mood)
+            journal.save()
+            current_user.add(journal)
+            
+
+
+
+    
+
+
+
+
+
+    pass
+    

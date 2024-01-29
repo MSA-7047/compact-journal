@@ -3,6 +3,25 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from libgravatar import Gravatar
 
+class Journal(models.Model):
+    
+
+    """Model used for creating Journals, with attached parameters."""
+    #Defines the name
+    journal_title = models.CharField(max_length=50, blank=False)
+    # Defines the description
+    journal_description = models.TextField(max_length=1000)
+    #
+    journal_bio = models.TextField(max_length=10000)
+    #Defines the due Date
+    entry_date = models.DateTimeField()
+    #Mood tracker
+    journal_mood = models.CharField(max_length=50, blank=False)
+
+
+
+
+
 class User(AbstractUser):
     """Model used for user authentication, and team member related information."""
 
@@ -17,6 +36,8 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=50, blank=False)
     last_name = models.CharField(max_length=50, blank=False)
     email = models.EmailField(unique=True, blank=False)
+    # This implementation could need refactoring based on calendar implementation
+    user_journals = models.ManyToManyField(Journal, related_name="user_journals")
 
 
     class Meta:
