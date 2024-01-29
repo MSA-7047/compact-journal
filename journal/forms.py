@@ -111,6 +111,7 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
     
 
 class GroupForm(forms.ModelForm):
+    """Form allowing the user to create a group"""
 
     class Meta:
         model = Group
@@ -118,7 +119,6 @@ class GroupForm(forms.ModelForm):
     
     def save(self, commit=True):
         instance = super().save(commit=False)
-        instance.name = self.cleaned_data.get('name')
         if commit:
             instance.save()
         return instance

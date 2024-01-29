@@ -16,7 +16,7 @@ class GroupFormTestCase(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors, {'name': ['This field is required.']})
 
-    def test_save_method(self):
+    def test_form_is_saved_correctly(self):
         form = GroupForm(data=self.form_data)
         self.assertTrue(form.is_valid())
         
@@ -24,6 +24,6 @@ class GroupFormTestCase(TestCase):
         group_instance.save()
         self.assertEqual(group_instance.name, 'Test')
         group_instance.save()
-        
+
         saved_group = Group.objects.get(name='Test')
         self.assertEqual(saved_group, group_instance)
