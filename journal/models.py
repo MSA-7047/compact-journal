@@ -36,7 +36,8 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=50, blank=False)
     last_name = models.CharField(max_length=50, blank=False)
     email = models.EmailField(unique=True, blank=False)
-    # This implementation could need refactoring based on calendar implementation
+    dob = models.DateField(null=True, blank=True)
+    bio = models.TextField(blank=True, default='')    # This implementation could need refactoring based on calendar implementation
     user_journals = models.ManyToManyField(Journal, related_name="user_journals")
 
 

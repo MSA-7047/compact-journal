@@ -10,6 +10,7 @@ from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
 from journal.forms import LogInForm, PasswordForm, UserForm, SignUpForm, CreateJournalForm
 from journal.helpers import login_prohibited
+from django.views.generic import DetailView
 from .models import Journal
 
 
@@ -119,6 +120,15 @@ class PasswordView(LoginRequiredMixin, FormView):
         messages.add_message(self.request, messages.SUCCESS, "Password updated!")
         return reverse('dashboard')
 
+class ProfileView(LoginRequiredMixin, DetailView):
+    """Display user profile screen"""
+
+    template_name = "view_profile.html"
+
+    def get_object(self):
+        """Return the object (user) to be updated."""
+        user = self.request.user
+        return user
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     """Display user profile editing screen, and handle profile modifications."""
