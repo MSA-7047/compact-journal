@@ -1,11 +1,11 @@
 from django.contrib.auth.hashers import check_password
 from django.test import TestCase
-from tasks.models import User
-from tasks.forms import PasswordForm
+from journal.models import User
+from journal.forms import PasswordForm
 
 class PasswordFormTestCase(TestCase):
 
-    fixtures = ['tasks/tests/fixtures/default_user.json']
+    fixtures = ['journal/tests/fixtures/default_user.json']
 
     def setUp(self):
         self.user = User.objects.get(username='@johndoe')
