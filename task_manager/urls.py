@@ -32,6 +32,6 @@ urlpatterns = [
     path('send_friend_request/<int:user_id>', views.send_friend_request, name='send_request'),
     path('freind_request/accept/<int:friend_request_id>', views.accept_invitation, name='accept_friend_request'),
     path('freind_request/reject/<int:friend_request_id>', views.reject_invitation, name='reject_friend_request'),
-    path('delete_sent_request/<int:request_id>/', views.delete_sent_request, name='delete_sent_request'),
+    path('delete_sent_request/<int:friend_request_id>/', views.delete_sent_request, name='delete_sent_request'),
     path('remove_friend/<int:user_id>', views.remove_friend, name='remove_friend'),
 ]
