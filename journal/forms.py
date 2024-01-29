@@ -1,4 +1,4 @@
-"""Forms for the tasks app."""
+"""Forms for the journal app."""
 from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator

@@ -2,16 +2,16 @@
 from django.contrib import messages
 from django.test import TestCase
 from django.urls import reverse
-from tasks.forms import UserForm
-from tasks.models import User
-from tasks.tests.helpers import reverse_with_next
+from journal.forms import UserForm
+from journal.models import User
+from journal.tests.helpers import reverse_with_next
 
 class ProfileViewTest(TestCase):
     """Test suite for the profile view."""
 
     fixtures = [
-        'tasks/tests/fixtures/default_user.json',
-        'tasks/tests/fixtures/other_users.json'
+        'journal/tests/fixtures/default_user.json',
+        'journal/tests/fixtures/other_users.json'
     ]
 
     def setUp(self):

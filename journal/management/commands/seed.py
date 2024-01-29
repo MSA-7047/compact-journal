@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 
-from tasks.models import User
+from journal.models import User
 
 import pytz
 from faker import Faker

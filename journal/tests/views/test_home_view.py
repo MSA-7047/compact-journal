@@ -1,12 +1,12 @@
 """Tests of the home view."""
 from django.test import TestCase
 from django.urls import reverse
-from tasks.models import User
+from journal.models import User
 
 class HomeViewTestCase(TestCase):
     """Tests of the home view."""
 
-    fixtures = ['tasks/tests/fixtures/default_user.json']
+    fixtures = ['journal/tests/fixtures/default_user.json']
 
     def setUp(self):
         self.url = reverse('home')

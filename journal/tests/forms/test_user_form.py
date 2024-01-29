@@ -1,14 +1,14 @@
 """Unit tests of the user form."""
 from django import forms
 from django.test import TestCase
-from tasks.forms import UserForm
-from tasks.models import User
+from journal.forms import UserForm
+from journal.models import User
 
 class UserFormTestCase(TestCase):
     """Unit tests of the user form."""
 
     fixtures = [
-        'tasks/tests/fixtures/default_user.json'
+        'journal/tests/fixtures/default_user.json'
     ]
 
     def setUp(self):
