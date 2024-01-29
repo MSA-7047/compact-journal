@@ -23,8 +23,7 @@ class GroupFormTestCase(TestCase):
         group_instance = form.save(commit=False)
         group_instance.save()
         self.assertEqual(group_instance.name, 'Test')
-        # Saving the instance to the database
         group_instance.save()
-        # Retrieving the instance from the database to ensure it was saved correctly
+        
         saved_group = Group.objects.get(name='Test')
         self.assertEqual(saved_group, group_instance)
