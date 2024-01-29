@@ -3,15 +3,15 @@ from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.test import TestCase
 from django.urls import reverse
-from tasks.forms import PasswordForm
-from tasks.models import User
-from tasks.tests.helpers import reverse_with_next
+from journal.forms import PasswordForm
+from journal.models import User
+from journal.tests.helpers import reverse_with_next
 
 class PasswordViewTest(TestCase):
     """Test suite for the password view."""
 
     fixtures = [
-        'tasks/tests/fixtures/default_user.json'
+        'journal/tests/fixtures/default_user.json'
     ]
 
     def setUp(self):

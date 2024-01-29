@@ -1,15 +1,18 @@
-# Team *enter team name here* Small Group project
+# Compact Code Works Large Group Project
 
 ## Team members
 The members of the team are:
-- *enter full name 1 here*
-- *enter full name 2 here*
-- *enter full name 3 here*
-- *enter full name 4 here*
-- *enter full name 5 here*
+- Mohammed (Miqdaad) Al-Hassan
+- MD (Rahat) Hussein
+- Ibramin Ahmed
+- Mohammed (Sameen) Ahmed
+- Javed Hussain
+- Adil Kassam
+- Mohammed (Minhaj) Sajjad Rahman
+- Liban Scekei
 
 ## Project structure
-The project is called `task_manager`.  It currently consists of a single app `tasks`.
+The project is called `journaling_app`.  It currently consists of a single app `journal`.
 
 ## Deployed version of the application
 The deployed version of the application can be found at [*enter url here*](*enter_url_here*).
@@ -50,4 +53,8 @@ $ python3 manage.py test
 ## Sources
 The packages used by this application are specified in `requirements.txt`
 
-*Declare are other sources here, and remove this line*
+## References
+```
+
+```
+*This is where we put our ChatGPT references and whatnot*
