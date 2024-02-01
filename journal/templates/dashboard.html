@@ -1,41 +1,65 @@
 {% extends 'base_content.html' %}
-{% load static %}
-
 {% block content %}
-<div class="container">
-  <link rel="stylesheet" href="{% static 'dashboard.css' %}">
-  <div class="row">
-    <div class="col-12">
-      <div class="header">
-        <h1>Welcome to your dashboard {{ user.username }}!</h1>
-        <div class="user-section">
-          <!-- Placeholder for user icon -->
-          <span class="user-icon-placeholder">User</span>
-          
-          <!-- Additional user information or actions can be added here -->
-        </div>
 
-        <!-- Friends list section -->
-        <div class="friends-list">
-          <h2>Friends List</h2>
-          <!-- Add content related to the friends list here (placeholders for now) -->
-          <ul>
-            <li>Friend 1</li>
-            <li>Friend 2</li>
-            <li>Friend 3</li>
-            <!-- Add more friends as needed -->
-          </ul>
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'custom.css' %}">
+    <title>Dashboard View</title>
+  </head>
+
+  <body>
+    <div class="container w-100">
+      <div class="row w-100">
+        <div class="col-12">
+          <div class="header">
+            <h1 style="float: left;">Welcome to your dashboard {{ user.username }}!</h1>
+            <div class="user-section" style="float: right;">
+              <!-- Placeholder for user icon -->
+              <span class="user-icon-placeholder" style="font-size: large;">UserIcon</span>
+              <!-- level information to be added here -->
+            </div>
+          </div>
         </div>
       </div>
 
-      <button href="#" class="create-journal-button">Create Journal</button>
+      <div class="row">
+        <div class="col-5 text-left border border-dark rounded-bottom">
+          <h2>Daily Journal</h2>
+          <!-- Content related to personal journal entries goes here -->
+        </div>
 
-      <h2>Personal Journals</h2>
-      <!-- Content related to personal journals goes here -->
-      <h2>Group Journals</h2>
-      <!-- Content related to group journals goes here -->
+        <div class="col-5 text-left border border-dark rounded-bottom">
+          <h2>Group Journals</h2>
+          <!-- Content related to your group journals goes here -->
+        </div>
+
+        <div class="col-2 text-left">
+          <div class="friends-list">
+            <h2 class="text-center">Friends List</h2>
+            <!-- Content related to the friends list here (placeholders for now) -->
+            <div class="list-group">
+              <span class="border border-dark rounded-bottom">
+                <button type="button" class="list-group-item list-group-item-action">Friend 1</button>
+                <button type="button" class="list-group-item list-group-item-action">Friend 2</button>
+                <button type="button" class="list-group-item list-group-item-action">Friend 3</button>
+                <button type="button" class="list-group-item list-group-item-action">Friend 4</button>
+                <button type="button" class="list-group-item list-group-item-action">Friend 5</button>
+                <button type="button" class="list-group-item list-group-item-action">Friend 1</button>
+                <button type="button" class="list-group-item list-group-item-action">Friend 2</button>
+                <button type="button" class="list-group-item list-group-item-action">Friend 3</button>
+                <button type="button" class="list-group-item list-group-item-action">Friend 4</button>
+                <button type="button" class="list-group-item list-group-item-action">Friend 5</button>  
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-
+  </body>
+</html>
 {% endblock %}
+
