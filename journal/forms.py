@@ -217,3 +217,5 @@ class EditJournalBioForm(forms.ModelForm):
     
 
 
+class SendGroupRequestForm(forms.Form):
+    user = forms.ModelChoiceField(queryset=User.objects.all(), label='Select User')
