@@ -10,11 +10,21 @@ class GroupFormTestCase(TestCase):
         form = GroupForm(data=self.form_data)
         self.assertTrue(form.is_valid())
 
-    def test_blank_data(self):
+    def test_blank_data_is_rejected(self):
         self.form_data= {}
         form = GroupForm(data=self.form_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors, {'name': ['This field is required.']})
+
+    def test_name_of_30_char_is_accepted(self):
+        self.form_data = {'name': 'x' * 30}
+        form = GroupForm(self.form_data)
+        self.assertTrue(form.is_valid)
+    
+    def test_name_of_31_char_is_rejected(self):
+        self.form_data = {'name': 'x' * 31}
+        form = GroupForm(self.form_data)
+        self.assertFalse(form.is_valid())
 
     def test_form_is_saved_correctly(self):
         form = GroupForm(data=self.form_data)
