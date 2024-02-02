@@ -104,17 +104,16 @@ h3.profile-title {
 /**
  * Buttons
  */
-button.create-button {
-  background-color: #21cb7b;
-  color: #ffffff;
-
+.create-button {
+    /* Your styles here */
+    background-color: #4CAF50; /* Green */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
-button.create-button:hover {
 
-}
-button.create-button {
-
-}
 /*
  * Hyperlinks
  */

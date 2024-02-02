@@ -1,10 +1,15 @@
+
 {% extends 'base_content.html' %}
 {% block content %}
-<div class=container">
+{% load static %}
+
+<link href="{% static 'custom.css' %}" rel="stylesheet" type="text/css">
+
+<div class="container">
     <div class="row">
         <div class="col-12">
             <h1>This is the group view</h1>
-            <button>Create Group +</button>
+            <a role="button" href="{% url 'create_group' %}" class="btn btn-success">Create Group +</a>
         </div>
     </div>
 </div>

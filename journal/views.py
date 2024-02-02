@@ -4,16 +4,19 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ImproperlyConfigured
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
+from .forms import GroupForm
+
 from journal.forms import LogInForm, PasswordForm, UserForm, SignUpForm
 from journal.helpers import login_prohibited
 
 
 @login_required
-def dashboard(request):
+def dashboard(request) -> HttpResponse:
     """Display the current user's dashboard."""
 
     current_user = request.user
@@ -21,22 +24,30 @@ def dashboard(request):
 
 
 @login_prohibited
-def home(request):
+def home(request) -> HttpResponse:
     """Display the application's start/home screen."""
-
     return render(request, 'home.html')
 
 
 @login_required
-def group(request):
+def group(request) -> HttpResponse:
     """Display the list of groups the current user is in"""
     return render(request, 'group.html', {'user': request.user})
 
 
 @login_required
-def create_group(request):
+def create_group(request) -> HttpResponse:
     """Display create group screen and handles create group form"""
-    pass
+    if request.method == 'POST':
+        form = GroupForm(request.POST)
+        if form.is_valid():
+            form.save(commit=True, )
+            return redirect('group')
+    else:
+        form = GroupForm()
+
+    return render(request, 'create_group.html', {'form': form})
+
 
 
 class LoginProhibitedMixin:
@@ -163,3 +174,5 @@ class SignUpView(LoginProhibitedMixin, FormView):
 
     def get_success_url(self):
         return reverse(settings.REDIRECT_URL_WHEN_LOGGED_IN)
+
+

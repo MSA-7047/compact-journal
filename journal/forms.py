@@ -96,7 +96,7 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
         model = User
         fields = ['first_name', 'last_name', 'username', 'email']
 
-    def save(self):
+    def save(self, commit=False):
         """Create a new user."""
 
         super().save(commit=False)
@@ -117,7 +117,7 @@ class GroupForm(forms.ModelForm):
         model = Group
         fields = ['name']
     
-    def save(self, commit=True):
+    def save(self, commit=True, creator=None):
         instance = super().save(commit=False)
         if commit:
             instance.save()
