@@ -2,21 +2,24 @@ from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from libgravatar import Gravatar
+from django.conf import settings
 
 class Journal(models.Model):
     
 
     """Model used for creating Journals, with attached parameters."""
-    #Defines the name
     journal_title = models.CharField(max_length=50, blank=False)
-    # Defines the description
+
     journal_description = models.TextField(max_length=1000)
-    #
+    
     journal_bio = models.TextField(max_length=10000)
-    #Defines the due Date
-    entry_date = models.DateTimeField()
-    #Mood tracker
-    journal_mood = models.CharField(max_length=50, blank=False)
+    
+    entry_date = models.DateTimeField(auto_now_add = True)
+    
+    mood_options = [("Sad","Sad"),("Neutral","Neutral"), ("Happy", "Happy"), ("Angry", "Angry")]
+    journal_mood = models.CharField(choices = mood_options, blank=False, max_length = 7)
+
+    journal_owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
 
 
@@ -37,7 +40,6 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=50, blank=False)
     email = models.EmailField(unique=True, blank=False)
     # This implementation could need refactoring based on calendar implementation
-    user_journals = models.ManyToManyField(Journal, related_name="user_journals")
 
 
     class Meta:

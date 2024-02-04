@@ -4,11 +4,11 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ImproperlyConfigured
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
-from journal.forms import LogInForm, PasswordForm, UserForm, SignUpForm, CreateJournalForm
+from journal.forms import LogInForm, PasswordForm, UserForm, SignUpForm, CreateJournalForm, EditJournalBioForm, EditJournalDescriptionForm, EditJournalTitleForm
 from journal.helpers import login_prohibited
 from .models import Journal
 
@@ -163,9 +163,69 @@ def CreateJournalView(request):
             journal_description = form.cleaned_data.get(label="journal_description")
             journal_bio = form.cleaned_data.get(label="journal_bio")
             journal_mood = form.cleaned_data.get(label="journal_mood")
-            journal = Journal.objects.create(journal_title = journal_title, journal_description = journal_description, journal_bio = journal_bio, journal_mood = journal_mood)
+            journal_owner = current_user
+            journal = Journal.objects.create(
+                journal_title = journal_title, 
+                journal_description = journal_description, 
+                journal_bio = journal_bio, 
+                journal_mood = journal_mood, 
+                journal_owner = journal_owner
+            )
             journal.save()
-            current_user.add(journal)
+            return render(request, 'dashboard.html', {'form': form})
+        else:
+            return render(request, 'create_journal_view.html', {'form': form})
+    else:
+        return render(request, 'create_journal_view.html', {'form': form})
+
+@login_required
+def ChangeJournalTitle(request, journalID):
+    journal = get_object_or_404(Journal, id=journalID)
+    if request.method == 'POST':
+        form = EditJournalTitleForm(request.POST, instance=journal)
+        if form.is_valid():
+            new_title = form.cleaned_data['new_title']
+            Journal.objects.filter(id=journalID).update(journal_title=new_title)
+            return redirect(request, 'dashboard.html')
+        else:
+            return render(request, 'change_journal_title.html', {'form': form})
+
+    else:
+        form = EditJournalTitleForm(instance=journal)
+    return render(request, 'change_journal_title.html', {'form': form})
+
+@login_required
+def ChangeJournalBio(request, journalID):
+    journal = get_object_or_404(Journal, id=journalID)
+    if request.method == 'POST':
+        form = EditJournalBioForm(request.POST, instance=journal)
+        if form.is_valid():
+            new_bio = form.cleaned_data['new_bio']
+            Journal.objects.filter(id=journalID).update(journal_bio=new_bio)
+            return redirect(request, 'dashboard.html')
+        else:
+            return render(request, 'change_journal_bio.html', {'form': form})
+
+    else:
+        form = EditJournalBioForm(instance=journal)
+    return render(request, 'change_journal_bio.html', {'form': form})
+
+
+@login_required
+def ChangeJournalDescription(request, journalID):
+    journal = get_object_or_404(Journal, id=journalID)
+    if request.method == 'POST':
+        form = EditJournalTitleForm(request.POST, instance=journal)
+        if form.is_valid():
+            new_description = form.cleaned_data['new_description']
+            Journal.objects.filter(id=journalID).update(journal_title=new_description)
+            return redirect(request, 'dashboard.html')
+        else:
+            return render(request, 'change_journal_description.html', {'form': form})
+
+    else:
+        form = EditJournalTitleForm(instance=journal)
+    return render(request, 'change_journal_description.html', {'form': form})
             
 
 
@@ -176,5 +236,5 @@ def CreateJournalView(request):
 
 
 
-    pass
+
     
