@@ -10,6 +10,7 @@ from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
 from .forms import GroupForm
+from .models import Group, GroupMembership
 
 from journal.forms import LogInForm, PasswordForm, UserForm, SignUpForm
 from journal.helpers import login_prohibited
@@ -32,6 +33,7 @@ def home(request) -> HttpResponse:
 @login_required
 def group(request) -> HttpResponse:
     """Display the list of groups the current user is in"""
+    # current_user_groups = Group.objects.filter()
     return render(request, 'group.html', {'user': request.user})
 
 

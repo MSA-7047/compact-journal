@@ -2,7 +2,7 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
-from .models import User, Group
+from .models import User, Group, GroupMembership
 
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
@@ -118,7 +118,12 @@ class GroupForm(forms.ModelForm):
         fields = ['name']
     
     def save(self, commit=True, creator=None):
-        instance = super().save(commit=False)
-        if commit:
-            instance.save()
-        return instance
+        group_instance = super().save(commit=False)
+        if commit and not group_instance.pk:
+            group_instance.save()
+            GroupMembership.objects.create(
+                user=creator,
+                group=group_instance,
+                is_owner=True
+            )
+        return group_instance

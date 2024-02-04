@@ -42,6 +42,7 @@ class User(AbstractUser):
         
         return self.gravatar(size=60)
 
+
 class Group(models.Model):
     """Model used for information about a group"""
 
@@ -54,6 +55,7 @@ class Group(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class GroupMembership(models.Model):
     """Model used to check whether a user is a member of a group"""
