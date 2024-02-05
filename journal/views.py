@@ -428,9 +428,9 @@ def all_journal_entries_view(request):
     return render(request, 'all_entries.html', { 'user': current_user,  'journal_existence': journal_existence or False})
     
 def edit_group(request, group_id):
+    """Allows owner of the group to edit the group."""    
     group = get_object_or_404(Group, pk=group_id)
-    
-    # Check if the current user is the owner of the group
+
     if request.user == group.owner:
         if request.method == 'POST':
             form = GroupForm(request.POST, instance=group)
@@ -440,7 +440,6 @@ def edit_group(request, group_id):
             else:
                 return JsonResponse({'errors': form.errors}, status=400)
         else:
-            # If it's not a POST request, render a form for editing the group
             form = GroupForm(instance=group)
             return render(request, 'edit_group.html', {'form': form})
     else:
