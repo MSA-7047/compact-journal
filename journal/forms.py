@@ -20,7 +20,6 @@ class LogInForm(forms.Form):
             user = authenticate(username=username, password=password)
         return user
 
-
 class UserForm(forms.ModelForm):
     """Form to update user profiles."""
 
@@ -28,7 +27,14 @@ class UserForm(forms.ModelForm):
         """Form options."""
 
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email']
+        fields = ['first_name', 'last_name', 'username', 'email', 'dob', 'bio']
+
+        labels = {
+        'dob': 'Date of Birth'}
+
+        widgets = {
+            'dob': forms.DateInput(attrs={'type': 'date'}),
+        }
 
 class NewPasswordMixin(forms.Form):
     """Form mixing for new_password and password_confirmation fields."""
@@ -108,6 +114,9 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
             password=self.cleaned_data.get('new_password'),
         )
         return user
+    
+class SendFriendRequestForm(forms.Form):
+    user = forms.ModelChoiceField(queryset=User.objects.all(), label='Select User')
 
 class CreateJournalForm(forms.ModelForm):
     journal_title = forms.CharField(label="Title")
