@@ -1,0 +1,24 @@
+{% extends 'base_content.html' %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h1>Your Friends:</h1>
+      <ul>
+        {% for friend in friends %}
+          <li>{{ friend.username }}
+            <a href="{% url 'remove_friend' user_id=friend.id %}" class="btn btn-danger btn-sm">remove</a>
+          </li>
+        {% endfor %}
+      </ul>
+      <h2>Add Friend:</h2>
+      <form method="post" action="{% url 'send_request' user.id %}">
+        {% csrf_token %}
+        {{ add_member_form.as_p }}
+        <button type="submit" class="btn btn-primary">Send Friend Request</button>
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

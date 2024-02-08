@@ -2,7 +2,7 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
-from .models import User
+from .models import User, Journal
 
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
@@ -20,7 +20,6 @@ class LogInForm(forms.Form):
             user = authenticate(username=username, password=password)
         return user
 
-
 class UserForm(forms.ModelForm):
     """Form to update user profiles."""
 
@@ -28,7 +27,14 @@ class UserForm(forms.ModelForm):
         """Form options."""
 
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email']
+        fields = ['first_name', 'last_name', 'username', 'email', 'dob', 'bio']
+
+        labels = {
+        'dob': 'Date of Birth'}
+
+        widgets = {
+            'dob': forms.DateInput(attrs={'type': 'date'}),
+        }
 
 class NewPasswordMixin(forms.Form):
     """Form mixing for new_password and password_confirmation fields."""
@@ -108,3 +114,64 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
             password=self.cleaned_data.get('new_password'),
         )
         return user
+    
+class SendFriendRequestForm(forms.Form):
+    user = forms.ModelChoiceField(queryset=User.objects.all(), label='Select User')
+
+class CreateJournalForm(forms.ModelForm):
+    journal_title = forms.CharField(label="Title")
+    journal_description = forms.CharField(label="Description")
+    journal_bio = forms.CharField(label="Bio")
+    journal_mood = forms.CharField(label="Mood")
+
+    class Meta:
+        model = Journal
+        fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood']
+
+class EditJournalTitleForm(forms.ModelForm):
+    
+        class Meta:
+            model = Journal
+            fields=['new_title']
+
+        
+
+        def save(self, commit=True):
+            instance = super().save(commit=False)
+            instance.task_name = self.cleaned_data['new_title']
+            if commit:
+                instance.save()
+            return instance
+
+class EditJournalDescriptionForm(forms.ModelForm):
+    
+        class Meta:
+            model = Journal
+            fields=['new_description']
+
+        
+
+        def save(self, commit=True):
+            instance = super().save(commit=False)
+            instance.task_name = self.cleaned_data['new_description']
+            if commit:
+                instance.save()
+            return instance
+        
+class EditJournalBioForm(forms.ModelForm):
+    
+        class Meta:
+            model = Journal
+            fields=['new_bio']
+
+        
+
+        def save(self, commit=True):
+            instance = super().save(commit=False)
+            instance.task_name = self.cleaned_data['new_bio']
+            if commit:
+                instance.save()
+            return instance
+    
+
+
