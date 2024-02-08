@@ -9,8 +9,11 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
-from journal.forms import LogInForm, PasswordForm, UserForm, SignUpForm, CreateJournalForm, SendFriendRequestForm, GroupForm
 from journal.models import Group, GroupMembership, Journal, FriendRequest, User
+from journal.forms import (
+    LogInForm, PasswordForm, UserForm, SignUpForm, CreateJournalForm, SendFriendRequestForm, GroupForm,
+    EditJournalBioForm, EditJournalDescriptionForm, EditJournalTitleForm
+)
 from journal.helpers import login_prohibited
 from django.views.generic import DetailView
 
@@ -28,6 +31,28 @@ def home(request):
     """Display the application's start/home screen."""
 
     return render(request, 'home.html')
+
+
+@login_required
+def group(request) -> HttpResponse:
+    """Display the list of groups the current user is in"""
+    current_user = request.user
+    current_user_groups = current_user.groups
+    return render(request, 'group.html', {'user': current_user, 'groups': current_user_groups})
+
+
+@login_required
+def create_group(request) -> HttpResponse:
+    """Display create group screen and handles create group form"""
+    if request.method == 'POST':
+        form = GroupForm(request.POST)
+        if form.is_valid():
+            form.save(commit=True, )
+            return redirect('group')
+    else:
+        form = GroupForm()
+
+    return render(request, 'create_group.html', {'form': form})
 
 
 @login_required
@@ -144,6 +169,7 @@ class PasswordView(LoginRequiredMixin, FormView):
         return reverse('dashboard')
 
 
+
 class ProfileView(LoginRequiredMixin, DetailView):
     """Display user profile screen"""
 
@@ -153,6 +179,7 @@ class ProfileView(LoginRequiredMixin, DetailView):
         """Return the object (user) to be updated."""
         user = self.request.user
         return user
+
 
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
@@ -200,11 +227,13 @@ def view_friend_requests(request):
     return render(request, 'friend_requests.html', {'requests': requests, 'sent_pending_invitations': sent_pending_invitations, 'sent_accepted_invitations': sent_accepted_invitations, 'sent_rejected_invitations': sent_rejected_invitations})
 
 
+
 @login_required
 def view_friends(request):
     user = request.user
     friends = user.friends.all()
     return render(request, 'friends.html', {"friends": friends})
+
 
 
 @login_required
@@ -224,6 +253,7 @@ def send_friend_request(request, user_id):
     return render(request, 'friends.html', {'add_member_form': form, "user": user, "friends": friends})
 
 
+
 @login_required
 def accept_invitation(request, friend_request_id):
     friend_request = get_object_or_404(FriendRequest, id=friend_request_id, user=request.user, is_accepted=False)
@@ -240,6 +270,7 @@ def accept_invitation(request, friend_request_id):
     return redirect('view_friend_requests')
 
 
+
 @login_required
 def reject_invitation(request, friend_request_id):
     friend_request = get_object_or_404(FriendRequest, id=friend_request_id, user=request.user, is_accepted=False)
@@ -251,11 +282,13 @@ def reject_invitation(request, friend_request_id):
     return redirect('view_friend_requests')
 
 
+
 @login_required
 def delete_sent_request(request, friend_request_id):
     friend_request = get_object_or_404(FriendRequest, id=friend_request_id, sender=request.user)
     friend_request.delete()
     return redirect('view_friend_requests')
+
 
 
 @login_required
@@ -277,6 +310,69 @@ def create_journal(request):
             journal_description = form.cleaned_data.get(label="journal_description")
             journal_bio = form.cleaned_data.get(label="journal_bio")
             journal_mood = form.cleaned_data.get(label="journal_mood")
-            journal = Journal.objects.create(journal_title = journal_title, journal_description = journal_description, journal_bio = journal_bio, journal_mood = journal_mood)
+            journal_owner = current_user
+            journal = Journal.objects.create(
+                journal_title = journal_title,
+                journal_description = journal_description,
+                journal_bio = journal_bio,
+                journal_mood = journal_mood,
+                journal_owner = journal_owner
+            )
             journal.save()
-            current_user.add(journal)
+            return render(request, 'dashboard.html', {'form': form})
+        else:
+            return render(request, 'create_journal_view.html', {'form': form})
+    else:
+        return render(request, 'create_journal_view.html', {'form': form})
+
+
+@login_required
+def ChangeJournalTitle(request, journalID):
+    journal = get_object_or_404(Journal, id=journalID)
+    if request.method == 'POST':
+        form = EditJournalTitleForm(request.POST, instance=journal)
+        if form.is_valid():
+            new_title = form.cleaned_data['new_title']
+            Journal.objects.filter(id=journalID).update(journal_title=new_title)
+            return redirect(request, 'dashboard.html')
+        else:
+            return render(request, 'change_journal_title.html', {'form': form})
+
+    else:
+        form = EditJournalTitleForm(instance=journal)
+    return render(request, 'change_journal_title.html', {'form': form})
+
+
+@login_required
+def ChangeJournalBio(request, journalID):
+    journal = get_object_or_404(Journal, id=journalID)
+    if request.method == 'POST':
+        form = EditJournalBioForm(request.POST, instance=journal)
+        if form.is_valid():
+            new_bio = form.cleaned_data['new_bio']
+            Journal.objects.filter(id=journalID).update(journal_bio=new_bio)
+            return redirect(request, 'dashboard.html')
+        else:
+            return render(request, 'change_journal_bio.html', {'form': form})
+
+    else:
+        form = EditJournalBioForm(instance=journal)
+    return render(request, 'change_journal_bio.html', {'form': form})
+
+
+@login_required
+def ChangeJournalDescription(request, journalID):
+    journal = get_object_or_404(Journal, id=journalID)
+    if request.method == 'POST':
+        form = EditJournalTitleForm(request.POST, instance=journal)
+        if form.is_valid():
+            new_description = form.cleaned_data['new_description']
+            Journal.objects.filter(id=journalID).update(journal_title=new_description)
+            return redirect(request, 'dashboard.html')
+        else:
+            return render(request, 'change_journal_description.html', {'form': form})
+
+    else:
+        form = EditJournalTitleForm(instance=journal)
+    return render(request, 'change_journal_description.html', {'form': form})
+
