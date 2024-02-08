@@ -8,7 +8,14 @@
 <div class="container">
     <div class="row">
         <div class="col-12">
-            <h1>This is the group view</h1>
+            <h1>Your groups</h1>
+            <div class="group-list">
+                {% for group in groups %}
+                <button class="btn btn-info">
+                    {{ group.name }}
+                </button>
+                {% endfor %}
+            </div>
             <a role="button" href="{% url 'create_group' %}" class="btn btn-success">Create Group +</a>
         </div>
     </div>

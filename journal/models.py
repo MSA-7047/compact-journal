@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
 from libgravatar import Gravatar
+from .models import Group
+
 
 class Journal(models.Model):
 
@@ -18,9 +20,6 @@ class Journal(models.Model):
     entry_date = models.DateTimeField()
     #Mood tracker
     journal_mood = models.CharField(max_length=50, blank=False)
-
-
-
 
 
 class User(AbstractUser):
@@ -41,6 +40,7 @@ class User(AbstractUser):
     dob = models.DateField(null=True, blank=True)
     bio = models.TextField(blank=True, default='')    # This implementation could need refactoring based on calendar implementation
     user_journals = models.ManyToManyField(Journal, related_name="user_journals")
+    groups = models.ManyToManyField(Group, through='GroupMembership')
 
 
     class Meta:
@@ -89,6 +89,7 @@ class User(AbstractUser):
             return True
         return False
 
+
 class FriendRequest(models.Model):
     """Model representing invitations for a team"""
     STATUS_CHOICES = [
@@ -102,8 +103,6 @@ class FriendRequest(models.Model):
     is_accepted = models.BooleanField(default=False)
     created_at = models.DateField(auto_now=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
-
-
 
 
 class Group(models.Model):

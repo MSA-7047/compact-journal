@@ -33,8 +33,9 @@ def home(request):
 @login_required
 def group(request) -> HttpResponse:
     """Display the list of groups the current user is in"""
-    # current_user_groups = Group.objects.filter()
-    return render(request, 'group.html', {'user': request.user})
+    current_user = request.user
+    current_user_groups = current_user.groups
+    return render(request, 'group.html', {'user': current_user, 'groups': current_user_groups})
 
 
 @login_required
@@ -266,7 +267,7 @@ def remove_friend(request, user_id):
 
 
 @login_required
-def CreateJournalView(request):
+def create_journal(request):
     form = CreateJournalForm()
     current_user = request.user
     if (request.method == 'POST'):
