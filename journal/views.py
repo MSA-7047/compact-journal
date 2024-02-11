@@ -12,6 +12,9 @@ from journal.forms import LogInForm, PasswordForm, UserForm, SignUpForm, CreateJ
 from journal.helpers import login_prohibited
 from django.views.generic import DetailView
 from .models import Journal, FriendRequest, User
+import calendar
+from calendar import HTMLCalendar
+from datetime import datetime
 
 
 @login_required
@@ -306,6 +309,26 @@ def ChangeJournalDescription(request, journalID):
     else:
         form = EditJournalTitleForm(instance=journal)
     return render(request, 'change_journal_description.html', {'form': form})
+
+def calendar(request, year, month):
+    name = "Journaller"
+    month = month.capitalize()
+    month_number = list(calendar.month_name).index(month)
+    month_number = int(month_number)
+
+    cal = HTMLCalendar().formatmonth(year, month_number)
+    now = datetime.now()
+    current_year = now.year
+    return render(request,
+                'calendar.html', {
+                "name": name,
+                "year": year,
+                "month": month,
+                "month_number": month_number,
+                "cal": cal,
+                "current_year": current_year,
+                }
+                )
             
 
 
