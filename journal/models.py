@@ -2,6 +2,7 @@ from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from libgravatar import Gravatar
+from django_countries.fields import CountryField
 
 class Journal(models.Model):
     
@@ -17,8 +18,6 @@ class Journal(models.Model):
     entry_date = models.DateTimeField()
     #Mood tracker
     journal_mood = models.CharField(max_length=50, blank=False)
-
-
 
 
 
@@ -39,6 +38,7 @@ class User(AbstractUser):
     friends = models.ManyToManyField('self',symmetrical=False, blank=True)
     dob = models.DateField(null=True, blank=True)
     bio = models.TextField(blank=True, default='')    # This implementation could need refactoring based on calendar implementation
+    nationality = CountryField()
     user_journals = models.ManyToManyField(Journal, related_name="user_journals")
 
 
