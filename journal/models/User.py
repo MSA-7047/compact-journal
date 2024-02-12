@@ -1,0 +1,64 @@
+from django.core.validators import RegexValidator
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+from libgravatar import Gravatar
+from .Group import Group
+from .Journal import Journal
+from .FriendRequest import FriendRequest
+
+
+class User(AbstractUser):
+    """"""
+
+    username = models.CharField(
+        max_length=30,
+        unique=True,
+        validators=[
+            RegexValidator(
+                regex=r'^@\w{3,}$',
+                message="Username must consist of @ followed by at least 3 alphanumerical characters"
+            )
+        ]
+    )
+    first_name = models.CharField(max_length=50, blank=False)
+    last_name = models.CharField(max_length=50, blank=False)
+    email = models.EmailField(unique=True, blank=False)
+    friends = models.ManyToManyField('self', symmetrical=False, blank=True)
+    dob = models.DateField(null=True, blank=True)
+    bio = models.TextField(blank=True, default='')
+    # This implementation could need refactoring based on calendar implementation
+    user_journals = models.ManyToManyField(Journal, related_name="user_journals")
+    groups = models.ManyToManyField(Group, through='GroupMembership')
+
+    class Meta:
+        ordering = ['last_name', 'first_name']
+
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
+    def gravatar(self, size=120):
+        gravatar_object = Gravatar(self.email)
+        return gravatar_object.get_image(size=size, default='mp')
+
+    def mini_gravatar(self):
+        return self.gravatar(size=60)
+
+    def send_friend_request(self, user):
+        invitation, _ = FriendRequest.objects.get_or_create(user=user, sender=self)
+        return invitation
+
+    def accept_request(self, user):
+        request = self.invitations.filter(recipient=self, sender=user, status='Pending')
+        if not request:
+            return False
+        self.friends.add(user)
+        request.status = 'Accepted'
+        request.save()
+        return True
+
+    def reject_request(self, user):
+        request = self.invitations.filter(recipient=self, sender=user, status='Pending')
+        if not request:
+            return False
+        request.status = 'Rejected'
+        return True
