@@ -319,6 +319,7 @@ def calendar(request, year, month):
     cal = HTMLCalendar().formatmonth(year, month_number)
     now = datetime.now()
     current_year = now.year
+    current_month = now.month
     return render(request,
                 'calendar.html', {
                 "name": name,
@@ -327,6 +328,7 @@ def calendar(request, year, month):
                 "month_number": month_number,
                 "cal": cal,
                 "current_year": current_year,
+                "current_month": current_month,
                 }
                 )
             
