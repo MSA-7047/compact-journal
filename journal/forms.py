@@ -132,13 +132,13 @@ class EditJournalTitleForm(forms.ModelForm):
     
         class Meta:
             model = Journal
-            fields=['new_title']
+            fields=['journal_title']
 
         
 
         def save(self, commit=True):
             instance = super().save(commit=False)
-            instance.task_name = self.cleaned_data['new_title']
+            instance.task_name = self.cleaned_data['journal_title']
             if commit:
                 instance.save()
             return instance
@@ -147,13 +147,13 @@ class EditJournalDescriptionForm(forms.ModelForm):
     
         class Meta:
             model = Journal
-            fields=['new_description']
+            fields=['journal_description']
 
         
 
         def save(self, commit=True):
             instance = super().save(commit=False)
-            instance.task_name = self.cleaned_data['new_description']
+            instance.task_name = self.cleaned_data['journal_description']
             if commit:
                 instance.save()
             return instance
@@ -162,13 +162,13 @@ class EditJournalBioForm(forms.ModelForm):
     
         class Meta:
             model = Journal
-            fields=['new_bio']
+            fields=['journal_bio']
 
         
 
         def save(self, commit=True):
             instance = super().save(commit=False)
-            instance.task_name = self.cleaned_data['new_bio']
+            instance.task_name = self.cleaned_data['journal_bio']
             if commit:
                 instance.save()
             return instance

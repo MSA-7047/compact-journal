@@ -40,8 +40,8 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=50, blank=False)
     email = models.EmailField(unique=True, blank=False)
     friends = models.ManyToManyField('self',symmetrical=False, blank=True)
-    dob = models.DateField(null=True, blank=True)
-    bio = models.TextField(blank=True, default='')    # This implementation could need refactoring based on calendar implementation
+    dob = models.DateField(null=True, blank=True, default=None)
+    bio = models.TextField(blank=True, default='')    
     user_journals = models.ManyToManyField(Journal, related_name="user_journals")
 
 

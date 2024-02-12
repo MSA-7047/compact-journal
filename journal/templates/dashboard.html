@@ -1,6 +1,7 @@
 {% extends 'base_content.html' %}
 {% block content %}
 
+
 {% load static %}
 <!DOCTYPE html> 
 <html lang="en">
@@ -79,6 +80,18 @@
   </head>
 
   <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <h1>Welcome to your dashboard {{ user.username }}</h1>
+          <p>
+            <a href="{% url 'calendar' %}" class="btn btn-lg btn-secondary">
+              Calendar
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
     <div class="container2">
       <div class="header">Header</div>
       <div class="content-small">Content #1</div>
