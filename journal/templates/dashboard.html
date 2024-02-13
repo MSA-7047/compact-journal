@@ -83,19 +83,17 @@
     <div class="container">
       <div class="row">
         <div class="col-12">
-          <h1>Welcome to your dashboard {{ user.username }}</h1>
-          <p>
-            <a href="{% url 'calendar' year=current_year month=current_month%}" class="btn btn-lg btn-secondary">
-              Calendar
-            </a>
-          </p>
+          
         </div>
       </div>
     </div>
     <div class="container2">
-      <div class="header">Header</div>
+      <div class="header">
+        <h1>Welcome to your dashboard {{ user.username }}</h1>
+      </div>
       <div class="content-small">Content #1</div>
       <div class="content-large">
+        Today's Journal
         {% if todays_journal is None %}
           no journal
           <p>

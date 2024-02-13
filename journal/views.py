@@ -323,7 +323,7 @@ def ChangeJournalDescription(request, journalID):
         form = EditJournalTitleForm(instance=journal)
     return render(request, 'change_journal_description.html', {'form': form})
 
-def calendar_view(request, year, month):
+def calendar_view(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
     name = "Journaller"
     month = month.capitalize()
     month_number = list(calendar.month_name).index(month)
