@@ -85,7 +85,7 @@
         <div class="col-12">
           <h1>Welcome to your dashboard {{ user.username }}</h1>
           <p>
-            <a href="{% url 'calendar' %}" class="btn btn-lg btn-secondary">
+            <a href="{% url 'calendar' year=current_year month=current_month%}" class="btn btn-lg btn-secondary">
               Calendar
             </a>
           </p>
@@ -95,7 +95,25 @@
     <div class="container2">
       <div class="header">Header</div>
       <div class="content-small">Content #1</div>
-      <div class="content-large">Content #2a</div>
+      <div class="content-large">
+        {% if todays_journal is None %}
+          no journal
+          <p>
+            <a href="{% url 'create_journal_view'%}" class="btn btn-lg btn-secondary">
+              Create a Journal
+            </a>
+          </p>
+        {% else %}
+        <p>
+          {% for journal in todays_journal%}
+          Journal Title: {{ journal.journal_title }}
+          <br/>
+          Journal Description: {{ journal.journal_description }}
+          {% endfor %}
+        </p>
+        {% endif %}
+      </div>
+
       <div class="content-large">Content #2b</div>
       <div class="content-small">Content #3</div>
       <div class="content-small">Content #4</div>
