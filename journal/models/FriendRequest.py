@@ -16,6 +16,7 @@ class FriendRequest(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
 
     class Meta:
+        app_label = 'journal'
         unique_together = 'recipient', 'sender'
 
     def clean(self):

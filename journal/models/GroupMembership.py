@@ -10,4 +10,5 @@ class GroupMembership(models.Model):
     is_owner = models.BooleanField(blank=False, default=False)
 
     class Meta:
+        app_label = 'journal'
         unique_together = 'user', 'group'

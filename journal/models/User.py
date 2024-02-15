@@ -31,6 +31,7 @@ class User(AbstractUser):
     groups = models.ManyToManyField(Group, through='GroupMembership')
 
     class Meta:
+        app_label = 'journal'
         ordering = ['last_name', 'first_name']
 
     def full_name(self):

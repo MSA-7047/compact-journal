@@ -6,7 +6,7 @@ class Journal(models.Model):
     """Model to represent the Journals the User will be writing on."""
     journal_title = models.CharField(max_length=50, blank=False)
     journal_description = models.TextField(max_length=1_000)
-    journal_entry = models.TextField(max_length=10_000)
+    journal_bio = models.TextField(max_length=10_000)
     entry_date = models.DateTimeField(auto_now_add=True)
     MOOD_OPTIONS = [
         ("Sad", "Sad"),
@@ -16,3 +16,6 @@ class Journal(models.Model):
     ]
     journal_mood = models.CharField(choices=MOOD_OPTIONS, blank=False, max_length=7)
     journal_owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    class Meta:
+        app_label = 'journal'

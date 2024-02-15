@@ -10,11 +10,13 @@
         <div class="col-12">
             <h1>Your groups</h1>
             <div class="group-list">
-                {% for group in groups %}
-                <button class="btn btn-info">
-                    {{ group.name }}
-                </button>
-                {% endfor %}
+                {% if groups %}
+                    {% for group in groups.all %}
+                    <button class="btn btn-info">
+                        {{ group.name }}
+                    </button>
+                    {% endfor %}
+                {% endif %}
             </div>
             <a role="button" href="{% url 'create_group' %}" class="btn btn-success">Create Group +</a>
         </div>

@@ -17,9 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from journal import views
-
 from django.conf.urls.static import static
 from django.conf import settings
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
@@ -30,10 +30,10 @@ urlpatterns = [
     path('profile/', views.ProfileUpdateView.as_view(), name='profile'),
     path('view_profile/', views.ProfileView.as_view(), name='view_profile'),
     path('sign_up/', views.SignUpView.as_view(), name='sign_up'),
-    path('create_journal_view/', views.CreateJournalView.as_view(), name='create_journal_view'),
-    path('change_journal_bio/', views.ChangeJournalBio.as_view(), name='change_journal_bio'),
-    path('change_journal_description/', views.ChangeJournalDescription.as_view(), name='change_journal_description'),
-    path('change_journal_title/', views.ChangeJournalTitle.as_view(), name='change_journal_title'),
+    path('create_journal_view/', views.create_journal, name='create_journal_view'),
+    path('change_journal_bio/', views.ChangeJournalBio, name='change_journal_bio'),
+    path('change_journal_description/', views.ChangeJournalDescription, name='change_journal_description'),
+    path('change_journal_title/', views.ChangeJournalTitle, name='change_journal_title'),
     path('friend_requests/', views.view_friend_requests, name='view_friend_requests'),
     path('friends/', views.view_friends, name='friends'),
     path('send_friend_request/<int:user_id>', views.send_friend_request, name='send_request'),
@@ -41,6 +41,7 @@ urlpatterns = [
     path('friend_request/reject/<int:friend_request_id>', views.reject_invitation, name='reject_friend_request'),
     path('delete_sent_request/<int:friend_request_id>/', views.delete_sent_request, name='delete_sent_request'),
     path('remove_friend/<int:user_id>', views.remove_friend, name='remove_friend'),
+    path('calendar/', views.calendar, name='calendar'),
     path('groups/', views.group, name='groups'),
     path('create_group/', views.create_group, name='create_group')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

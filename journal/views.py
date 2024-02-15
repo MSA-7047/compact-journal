@@ -16,6 +16,9 @@ from journal.forms import (
 )
 from journal.helpers import login_prohibited
 from django.views.generic import DetailView
+import calendar
+from calendar import HTMLCalendar
+from datetime import datetime
 
 
 @login_required
@@ -23,7 +26,8 @@ def dashboard(request):
     """Display the current user's dashboard."""
 
     current_user = request.user
-    return render(request, 'dashboard.html', {'user': current_user})
+    user_groups = current_user.groups.all()
+    return render(request, 'dashboard.html', {'user': current_user, 'groups': user_groups})
 
 
 @login_prohibited
@@ -37,7 +41,7 @@ def home(request):
 def group(request) -> HttpResponse:
     """Display the list of groups the current user is in"""
     current_user = request.user
-    current_user_groups = current_user.groups
+    current_user_groups = current_user.groups.all()
     return render(request, 'group.html', {'user': current_user, 'groups': current_user_groups})
 
 
@@ -47,8 +51,8 @@ def create_group(request) -> HttpResponse:
     if request.method == 'POST':
         form = GroupForm(request.POST)
         if form.is_valid():
-            form.save(commit=True, )
-            return redirect('group')
+            form.save(commit=True, creator=request.user)
+            return redirect('groups')
     else:
         form = GroupForm()
 
@@ -61,20 +65,6 @@ def group(request) -> HttpResponse:
     current_user = request.user
     current_user_groups = current_user.groups
     return render(request, 'group.html', {'user': current_user, 'groups': current_user_groups})
-
-
-@login_required
-def create_group(request) -> HttpResponse:
-    """Display create group screen and handles create group form"""
-    if request.method == 'POST':
-        form = GroupForm(request.POST)
-        if form.is_valid():
-            form.save(commit=True, )
-            return redirect('group')
-    else:
-        form = GroupForm()
-
-    return render(request, 'create_group.html', {'form': form})
 
 
 class LoginProhibitedMixin:
@@ -376,3 +366,37 @@ def ChangeJournalDescription(request, journalID):
         form = EditJournalTitleForm(instance=journal)
     return render(request, 'change_journal_description.html', {'form': form})
 
+
+def calendar(request, year, month):
+    name = "Journaller"
+    month = month.capitalize()
+    month_number = list(calendar.month_name).index(month)
+    month_number = int(month_number)
+
+    cal = HTMLCalendar().formatmonth(year, month_number)
+    now = datetime.now()
+    current_year = now.year
+    current_month = now.month
+    return render(request,
+                'calendar.html', {
+                "name": name,
+                "year": year,
+                "month": month,
+                "month_number": month_number,
+                "cal": cal,
+                "current_year": current_year,
+                "current_month": current_month,
+                }
+                )
+
+
+
+
+    
+
+
+
+
+
+
+    
