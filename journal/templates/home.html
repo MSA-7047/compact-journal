@@ -37,19 +37,19 @@
 
       lax.addElements(".compact-text", {
         scrollY: {
-          translateX: [["elInY", "elOutY"], [0, "screenWidth-200"]]
+          translateX: [["elInY", "elOutY"], [0, "screenWidth-300"]]
         }
       });
 
       lax.addElements(".journal-text", {
         scrollY: {
-          translateX: [["elInY", "elOutY"], [0, "-screenWidth-200"]]
+          translateX: [["elInY", "elOutY"], [0, "-screenWidth-100"]]
         }
       });
 
       lax.addElements(".ccw-text", {
         scrollY: {
-          translateX: [["elInY", "elOutY"], [-400, "screenWidth+100"]],
+          translateX: [["elInY", "elOutY"], [-400, "screenWidth + 100"]],
           skewX: [["elInY", "elOutY"], [40, -40]],
         }
       });
@@ -112,7 +112,6 @@
       z-index: 100;
       pointer-events: all;
       cursor: pointer;
-      transform: translate3d(1e-05px, 1e-05px, 1e-05px) scale(1); 
       background-position: 211.263px 0px;
     }
 
@@ -125,8 +124,6 @@
       position: absolute;
     }
 
-
-
     .scrolldown {
       bottom: 90px;
       height: 40px;
@@ -135,25 +132,22 @@
       left: -100vw;
       font-size: 40px;
       text-align: center;
-      transform: translate3d(80px, 1e-05px, 1e-05px);
       letter-spacing: 150px;
       opacity: 0;
     }
 
     .compact-text {
-      font-size: 120px;
+      font-size: calc((60vw) / 7);
       position: absolute;
       left: 0;
       top: 10vh;
-      transform: translate3d(580px, 1e-05px, 1e-05px);
     }
 
     .journal-text {
-      font-size: 120px;
+      font-size: calc((60vw) / 7);
       position: absolute;
       right: 0;
       top: 30vh;
-      transform: translate3d(-980px, 1e-05px, 1e-05px);
     }
 
     .ccw-text {
@@ -162,11 +156,7 @@
       left: 0;
       height: 50px;
       font-size: 80px;
-      transform: translate3d(880px, 1e-05px, 1e-05px) skewX(-40deg);
     }
-
-
-  
 
     .bottom {
       margin-top: 400vh;
@@ -229,14 +219,20 @@
         animation: octocat-wave 560ms ease-in-out
       }
     }
+    /*
+    @media (max-width:1000px) {
+      .compact-text {
+        font-size: calc((75vw) / 7);
+      }
+
+      .journal-text {
+        font-size: calc((75vw) / 7);
+      }
+    }
+    */
   </style>
 </body>
 </html>
-
-
-
-
-
 
 
 
