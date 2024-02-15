@@ -20,9 +20,15 @@ from datetime import datetime
 @login_required
 def dashboard(request):
     """Display the current user's dashboard."""
+    today = datetime.now().date()
 
     current_user = request.user
-    return render(request, 'dashboard.html', {'user': current_user})
+    current_year = datetime.now().year
+    current_month = datetime.now().strftime("%B")
+    todays_journal = Journal.objects.filter(entry_date__date=today)
+
+    return render(request, 'dashboard.html', {'user': current_user, 'current_year': current_year, 'current_month': current_month, 'todays_journal': todays_journal or None})
+
 
 
 @login_prohibited
@@ -237,15 +243,21 @@ def remove_friend(request, user_id):
     return redirect('friends')
 @login_required    
 def CreateJournalView(request):
+    today = datetime.now().date()
+
+    current_user = request.user
+    current_year = datetime.now().year
+    current_month = datetime.now().strftime("%B")
+    todays_journal = Journal.objects.filter(entry_date__date=today)
     form = CreateJournalForm()
     current_user = request.user
     if (request.method == 'POST'):
         form = CreateJournalForm(request.POST)
         if (form.is_valid()):
-            journal_title = form.cleaned_data.get(label="journal_title")
-            journal_description = form.cleaned_data.get(label="journal_description")
-            journal_bio = form.cleaned_data.get(label="journal_bio")
-            journal_mood = form.cleaned_data.get(label="journal_mood")
+            journal_title = form.cleaned_data.get("journal_title")
+            journal_description = form.cleaned_data.get("journal_description")
+            journal_bio = form.cleaned_data.get("journal_bio")
+            journal_mood = form.cleaned_data.get("journal_mood")
             journal_owner = current_user
             journal = Journal.objects.create(
                 journal_title = journal_title, 
@@ -255,7 +267,8 @@ def CreateJournalView(request):
                 journal_owner = journal_owner
             )
             journal.save()
-            return render(request, 'dashboard.html', {'form': form})
+            
+            return render(request, 'dashboard.html', {'form': form, 'user': current_user, 'current_year': current_year, 'current_month': current_month, 'todays_journal': todays_journal or None})
         else:
             return render(request, 'create_journal_view.html', {'form': form})
     else:
@@ -310,7 +323,7 @@ def ChangeJournalDescription(request, journalID):
         form = EditJournalTitleForm(instance=journal)
     return render(request, 'change_journal_description.html', {'form': form})
 
-def calendar(request, year, month):
+def calendar_view(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
     name = "Journaller"
     month = month.capitalize()
     month_number = list(calendar.month_name).index(month)

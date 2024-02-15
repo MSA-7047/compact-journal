@@ -42,7 +42,7 @@ class User(AbstractUser):
     friends = models.ManyToManyField('self',symmetrical=False, blank=True)
     dob = models.DateField(null=True, blank=True, default=None)
     bio = models.TextField(blank=True, default='')    
-    user_journals = models.ManyToManyField(Journal, related_name="user_journals")
+    #user_journals = models.ManyToManyField(Journal, related_name="user_journals")
 
 
     class Meta:

@@ -39,5 +39,5 @@ urlpatterns = [
     path('friend_request/reject/<int:friend_request_id>', views.reject_invitation, name='reject_friend_request'),
     path('delete_sent_request/<int:friend_request_id>/', views.delete_sent_request, name='delete_sent_request'),
     path('remove_friend/<int:user_id>', views.remove_friend, name='remove_friend'),
-    path('calendar/', views.calendar, name='calendar'),
+    path('calendar/<int:year>/<str:month>/', views.calendar_view, name='calendar' )
 ]
