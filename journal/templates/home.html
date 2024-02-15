@@ -35,25 +35,43 @@
         }
       });
 
-      lax.addElements(".oooh", {
+      lax.addElements(".compact-text", {
         scrollY: {
           translateX: [["elInY", "elOutY"], [0, "screenWidth-200"]]
         }
       });
 
-      lax.addElements(".aaah", {
+      lax.addElements(".journal-text", {
         scrollY: {
           translateX: [["elInY", "elOutY"], [0, "-screenWidth-200"]]
         }
       });
 
-      lax.addElements(".wheee", {
+      lax.addElements(".ccw-text", {
         scrollY: {
           translateX: [["elInY", "elOutY"], [-400, "screenWidth+100"]],
           skewX: [["elInY", "elOutY"], [40, -40]],
         }
       });
 
+      lax.addElements(".bottombutton", {
+        scrollY: {
+          "background-position": [
+            ["elInY", "elOutY"],
+            [0, 400],
+            {
+              cssFn: function (val) {
+                return `${val}px 0`
+              }
+            }
+          ],
+          scale: [
+            ["elInY", "elCenterY"],
+            [3, 1],
+          ]
+        },
+
+      })
     }
   </script>
 
@@ -94,6 +112,8 @@
       z-index: 100;
       pointer-events: all;
       cursor: pointer;
+      transform: translate3d(1e-05px, 1e-05px, 1e-05px) scale(1); 
+      background-position: 211.263px 0px;
     }
 
     .bottombg {
@@ -115,28 +135,34 @@
       left: -100vw;
       font-size: 40px;
       text-align: center;
+      transform: translate3d(80px, 1e-05px, 1e-05px);
+      letter-spacing: 150px;
+      opacity: 0;
     }
 
-    .oooh {
+    .compact-text {
       font-size: 120px;
-      position: relative;
+      position: absolute;
       left: 0;
       top: 10vh;
+      transform: translate3d(580px, 1e-05px, 1e-05px);
     }
 
-    .aaah {
+    .journal-text {
       font-size: 120px;
       position: absolute;
       right: 0;
       top: 30vh;
+      transform: translate3d(-980px, 1e-05px, 1e-05px);
     }
 
-    .wheee {
+    .ccw-text {
       top: 230vh;
       position: absolute;
       left: 0;
       height: 50px;
       font-size: 80px;
+      transform: translate3d(880px, 1e-05px, 1e-05px) skewX(-40deg);
     }
 
 
@@ -150,17 +176,17 @@
 
 
 <body class="vsc-initialized">
-  <h1 class="oooh" style="transform: translate3d(580px, 1e-05px, 1e-05px);">Compact</h1>
-  <h1 class="aaah" style="transform: translate3d(-980px, 1e-05px, 1e-05px);">Journals</h1>
-  <h1 class="wheee" style="transform: translate3d(880px, 1e-05px, 1e-05px) skewX(-40deg);">By Compact Code Works!</h1>
+  <h1 class="compact-text">Compact</h1>
+  <h1 class="journal-text">Journals</h1>
+  <h1 class="ccw-text">By Compact Code Works!</h1>
 
-  <h2 class="scrolldown" style="transform: translate3d(80px, 1e-05px, 1e-05px); letter-spacing: 150px; opacity: 0;">scroll down</h2>
+  <h2 class="scrolldown">scroll down</h2>
 
 
   <div class="bottombg"></div>
 
   <a href="https://github.com/alexfoxy/lax.js">
-    <div class="bottombutton" style="transform: translate3d(1e-05px, 1e-05px, 1e-05px) scale(1); background-position: 211.263px 0px;">
+    <div class="bottombutton">
       Get lax.js
     </div>
   </a>
@@ -204,4 +230,42 @@
       }
     }
   </style>
-</body></html>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+{% extends 'base.html' %}
+{% block body %}
+  <div class="container vh-100">
+    <div class="row h-100">
+      <div class="col-12 my-auto">
+        <div class="card cover-card offset-sm-2 offset-md-4 offset-lg-7">
+          <h1 class="cover-heading">Task Manager</h1>
+          <p class="cover-text">A task manager application by Team <i>Insert team name here (or revise this home screen as you see fit)</i></p>
+          <p>
+            <a href='{% url 'sign_up' %}' class="btn btn-lg btn-secondary">
+              Sign up
+            </a>
+          </p>
+          <p>
+            <a href='{% url 'log_in' %}' class="btn btn-lg btn-secondary">
+              Log in
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+-->
