@@ -38,7 +38,10 @@ class User(AbstractUser):
     friends = models.ManyToManyField('self',symmetrical=False, blank=True)
     dob = models.DateField(null=True, blank=True)
     bio = models.TextField(blank=True, default='')    # This implementation could need refactoring based on calendar implementation
+    location = models.CharField(max_length=50, blank=False)
     nationality = CountryField()
+    date_joined = models.DateTimeField(auto_now_add=True)
+
     user_journals = models.ManyToManyField(Journal, related_name="user_journals")
 
 

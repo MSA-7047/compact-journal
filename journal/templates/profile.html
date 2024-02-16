@@ -10,9 +10,6 @@
         </p>
       </div>
       <form action="{% url 'profile' %}" method="post">
-        {% if field.name == 'nationality' %}
-            <img src="https://www.countryflags.io/{{ form.instance.nationality }}/flat/64.png" alt="{{ form.instance.nationality }}">
-        {% endif %}
 
         {% csrf_token %}
         {% include 'partials/bootstrap_form.html' with form=form %}

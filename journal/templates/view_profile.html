@@ -13,7 +13,9 @@
         <p>Email: {{ user.email }}</p>
         <p>Date of Birth: {{ user.dob }}</p>
         <p>Bio: {{ user.bio }}</p>
-        <p>Nationality: {{ user.nationality }}</p>
+        <p>Location: {{ user.location }}</p>
+        <p>Nationality: <img src="https://flagsapi.com/{{ user.nationality }}/flat/32.png" alt="{{ user.nationality }}"></p>    
+        <p>Join Date: {{ user.date_joined }}</p>
     </div>
   </div>
 </div>

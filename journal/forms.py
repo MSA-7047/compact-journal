@@ -28,7 +28,7 @@ class UserForm(forms.ModelForm):
         """Form options."""
 
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email', 'dob', 'bio', 'nationality']
+        fields = ['first_name', 'last_name', 'username', 'email', 'dob', 'bio', 'location', 'nationality']
 
         labels = {
         'dob': 'Date of Birth',
@@ -36,10 +36,6 @@ class UserForm(forms.ModelForm):
 
         widgets = {
             'dob': forms.DateInput(attrs={'type': 'date'}),
-            'nationality': CountrySelectWidget(
-                layout='flags',  # Use layout='flags' to display flags
-                attrs={'class': 'custom-country-select'},  # Add any additional styling classes if needed
-            ),
         }
 
 class NewPasswordMixin(forms.Form):
