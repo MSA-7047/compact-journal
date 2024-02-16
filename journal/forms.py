@@ -3,6 +3,7 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
 from .models import User, Journal
+from django_countries.widgets import CountrySelectWidget
 
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
@@ -27,10 +28,11 @@ class UserForm(forms.ModelForm):
         """Form options."""
 
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email', 'dob', 'bio']
+        fields = ['first_name', 'last_name', 'username', 'email', 'dob', 'bio', 'location', 'nationality']
 
         labels = {
-        'dob': 'Date of Birth'}
+        'dob': 'Date of Birth',
+        'nationality': 'Nationality'}
 
         widgets = {
             'dob': forms.DateInput(attrs={'type': 'date'}),

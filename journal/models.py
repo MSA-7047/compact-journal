@@ -2,6 +2,7 @@ from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from libgravatar import Gravatar
+from django_countries.fields import CountryField
 from django.conf import settings
 
 class Journal(models.Model):
@@ -23,8 +24,6 @@ class Journal(models.Model):
 
 
 
-
-
 class User(AbstractUser):
     """Model used for user authentication, and team member related information."""
 
@@ -40,8 +39,12 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=50, blank=False)
     email = models.EmailField(unique=True, blank=False)
     friends = models.ManyToManyField('self',symmetrical=False, blank=True)
-    dob = models.DateField(null=True, blank=True, default=None)
-    bio = models.TextField(blank=True, default='')    
+    dob = models.DateField(null=True, blank=True)
+    bio = models.TextField(blank=True, default='')    # This implementation could need refactoring based on calendar implementation
+    location = models.CharField(max_length=50, blank=False)
+    nationality = CountryField()
+    date_joined = models.DateTimeField(auto_now_add=True)
+
     #user_journals = models.ManyToManyField(Journal, related_name="user_journals")
 
 
