@@ -125,6 +125,55 @@ class CreateJournalForm(forms.ModelForm):
     journal_description = forms.CharField(label="Description")
     journal_bio = forms.CharField(label="Bio")
     journal_mood = forms.CharField(label="Mood")
+
     class Meta:
         model = Journal
         fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood']
+
+class EditJournalTitleForm(forms.ModelForm):
+    
+        class Meta:
+            model = Journal
+            fields=['journal_title']
+
+        
+
+        def save(self, commit=True):
+            instance = super().save(commit=False)
+            instance.task_name = self.cleaned_data['journal_title']
+            if commit:
+                instance.save()
+            return instance
+
+class EditJournalDescriptionForm(forms.ModelForm):
+    
+        class Meta:
+            model = Journal
+            fields=['journal_description']
+
+        
+
+        def save(self, commit=True):
+            instance = super().save(commit=False)
+            instance.task_name = self.cleaned_data['journal_description']
+            if commit:
+                instance.save()
+            return instance
+        
+class EditJournalBioForm(forms.ModelForm):
+    
+        class Meta:
+            model = Journal
+            fields=['journal_bio']
+
+        
+
+        def save(self, commit=True):
+            instance = super().save(commit=False)
+            instance.task_name = self.cleaned_data['journal_bio']
+            if commit:
+                instance.save()
+            return instance
+    
+
+
