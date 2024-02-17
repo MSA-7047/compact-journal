@@ -2,6 +2,7 @@ from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from libgravatar import Gravatar
+from django_countries.fields import CountryField
 from .Group import Group
 from .Journal import Journal
 from .FriendRequest import FriendRequest
@@ -27,8 +28,10 @@ class User(AbstractUser):
     dob = models.DateField(null=True, blank=True)
     bio = models.TextField(blank=True, default='')
     # This implementation could need refactoring based on calendar implementation
-    user_journals = models.ManyToManyField(Journal, related_name="user_journals")
     groups = models.ManyToManyField(Group, through='GroupMembership')
+    location = models.CharField(max_length=50, blank=False)
+    nationality = CountryField()
+    date_joined = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         app_label = 'journal'
