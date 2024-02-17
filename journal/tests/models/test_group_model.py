@@ -10,6 +10,23 @@ class GroupMembershipTestCase(TestCase):
         self.user2 = User.objects.create(username="@test_user2", password='Password123', email="test2@hotmail.com")
         self.membership2 = GroupMembership.objects.create(user=self.user2, group=self.group)
 
+    def test_group_is_valid(self):
+        self.assertTrue(self.group._assert_group_is_valid())
+    
+    def test_invalid_group_is_rejected(self):
+        self.group.name = "asdmoafnsakfajsf aj3j412j12nj312 1"
+        with self.assertRaises(AssertionError):
+            self.group._assert_group_is_valid()
+
+    def test_group_name_accepted_with_30_characters(self):
+        self.group.name = 'x' * 30
+        self.assertTrue(self.group._assert_group_is_valid())
+
+    def test_group_name_rejected_with_more_than_30_characters(self):
+        self.group.name = 'x' * 31
+        with self.assertRaises(AssertionError):
+            self.group._assert_group_is_valid()
+    
     def test_is_user_member(self):
         self.assertTrue(self.group.is_user_member(self.user))
 
