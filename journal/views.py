@@ -267,62 +267,68 @@ def CreateJournalView(request):
                 journal_owner = journal_owner
             )
             journal.save()
-            
-            return render(request, 'dashboard.html', {'form': form, 'user': current_user, 'current_year': current_year, 'current_month': current_month, 'todays_journal': todays_journal or None})
+            #old render that would stick on create journal view after creating journal, thus repeating entry when reloaded
+            #return render(request, 'dashboard.html', {'form': form, 'user': current_user, 'current_year': current_year, 'current_month': current_month, 'todays_journal': todays_journal or None})
+            return redirect('/dashboard/')
         else:
             return render(request, 'create_journal_view.html', {'form': form})
     else:
         return render(request, 'create_journal_view.html', {'form': form})
 
+    
 @login_required
 def ChangeJournalTitle(request, journalID):
     journal = get_object_or_404(Journal, id=journalID)
+    
     if request.method == 'POST':
         form = EditJournalTitleForm(request.POST, instance=journal)
         if form.is_valid():
-            new_title = form.cleaned_data['new_title']
-            Journal.objects.filter(id=journalID).update(journal_title=new_title)
-            return redirect(request, 'dashboard.html')
-        else:
-            return render(request, 'change_journal_title.html', {'form': form})
-
+            new_title = form.cleaned_data['journal_title']
+            journal.journal_title = new_title
+            journal.save()
+            return redirect('all_entries')
     else:
         form = EditJournalTitleForm(instance=journal)
-    return render(request, 'change_journal_title.html', {'form': form})
+    
+    return render(request, 'change_journal_title.html', {'form': form, 'journal': journal})
+
+
 
 @login_required
 def ChangeJournalBio(request, journalID):
     journal = get_object_or_404(Journal, id=journalID)
+    
     if request.method == 'POST':
         form = EditJournalBioForm(request.POST, instance=journal)
         if form.is_valid():
-            new_bio = form.cleaned_data['new_bio']
-            Journal.objects.filter(id=journalID).update(journal_bio=new_bio)
-            return redirect(request, 'dashboard.html')
-        else:
-            return render(request, 'change_journal_bio.html', {'form': form})
-
+            new_bio = form.cleaned_data['journal_bio']
+            journal.journal_bio = new_bio
+            journal.save()
+            return redirect('all_entries')
     else:
         form = EditJournalBioForm(instance=journal)
-    return render(request, 'change_journal_bio.html', {'form': form})
+    
+    return render(request, 'change_journal_bio.html', {'form': form, 'journal': journal})
 
 
+    
 @login_required
 def ChangeJournalDescription(request, journalID):
     journal = get_object_or_404(Journal, id=journalID)
+    
     if request.method == 'POST':
-        form = EditJournalTitleForm(request.POST, instance=journal)
+        form = EditJournalDescriptionForm(request.POST, instance=journal)
         if form.is_valid():
-            new_description = form.cleaned_data['new_description']
-            Journal.objects.filter(id=journalID).update(journal_title=new_description)
-            return redirect(request, 'dashboard.html')
-        else:
-            return render(request, 'change_journal_description.html', {'form': form})
-
+            new_description = form.cleaned_data['journal_description']
+            journal.journal_description = new_description
+            journal.save()
+            return redirect('all_entries')
     else:
-        form = EditJournalTitleForm(instance=journal)
-    return render(request, 'change_journal_description.html', {'form': form})
+        form = EditJournalDescriptionForm(instance=journal)
+    
+    return render(request, 'change_journal_description.html', {'form': form, 'journal': journal})
 
+@login_required
 def calendar_view(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
     name = "Journaller"
     month = month.capitalize()
@@ -344,6 +350,15 @@ def calendar_view(request, year=datetime.now().year, month=datetime.now().strfti
                 "current_month": current_month,
                 }
                 )
+
+@login_required
+def all_journal_entries_view(request):
+    current_user = request.user
+    # current_year = datetime.now().year
+    # current_month = datetime.now().strftime("%B")
+    journal_existence = Journal.objects.filter(journal_title__isnull=False)
+    return render(request, 'all_entries.html', { 'user': current_user,  'journal_existence': journal_existence or False})
+
             
 
 

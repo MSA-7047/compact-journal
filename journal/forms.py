@@ -138,7 +138,7 @@ class EditJournalTitleForm(forms.ModelForm):
 
         def save(self, commit=True):
             instance = super().save(commit=False)
-            instance.task_name = self.cleaned_data['journal_title']
+            instance.journal_title = self.cleaned_data['journal_title']
             if commit:
                 instance.save()
             return instance
