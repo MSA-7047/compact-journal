@@ -159,9 +159,6 @@ class SendFriendRequestForm(forms.Form):
             self.fields['recipient'].queryset = User.objects.exclude(username=currentUser.username)
 
 
-    
-
-
 class CreateJournalForm(forms.ModelForm):
     journal_title = forms.CharField(label="Title")
     journal_description = forms.CharField(label="Description")
@@ -216,6 +213,9 @@ class EditJournalBioForm(forms.ModelForm):
         return instance
     
 
-
 class SendGroupRequestForm(forms.Form):
-    user = forms.ModelChoiceField(queryset=User.objects.all(), label='Select User')
+    recipient = forms.ModelChoiceField(queryset=User.objects.all(), label='Select User')
+    def __init__(self, *args, currentUser=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if currentUser is not None:
+            self.fields['recipient'].queryset = User.objects.exclude(username=currentUser.username)

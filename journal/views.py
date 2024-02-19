@@ -9,10 +9,10 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
-from journal.models import Group, GroupMembership, Journal, FriendRequest, User
+from journal.models import Group, GroupMembership, Journal, FriendRequest, User, GroupRequest
 from journal.forms import (
-    LogInForm, PasswordForm, UserForm, SignUpForm, CreateJournalForm, SendFriendRequestForm, GroupForm,
-    EditJournalBioForm, EditJournalDescriptionForm, EditJournalTitleForm
+    LogInForm, PasswordForm, UserForm, SignUpForm, CreateJournalForm, SendFriendRequestForm, GroupForm, 
+    SendGroupRequestForm, EditJournalBioForm, EditJournalDescriptionForm, EditJournalTitleForm
 )
 from journal.helpers import login_prohibited
 from django.views.generic import DetailView
@@ -396,7 +396,6 @@ def ChangeJournalDescription(request, journalID):
     return render(request, 'change_journal_description.html', {'form': form, 'journal': journal})
 
 @login_required
-
 def calendar_view(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
     name = "Journaller"
     month = month.capitalize()
@@ -426,11 +425,11 @@ def all_journal_entries_view(request):
     # current_month = datetime.now().strftime("%B")
     journal_existence = Journal.objects.filter(journal_title__isnull=False)
     return render(request, 'all_entries.html', { 'user': current_user,  'journal_existence': journal_existence or False})
-    
+
+@login_required
 def edit_group(request, group_id):
     """Allows owner of the group to edit the group."""    
     group = get_object_or_404(Group, pk=group_id)
-
     if request.user == group.owner:
         if request.method == 'POST':
             form = GroupForm(request.POST, instance=group)
@@ -445,3 +444,49 @@ def edit_group(request, group_id):
     else:
         # User is not the owner, return forbidden response
         return HttpResponseForbidden('You are not authorized to edit this group')
+
+@login_required
+def send_group_request(request):
+    if request.method == 'POST':
+        form = SendGroupRequestForm(request.POST, currentUser=request.user)
+        if form.is_valid():
+            recipient = form.cleaned_data['recipient']
+            # Create GroupRequest instance
+            GroupRequest.objects.create(sender=request.user, recipient=recipient)
+            # Redirect to success page or home page
+            return redirect('home') 
+    else:
+        form = SendGroupRequestForm(currentUser=request.user)
+    return render(request, 'send_group_request.html', {'form': form})
+
+@login_required
+def accept_group_invitation(request, group_request_id): 
+    group_request = get_object_or_404(GroupRequest, id=group_request_id, recipient=request.user, is_accepted=False)
+
+    # Add the user to the team and mark the invitation as accepted
+    group_request.recipient.friends.add(group_request.sender)
+    group_request.sender.friends.add(group_request.recipient)
+    group_request.is_accepted = True
+    group_request.status = 'accepted'
+
+    group_request.save()
+    #invitation.delete()
+
+    return redirect('group')
+
+@login_required
+def reject_invitation(request, group_request_id):
+    group_request = get_object_or_404(GroupRequest, id=group_request_id, recipient=request.user, is_accepted=False)
+    group_request.status =  'rejected'
+    group_request.save()
+    #invitation.delete()
+
+    return redirect('group')
+
+
+
+@login_required
+def delete_sent_request(request, friend_request_id):
+    group_request = get_object_or_404(GroupRequest, id=group_request_id, recipient=request.user, is_accepted=False)
+    group_request.delete()
+    return redirect('group')
