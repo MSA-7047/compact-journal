@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
 from .models import User, Group, GroupMembership, Journal
 from django_countries.widgets import CountrySelectWidget
+from django.core.exceptions import ValidationError
 
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
@@ -149,7 +150,16 @@ class GroupForm(forms.ModelForm):
 
 
 class SendFriendRequestForm(forms.Form):
-    user = forms.ModelChoiceField(queryset=User.objects.all(), label='Select User')
+
+    recipient = forms.ModelChoiceField(queryset=User.objects.all(), label='Select User')
+
+    def __init__(self, *args, currentUser=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if currentUser is not None:
+            self.fields['recipient'].queryset = User.objects.exclude(username=currentUser.username)
+
+
+    
 
 
 class CreateJournalForm(forms.ModelForm):

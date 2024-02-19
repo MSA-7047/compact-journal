@@ -247,13 +247,13 @@ def send_friend_request(request, user_id):
     friends = user.friends.all()
 
     if request.method == 'POST':
-        form = SendFriendRequestForm(request.POST)
+        form = SendFriendRequestForm(request.POST, currentUser=request.user)
         if form.is_valid():
-            user = form.cleaned_data['user']
+            user = form.cleaned_data['recipient']
             FriendRequest.objects.get_or_create(recipient=user, sender=request.user, status='pending')
             return redirect('send_request', user_id=user_id)
     else:
-        form = SendFriendRequestForm()
+        form = SendFriendRequestForm(currentUser=request.user)
 
     return render(request, 'friends.html', {'add_member_form': form, "user": user, "friends": friends})
 
@@ -278,7 +278,7 @@ def accept_invitation(request, friend_request_id):
 
 @login_required
 def reject_invitation(request, friend_request_id):
-    friend_request = get_object_or_404(FriendRequest, id=friend_request_id, user=request.user, is_accepted=False)
+    friend_request = get_object_or_404(FriendRequest, id=friend_request_id, recipient=request.user, is_accepted=False)
 
     friend_request.status =  'rejected'
     friend_request.save()
