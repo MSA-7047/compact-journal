@@ -1,0 +1,25 @@
+
+{% extends 'base_content.html' %}
+{% block content %}
+{% load static %}
+
+<link href="{% static 'custom.css' %}" rel="stylesheet" type="text/css">
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1>Your groups</h1>
+            <div class="group-list">
+                {% if groups %}
+                    {% for group in groups.all %}
+                    <button class="btn btn-info">
+                        {{ group.name }}
+                    </button>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <a role="button" href="{% url 'create_group' %}" class="btn btn-success">Create Group +</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

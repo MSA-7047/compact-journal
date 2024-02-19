@@ -2,7 +2,7 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
-from .models import User, Journal
+from .models import User, Group, GroupMembership, Journal
 from django_countries.widgets import CountrySelectWidget
 
 class LogInForm(forms.Form):
@@ -21,6 +21,7 @@ class LogInForm(forms.Form):
             user = authenticate(username=username, password=password)
         return user
 
+
 class UserForm(forms.ModelForm):
     """Form to update user profiles."""
 
@@ -28,11 +29,21 @@ class UserForm(forms.ModelForm):
         """Form options."""
 
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email', 'dob', 'bio', 'location', 'nationality']
+        fields = [
+            'first_name',
+            'last_name',
+            'username',
+            'email',
+            'dob',
+            'bio',
+            'location',
+            'nationality'
+        ]
 
         labels = {
-        'dob': 'Date of Birth',
-        'nationality': 'Nationality'}
+            'dob': 'Date of Birth',
+            'nationality': 'Nationality'
+        }
 
         widgets = {
             'dob': forms.DateInput(attrs={'type': 'date'}),
@@ -116,9 +127,30 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
             password=self.cleaned_data.get('new_password'),
         )
         return user
-    
+
+
+class GroupForm(forms.ModelForm):
+    """Form allowing the user to create a group"""
+
+    class Meta:
+        model = Group
+        fields = ['name']
+
+    def save(self, commit=True, creator=None):
+        group_instance = super().save(commit=False)
+        if commit and not group_instance.pk:
+            group_instance.save()
+            GroupMembership.objects.create(
+                user=creator,
+                group=group_instance,
+                is_owner=True
+            )
+        return group_instance
+
+
 class SendFriendRequestForm(forms.Form):
     user = forms.ModelChoiceField(queryset=User.objects.all(), label='Select User')
+
 
 class CreateJournalForm(forms.ModelForm):
     journal_title = forms.CharField(label="Title")
@@ -130,50 +162,47 @@ class CreateJournalForm(forms.ModelForm):
         model = Journal
         fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood']
 
+
 class EditJournalTitleForm(forms.ModelForm):
     
-        class Meta:
-            model = Journal
-            fields=['journal_title']
+    class Meta:
+        model = Journal
+        fields = ['journal_title']
 
-        
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.task_name = self.cleaned_data['journal_title']
+        if commit:
+            instance.save()
+        return instance
 
-        def save(self, commit=True):
-            instance = super().save(commit=False)
-            instance.task_name = self.cleaned_data['journal_title']
-            if commit:
-                instance.save()
-            return instance
 
 class EditJournalDescriptionForm(forms.ModelForm):
     
-        class Meta:
-            model = Journal
-            fields=['journal_description']
+    class Meta:
+        model = Journal
+        fields=['journal_description']
 
-        
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.task_name = self.cleaned_data['journal_description']
+        if commit:
+            instance.save()
+        return instance
 
-        def save(self, commit=True):
-            instance = super().save(commit=False)
-            instance.task_name = self.cleaned_data['journal_description']
-            if commit:
-                instance.save()
-            return instance
-        
+
 class EditJournalBioForm(forms.ModelForm):
     
-        class Meta:
-            model = Journal
-            fields=['journal_bio']
+    class Meta:
+        model = Journal
+        fields = ['journal_bio']
 
-        
-
-        def save(self, commit=True):
-            instance = super().save(commit=False)
-            instance.task_name = self.cleaned_data['journal_bio']
-            if commit:
-                instance.save()
-            return instance
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.task_name = self.cleaned_data['journal_bio']
+        if commit:
+            instance.save()
+        return instance
     
 
 

@@ -101,6 +101,18 @@ h3.profile-title {
   font-style: italic;
 }
 
+/**
+ * Buttons
+ */
+.create-button {
+    /* Your styles here */
+    background-color: #4CAF50; /* Green */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
 
 /*
  * Hyperlinks
