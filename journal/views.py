@@ -223,7 +223,7 @@ class SignUpView(LoginProhibitedMixin, FormView):
 
 @login_required
 def view_friend_requests(request):
-    requests = FriendRequest.objects.filter(user=request.user, is_accepted=False)
+    requests = FriendRequest.objects.filter(recipient=request.user, is_accepted=False)
 
     sent_pending_invitations = request.user.sent_invitations.filter(status='pending')
     sent_accepted_invitations = request.user.sent_invitations.filter(status='accepted')
@@ -250,7 +250,7 @@ def send_friend_request(request, user_id):
         form = SendFriendRequestForm(request.POST)
         if form.is_valid():
             user = form.cleaned_data['user']
-            FriendRequest.objects.get_or_create(user=user, sender=request.user, status='pending')
+            FriendRequest.objects.get_or_create(recipient=user, sender=request.user, status='pending')
             return redirect('send_request', user_id=user_id)
     else:
         form = SendFriendRequestForm()
