@@ -4,14 +4,18 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ImproperlyConfigured
+from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
-from journal.forms import LogInForm, PasswordForm, UserForm, SignUpForm, CreateJournalForm, SendFriendRequestForm, EditJournalBioForm, EditJournalDescriptionForm, EditJournalTitleForm
+from journal.models import Group, GroupMembership, Journal, FriendRequest, User
+from journal.forms import (
+    LogInForm, PasswordForm, UserForm, SignUpForm, CreateJournalForm, SendFriendRequestForm, GroupForm,
+    EditJournalBioForm, EditJournalDescriptionForm, EditJournalTitleForm
+)
 from journal.helpers import login_prohibited
 from django.views.generic import DetailView
-from .models import Journal, FriendRequest, User
 import calendar
 from calendar import HTMLCalendar
 from datetime import datetime
@@ -23,12 +27,22 @@ def dashboard(request):
     today = datetime.now().date()
 
     current_user = request.user
+    user_groups = current_user.groups.all()
+
     current_year = datetime.now().year
     current_month = datetime.now().strftime("%B")
     todays_journal = Journal.objects.filter(entry_date__date=today)
 
-    return render(request, 'dashboard.html', {'user': current_user, 'current_year': current_year, 'current_month': current_month, 'todays_journal': todays_journal or None})
-
+    return render(
+        request,
+        'dashboard.html',
+        {
+            'user': current_user,
+            'groups': user_groups,
+            'current_year': current_year, 'current_month': current_month,
+            'todays_journal': todays_journal or None
+        }
+    )
 
 
 @login_prohibited
@@ -36,6 +50,36 @@ def home(request):
     """Display the application's start/home screen."""
 
     return render(request, 'home.html')
+
+
+@login_required
+def group(request) -> HttpResponse:
+    """Display the list of groups the current user is in"""
+    current_user = request.user
+    current_user_groups = current_user.groups.all()
+    return render(request, 'group.html', {'user': current_user, 'groups': current_user_groups})
+
+
+@login_required
+def create_group(request) -> HttpResponse:
+    """Display create group screen and handles create group form"""
+    if request.method == 'POST':
+        form = GroupForm(request.POST)
+        if form.is_valid():
+            form.save(commit=True, creator=request.user)
+            return redirect('groups')
+    else:
+        form = GroupForm()
+
+    return render(request, 'create_group.html', {'form': form})
+
+
+@login_required
+def group(request) -> HttpResponse:
+    """Display the list of groups the current user is in"""
+    current_user = request.user
+    current_user_groups = current_user.groups
+    return render(request, 'group.html', {'user': current_user, 'groups': current_user_groups})
 
 
 class LoginProhibitedMixin:
@@ -129,6 +173,8 @@ class PasswordView(LoginRequiredMixin, FormView):
         messages.add_message(self.request, messages.SUCCESS, "Password updated!")
         return reverse('dashboard')
 
+
+
 class ProfileView(LoginRequiredMixin, DetailView):
     """Display user profile screen"""
 
@@ -138,6 +184,8 @@ class ProfileView(LoginRequiredMixin, DetailView):
         """Return the object (user) to be updated."""
         user = self.request.user
         return user
+
+
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     """Display user profile editing screen, and handle profile modifications."""
@@ -171,7 +219,8 @@ class SignUpView(LoginProhibitedMixin, FormView):
 
     def get_success_url(self):
         return reverse(settings.REDIRECT_URL_WHEN_LOGGED_IN)
-    
+
+
 @login_required
 def view_friend_requests(request):
     requests = FriendRequest.objects.filter(user=request.user, is_accepted=False)
@@ -182,11 +231,15 @@ def view_friend_requests(request):
 
     return render(request, 'friend_requests.html', {'requests': requests, 'sent_pending_invitations': sent_pending_invitations, 'sent_accepted_invitations': sent_accepted_invitations, 'sent_rejected_invitations': sent_rejected_invitations})
 
+
+
 @login_required
 def view_friends(request):
     user = request.user
     friends = user.friends.all()
     return render(request, 'friends.html', {"friends": friends})
+
+
 
 @login_required
 def send_friend_request(request, user_id):
@@ -204,6 +257,8 @@ def send_friend_request(request, user_id):
 
     return render(request, 'friends.html', {'add_member_form': form, "user": user, "friends": friends})
 
+
+
 @login_required
 def accept_invitation(request, friend_request_id):
     friend_request = get_object_or_404(FriendRequest, id=friend_request_id, user=request.user, is_accepted=False)
@@ -219,6 +274,8 @@ def accept_invitation(request, friend_request_id):
 
     return redirect('view_friend_requests')
 
+
+
 @login_required
 def reject_invitation(request, friend_request_id):
     friend_request = get_object_or_404(FriendRequest, id=friend_request_id, user=request.user, is_accepted=False)
@@ -229,11 +286,15 @@ def reject_invitation(request, friend_request_id):
 
     return redirect('view_friend_requests')
 
+
+
 @login_required
 def delete_sent_request(request, friend_request_id):
     friend_request = get_object_or_404(FriendRequest, id=friend_request_id, sender=request.user)
     friend_request.delete()
     return redirect('view_friend_requests')
+
+
 
 @login_required
 def remove_friend(request, user_id):
@@ -241,8 +302,10 @@ def remove_friend(request, user_id):
     request.user.friends.remove(friend)
     friend.friends.remove(request.user)
     return redirect('friends')
+
+
 @login_required    
-def CreateJournalView(request):
+def create_journal(request):
     today = datetime.now().date()
 
     current_user = request.user
@@ -260,22 +323,31 @@ def CreateJournalView(request):
             journal_mood = form.cleaned_data.get("journal_mood")
             journal_owner = current_user
             journal = Journal.objects.create(
-                journal_title = journal_title, 
-                journal_description = journal_description, 
-                journal_bio = journal_bio, 
-                journal_mood = journal_mood, 
+                journal_title = journal_title,
+                journal_description = journal_description,
+                journal_bio = journal_bio,
+                journal_mood = journal_mood,
                 journal_owner = journal_owner
             )
             journal.save()
+<<<<<<< HEAD
             #old render that would stick on create journal view after creating journal, thus repeating entry when reloaded
             #return render(request, 'dashboard.html', {'form': form, 'user': current_user, 'current_year': current_year, 'current_month': current_month, 'todays_journal': todays_journal or None})
             return redirect('/dashboard/')
+=======
+
+            return render(request, 'dashboard.html', {'form': form, 'user': current_user, 'current_year': current_year, 'current_month': current_month, 'todays_journal': todays_journal or None})
+>>>>>>> main
         else:
             return render(request, 'create_journal_view.html', {'form': form})
     else:
         return render(request, 'create_journal_view.html', {'form': form})
 
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> main
 @login_required
 def ChangeJournalTitle(request, journalID):
     journal = get_object_or_404(Journal, id=journalID)
@@ -291,6 +363,7 @@ def ChangeJournalTitle(request, journalID):
         form = EditJournalTitleForm(instance=journal)
     
     return render(request, 'change_journal_title.html', {'form': form, 'journal': journal})
+
 
 
 
@@ -328,7 +401,11 @@ def ChangeJournalDescription(request, journalID):
     
     return render(request, 'change_journal_description.html', {'form': form, 'journal': journal})
 
+<<<<<<< HEAD
 @login_required
+=======
+
+>>>>>>> main
 def calendar_view(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
     name = "Journaller"
     month = month.capitalize()
@@ -351,6 +428,7 @@ def calendar_view(request, year=datetime.now().year, month=datetime.now().strfti
                 }
                 )
 
+<<<<<<< HEAD
 @login_required
 def all_journal_entries_view(request):
     current_user = request.user
@@ -360,6 +438,8 @@ def all_journal_entries_view(request):
     return render(request, 'all_entries.html', { 'user': current_user,  'journal_existence': journal_existence or False})
 
             
+=======
+>>>>>>> main
 
 
 
