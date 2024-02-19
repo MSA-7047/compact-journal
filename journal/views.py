@@ -247,13 +247,13 @@ def send_friend_request(request, user_id):
     friends = user.friends.all()
 
     if request.method == 'POST':
-        form = SendFriendRequestForm(request.POST)
+        form = SendFriendRequestForm(request.POST, currentUser=request.user)
         if form.is_valid():
-            user = form.cleaned_data['user']
+            user = form.cleaned_data['recipient']
             FriendRequest.objects.get_or_create(recipient=user, sender=request.user, status='pending')
             return redirect('send_request', user_id=user_id)
     else:
-        form = SendFriendRequestForm()
+        form = SendFriendRequestForm(currentUser=request.user)
 
     return render(request, 'friends.html', {'add_member_form': form, "user": user, "friends": friends})
 
