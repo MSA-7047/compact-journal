@@ -10,10 +10,12 @@ class FriendRequest(models.Model):
         ('Accepted', 'Accepted'),
         ('Rejected', 'Rejected')
     ]
+    
     recipient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='invitations')
     sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='sent_invitations')
     creation_date = models.DateField(auto_now=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
+    is_accepted = models.BooleanField(default=False)
 
     class Meta:
         app_label = 'journal'

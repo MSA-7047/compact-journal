@@ -330,24 +330,18 @@ def create_journal(request):
                 journal_owner = journal_owner
             )
             journal.save()
-<<<<<<< HEAD
             #old render that would stick on create journal view after creating journal, thus repeating entry when reloaded
             #return render(request, 'dashboard.html', {'form': form, 'user': current_user, 'current_year': current_year, 'current_month': current_month, 'todays_journal': todays_journal or None})
             return redirect('/dashboard/')
-=======
 
             return render(request, 'dashboard.html', {'form': form, 'user': current_user, 'current_year': current_year, 'current_month': current_month, 'todays_journal': todays_journal or None})
->>>>>>> main
         else:
             return render(request, 'create_journal_view.html', {'form': form})
     else:
         return render(request, 'create_journal_view.html', {'form': form})
 
-<<<<<<< HEAD
     
-=======
 
->>>>>>> main
 @login_required
 def ChangeJournalTitle(request, journalID):
     journal = get_object_or_404(Journal, id=journalID)
@@ -401,11 +395,8 @@ def ChangeJournalDescription(request, journalID):
     
     return render(request, 'change_journal_description.html', {'form': form, 'journal': journal})
 
-<<<<<<< HEAD
 @login_required
-=======
 
->>>>>>> main
 def calendar_view(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
     name = "Journaller"
     month = month.capitalize()
@@ -428,7 +419,6 @@ def calendar_view(request, year=datetime.now().year, month=datetime.now().strfti
                 }
                 )
 
-<<<<<<< HEAD
 @login_required
 def all_journal_entries_view(request):
     current_user = request.user
@@ -438,8 +428,6 @@ def all_journal_entries_view(request):
     return render(request, 'all_entries.html', { 'user': current_user,  'journal_existence': journal_existence or False})
 
             
-=======
->>>>>>> main
 
 
 
