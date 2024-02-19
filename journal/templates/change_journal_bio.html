@@ -4,7 +4,7 @@
   <div class="row">
     <div class="col-12">
       <h1>Sign up</h1>
-      <form action="{% url 'change_journal_bio' %}" method="post">
+      <form action="{% url 'change_journal_bio' journalID=journal.id%}" method="post">
         {% csrf_token %}
         {% include 'partials/bootstrap_form.html' with form=form %}
         <input type="submit" value="Change Content/Entry" class="btn btn-primary">

@@ -30,10 +30,17 @@ urlpatterns = [
     path('profile/', views.ProfileUpdateView.as_view(), name='profile'),
     path('view_profile/', views.ProfileView.as_view(), name='view_profile'),
     path('sign_up/', views.SignUpView.as_view(), name='sign_up'),
+<<<<<<< HEAD
+    path('create_journal_view/', views.CreateJournalView, name='create_journal_view'),
+    path('change_journal_bio/<int:journalID>/', views.ChangeJournalBio, name='change_journal_bio'),
+    path('change_journal_description/<int:journalID>/', views.ChangeJournalDescription, name='change_journal_description'),
+    path('change_journal_title/<int:journalID>/', views.ChangeJournalTitle, name='change_journal_title'),
+=======
     path('create_journal_view/', views.create_journal, name='create_journal_view'),
     path('change_journal_bio/', views.ChangeJournalBio, name='change_journal_bio'),
     path('change_journal_description/', views.ChangeJournalDescription, name='change_journal_description'),
     path('change_journal_title/', views.ChangeJournalTitle, name='change_journal_title'),
+>>>>>>> main
     path('friend_requests/', views.view_friend_requests, name='view_friend_requests'),
     path('friends/', views.view_friends, name='friends'),
     path('send_friend_request/<int:user_id>', views.send_friend_request, name='send_request'),
@@ -42,6 +49,12 @@ urlpatterns = [
     path('delete_sent_request/<int:friend_request_id>/', views.delete_sent_request, name='delete_sent_request'),
     path('remove_friend/<int:user_id>', views.remove_friend, name='remove_friend'),
     path('calendar/<int:year>/<str:month>/', views.calendar_view, name='calendar' ),
+<<<<<<< HEAD
+    path('all_entries/', views.all_journal_entries_view, name='all_entries'),
+
+]
+=======
     path('groups/', views.group, name='groups'),
     path('create_group/', views.create_group, name='create_group')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+>>>>>>> main
