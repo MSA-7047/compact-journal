@@ -261,11 +261,11 @@ def send_friend_request(request, user_id):
 
 @login_required
 def accept_invitation(request, friend_request_id):
-    friend_request = get_object_or_404(FriendRequest, id=friend_request_id, user=request.user, is_accepted=False)
+    friend_request = get_object_or_404(FriendRequest, id=friend_request_id, recipient=request.user, is_accepted=False)
 
     # Add the user to the team and mark the invitation as accepted
-    friend_request.user.friends.add(friend_request.sender)
-    friend_request.sender.friends.add(friend_request.user)
+    friend_request.recipient.friends.add(friend_request.sender)
+    friend_request.sender.friends.add(friend_request.recipient)
     friend_request.is_accepted = True
     friend_request.status = 'accepted'
 
