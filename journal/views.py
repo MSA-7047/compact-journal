@@ -220,42 +220,39 @@ class SignUpView(LoginProhibitedMixin, FormView):
     def get_success_url(self):
         return reverse(settings.REDIRECT_URL_WHEN_LOGGED_IN)
 
+def get_friend_requests_and_sent_invitations(user):
+    requests = FriendRequest.objects.filter(recipient=user, is_accepted=False)
+    sent_pending_invitations = user.sent_invitations.filter(status='pending')
+    sent_accepted_invitations = user.sent_invitations.filter(status='accepted')
+    sent_rejected_invitations = user.sent_invitations.filter(status='rejected')
+    return requests, sent_pending_invitations, sent_accepted_invitations, sent_rejected_invitations
 
 @login_required
 def view_friend_requests(request):
-    requests = FriendRequest.objects.filter(recipient=request.user, is_accepted=False)
+    requests, sent_pending_invitations, sent_accepted_invitations, sent_rejected_invitations = get_friend_requests_and_sent_invitations(request.user)
+    form = SendFriendRequestForm(user=request.user)
 
-    sent_pending_invitations = request.user.sent_invitations.filter(status='pending')
-    sent_accepted_invitations = request.user.sent_invitations.filter(status='accepted')
-    sent_rejected_invitations = request.user.sent_invitations.filter(status='rejected')
-
-    return render(request, 'friend_requests.html', {'requests': requests, 'sent_pending_invitations': sent_pending_invitations, 'sent_accepted_invitations': sent_accepted_invitations, 'sent_rejected_invitations': sent_rejected_invitations})
-
-
+    return render(request, 'friend_requests.html', {'form': form, 'requests': requests, 'sent_pending_invitations': sent_pending_invitations, 'sent_accepted_invitations': sent_accepted_invitations, 'sent_rejected_invitations': sent_rejected_invitations})
 
 @login_required
 def view_friends(request):
-    user = request.user
-    friends = user.friends.all()
+    friends = request.user.friends.all()
     return render(request, 'friends.html', {"friends": friends})
-
-
 
 @login_required
 def send_friend_request(request, user_id):
-    user = get_object_or_404(User, pk = user_id)
-    friends = user.friends.all()
-
     if request.method == 'POST':
         form = SendFriendRequestForm(request.POST, user=request.user)
         if form.is_valid():
-            user = form.cleaned_data['recipient']
-            FriendRequest.objects.get_or_create(recipient=user, sender=request.user, status='pending')
+            recipient = form.cleaned_data['recipient']
+            FriendRequest.objects.get_or_create(recipient=recipient, sender=request.user, status='pending')
             return redirect('send_request', user_id=user_id)
     else:
-        form = SendFriendRequestForm(user=user)
+        form = SendFriendRequestForm(user=request.user)
 
-    return render(request, 'friends.html', {'form': form, "user": user, "friends": friends})
+    requests, sent_pending_invitations, sent_accepted_invitations, sent_rejected_invitations = get_friend_requests_and_sent_invitations(request.user)
+
+    return render(request, 'friend_requests.html', {'form': form, 'requests': requests, 'sent_pending_invitations': sent_pending_invitations, 'sent_accepted_invitations': sent_accepted_invitations, 'sent_rejected_invitations': sent_rejected_invitations})
 
 
 

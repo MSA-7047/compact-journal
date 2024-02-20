@@ -6,17 +6,14 @@
       <h1>Your Friends:</h1>
         {% if user.friends.all %}
               {% for friend in user.friends.all %}
-                  <li>{{ friend.username }}</li>
+                  <li>{{ friend.username }} 
+                    <a href="{% url 'remove_friend' user_id=friend.id %}" class="btn btn-danger btn-sm">remove</a>
+                  </li>
               {% endfor %}
           {% else %}
               You currently have no Friends
           {% endif %}
-      <h2>Add Friend:</h2>
-      <form method="post" action="{% url 'send_request' user.id %}">
-        {% csrf_token %}
-        {% include 'partials/bootstrap_form.html' with form=form %}
-        <button type="submit" class="btn btn-primary">Send Friend Request</button>
-      </form>
+          <br/>
       <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
     </div>
   </div>

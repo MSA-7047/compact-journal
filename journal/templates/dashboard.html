@@ -105,11 +105,10 @@
         {% else %}
         <p>
           {% for journal in todays_journal%}
-          Title: {{ journal.journal_title }}
+          <h2>{{ journal.journal_title }}</h2>
+          Summary: {{ journal.journal_description }}
           <br/>
-          Description: {{ journal.journal_description }}
-          <br/>
-          Bio: {{ journal.journal_bio }}
+          Journal: {{ journal.journal_bio }}
           <br/>
           Todays Mood: {{ journal.journal_mood }}
           <br/>
@@ -139,7 +138,7 @@
       </div>
 
       <div class="content-small">
-        <h1><a href="{% url 'friends'%}">Your Friends:</a></h1>
+        <h1><a href="{% url 'view_friends'%}">Your Friends:</a></h1>
           {% if user.friends.all %}
               {% for friend in user.friends.all %}
                   <li>{{ friend.username }}</li>
@@ -159,6 +158,8 @@
         <a href="{% url 'calendar' year=current_year month=current_month%}" class="btn btn-lg btn-secondary">
           Calendar
         </a>
+        <br/>
+        <br/>
         <a href="{% url 'all_entries'%}" class="btn btn-lg btn-secondary">
           See all Journal Entries
         </a>
