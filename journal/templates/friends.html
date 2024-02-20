@@ -10,11 +10,13 @@
               {% endfor %}
           {% else %}
               You currently have no Friends
-              
-              
-              <br>
-
           {% endif %}
+      <h2>Add Friend:</h2>
+      <form method="post" action="{% url 'send_request' user.id %}">
+        {% csrf_token %}
+        {% include 'partials/bootstrap_form.html' with form=form %}
+        <button type="submit" class="btn btn-primary">Send Friend Request</button>
+      </form>
       <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
     </div>
   </div>

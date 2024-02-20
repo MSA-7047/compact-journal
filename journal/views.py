@@ -255,7 +255,7 @@ def send_friend_request(request, user_id):
     else:
         form = SendFriendRequestForm(user=user)
 
-    return render(request, 'friend_requests.html', {'add_member_form': form, "user": user, "friends": friends})
+    return render(request, 'friends.html', {'form': form, "user": user, "friends": friends})
 
 
 

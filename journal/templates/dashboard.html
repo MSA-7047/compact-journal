@@ -94,34 +94,28 @@
       <div class="content-small">Content #1</div>
 
       <div class="content-large">
-        Today's Journal:
+        <h1>Today's Journal:</h1>
         {% if todays_journal is None %}
-        <br/>
-          No Journals Available - Get Creating!
-          
-          <p>
+        <p>
+          You have not created a journal today!
+          Press the button below to add your journal for the day
             <a href="{% url 'create_journal_view'%}" class="btn btn-lg btn-secondary">
-              Create a Journal
+              +
             </a>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-
-          </p>
         {% else %}
         <p>
           {% for journal in todays_journal%}
-          Journal Title: {{ journal.journal_title }}
+          Title: {{ journal.journal_title }}
           <br/>
-          Journal Description: {{ journal.journal_description }}
+          Description: {{ journal.journal_description }}
+          <br/>
+          Bio: {{ journal.journal_bio }}
+          <br/>
+          Todays Mood: {{ journal.journal_mood }}
+          <br/>
+          Created on: {{ journal.entry_date }}
           {% endfor %}
-          <br/>
-          <br/>
-          <br/>
+
 
 
         </p>

@@ -2,7 +2,7 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
-from .models import User, Group, GroupMembership, Journal
+from .models import *
 from django_countries.widgets import CountrySelectWidget
 from django.core.exceptions import ValidationError
 
@@ -153,11 +153,17 @@ class SendFriendRequestForm(forms.Form):
 
     recipient = forms.ModelChoiceField(queryset=User.objects.all(), label='Select User')
 
+    class Meta:
+        model = FriendRequest
+        fields = ['recipient']
+
     def __init__(self, *args, user=None,  **kwargs):
         friends = user.friends.all()
         super().__init__(*args, **kwargs)
         if friends is not None:
             self.fields['recipient'].queryset = User.objects.exclude(id__in=[user.id for user in friends]).exclude(id=user.id)
+    
+    
 
 
 
