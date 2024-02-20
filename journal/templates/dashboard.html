@@ -146,12 +146,15 @@
 
       <div class="content-small">
         <h1><a href="{% url 'friends'%}">Your Friends:</a></h1>
-        <ul>
-          {% for friend in user.friends.all %}
-            <li>{{ friend.username }}
-            </li>
-          {% endfor %}
-        </ul>
+          {% if user.friends.all %}
+              {% for friend in user.friends.all %}
+                  <li>{{ friend.username }}</li>
+              {% endfor %}
+          {% else %}
+              You currently have no Friends, <br>
+              View requests to add some you lonely guy
+              <br>
+          {% endif %}
 
         </style>
         <a class="bottom" href="{% url 'view_friend_requests' %}">View Requests</a></li>

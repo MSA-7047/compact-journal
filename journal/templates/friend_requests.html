@@ -73,8 +73,14 @@
         {% else %}
           <p>No rejected sent friend requests.</p>
         {% endif %}
-
+      <h2>Add Friend:</h2>
+      <form method="post" action="{% url 'send_request' user.id %}">
+        {% csrf_token %}
+        {{ add_member_form.as_p }}
+        <button type="submit" class="btn btn-primary">Send Friend Request</button>
         <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+        <br>
+      </form>
       </div>
     </div>
   </div>
