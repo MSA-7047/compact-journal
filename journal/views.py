@@ -460,15 +460,17 @@ def send_group_request(request):
     return render(request, 'send_group_request.html', {'form': form})
 
 @login_required
-def accept_group_invitation(request, group_request_id): 
-    group_request = get_object_or_404(GroupRequest, id=group_request_id, recipient=request.user, is_accepted=False)
+def accept_group_request(request, group_request_id): 
+    group_request = get_object_or_404(GroupRequest, id=group_request_id, recipient=request.user, is_accepted=True)
 
-    # Add the user to the team and mark the invitation as accepted
-    group_request.recipient.friends.add(group_request.sender)
-    group_request.sender.friends.add(group_request.recipient)
-    group_request.is_accepted = True
+    # Add the user to the group
+    group = group_request.group  # Assuming group_request has a ForeignKey to Group model
+    user = group_request.sender  # The user who sent the group request
+
+    # Create GroupMembership for the user
+    GroupMembership.objects.create(user=user, group=group)
+
     group_request.status = 'accepted'
-
     group_request.save()
     #invitation.delete()
 
@@ -490,3 +492,57 @@ def delete_sent_request(request, friend_request_id):
     group_request = get_object_or_404(GroupRequest, id=group_request_id, recipient=request.user, is_accepted=False)
     group_request.delete()
     return redirect('group')
+
+@login_required
+def delete_group(request, group_id):
+    # Retrieve the group object
+    group = get_object_or_404(Group, pk=group_id)
+
+    # Check if the current user is the owner of the group
+    if request.user == group.owner:
+        # Only allow deletion via POST method to prevent accidental deletions
+        if request.method == 'POST':
+            # Delete the group
+            group.delete()
+            # Optionally, you can redirect the user to a specific page after deletion
+            return redirect('home') 
+        else:
+            # Handle GET requests (e.g., show a confirmation page)
+            return render(request, 'confirm_group_deletion.html', {'group': group})
+    else:
+        # User is not the owner, return forbidden response
+        return HttpResponseForbidden('You are not authorized to delete this group.')
+
+@login_required
+def leave_group(request, group_id):
+    group = get_object_or_404(Group, pk=group_id)
+    user = request.user
+
+    # Check if the user is the owner of the group
+    if user == group.owner:
+        if group.members.count() == 1:
+            # The owner is the only member, delete the group
+            group.delete()
+            return redirect('home')
+        else:
+            # The owner must select a new owner before leaving
+            if request.method == 'POST':
+                new_owner_id = request.POST.get('new_owner')
+                new_owner = get_object_or_404(User, pk=new_owner_id)
+
+                # Transfer ownership to the selected user
+                group.owner = new_owner
+                group.save()
+
+            # Render the page to select a new owner
+            return render(request, 'select_new_owner.html', {'group': group})
+    else:
+        # If the user is not the owner, remove them from the group
+        group_membership = GroupMembership.objects.get(group=group, user=user)
+        group_membership.delete()
+
+        # If there are no members left, delete the group
+        if group.members.count() == 0:
+            group.delete()
+
+        return redirect('home')

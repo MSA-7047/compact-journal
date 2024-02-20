@@ -16,11 +16,16 @@ class GroupRequest(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
     is_accepted = models.BooleanField(default=False)
 
+    objects = models.Manager()
+
     class Meta:
         app_label = 'journal'
         unique_together = 'recipient', 'sender'
+        abstract = False
 
     def clean(self):
         super().clean()
         if self.recipient == self.sender:
-            raise ValidationError("The recipient and sender of the invitation can't refer tot the same user")
+            raise ValidationError("The recipient and sender of the invitation can't be the same user")
+        if not self.sender.groups.filter(id=self.recipient_group_id).exists():
+            raise ValidationError("The sender must be the owner of the group")
