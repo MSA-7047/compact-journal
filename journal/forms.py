@@ -5,6 +5,8 @@ from django.core.validators import RegexValidator
 from .models import *
 from django_countries.widgets import CountrySelectWidget
 from django.core.exceptions import ValidationError
+from django.utils import timezone
+from datetime import timedelta
 
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
@@ -226,3 +228,69 @@ class EditJournalBioForm(forms.ModelForm):
 class ConfirmAccountDeleteForm(forms.Form):
     confirmation = forms.CharField(label='Type "YES" to confirm deletion', max_length=3)
 
+class JournalFilterForm(forms.Form):
+    entry_date = forms.ChoiceField(choices=(
+        ('', '---------'),
+        ('24h', 'Within 24 Hours'),
+        ('3d', 'Within 3 Days'),
+        ('1w', 'Within 1 Week'),
+        ('1m', 'Within 1 Month'),
+        ('6m+', '6+ Months')
+    ), required=False)
+
+    mood = forms.ChoiceField(choices=(
+        ('', '---------'),
+        ('Happy', 'Happy'),
+        ('Sad', 'Sad'),
+        ('Angry', 'Angry'),
+        ('Neutral', 'Neutral'),
+    ), required=False)
+
+    title_search = forms.CharField(required=False)
+
+    #LABEL_CHOICES = Task.LABEL_CHOICES  
+    #PRIORITY_CHOICES = Task.PRIORITY_CHOICES
+
+    #label = forms.ChoiceField(choices=LABEL_CHOICES, required=False)
+
+    def __init__(self, user, *args, **kwargs):
+        """Construct new form instance with a user instance, and set the teams and assignee fields accordingly."""
+        super().__init__(*args, **kwargs)
+    
+    def filter_tasks(self):
+        """
+        Filter the tasks based on the filter selections.
+
+        Returns:
+        - QuerySet: tasks: the filtered tasks.
+        """
+        myjournals = Journal.objects.all()
+        #label = self.cleaned_data.get('label')
+        title_contains = self.cleaned_data.get('title_contains')
+        entry_date = self.cleaned_data.get('entry_date')
+        mood = self.cleaned_data.get('mood')
+
+        #if label:
+           # tasks = tasks.filter(label=label)
+        if title_contains:
+            myjournals = myjournals.filter(journal_title__icontains=title_contains)
+        if mood:
+            myjournals = myjournals.filter(journal_mood = mood)
+        if entry_date:
+            if entry_date == '24h':
+                time_threshold = timezone.now() - timedelta(days=1)
+                myjournals = myjournals.filter(entry_date__gte=time_threshold)
+            elif entry_date == '3d':
+                time_threshold = timezone.now() - timedelta(days=3)
+                myjournals = myjournals.filter(entry_date__gte=time_threshold)
+            elif entry_date == '1w':
+                time_threshold = timezone.now() - timedelta(weeks=1)
+                myjournals = myjournals.filter(entry_date__gte=time_threshold)
+            elif entry_date == '1m':
+                time_threshold = timezone.now() - timedelta(weeks=4)
+                myjournals = myjournals.filter(entry_date__gte=time_threshold)
+            elif entry_date == '6m+':
+                time_threshold = timezone.now() - timedelta(weeks=26)
+                myjournals = myjournals.filter(entry_date__gte=time_threshold)
+        
+        return myjournals

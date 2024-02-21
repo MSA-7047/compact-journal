@@ -3,7 +3,11 @@
 <div class="container">
   <div class="row">
     <div class="col-12">
-        <h1>All Journal Entries</h1>
+      <h1>All Journal Entries</h1>
+      {% include 'partials/filter_partial.html' with filter_form=filter_form %}
+      {% if show_alert %}
+        {% include 'partials/invalid_filter_partial.html'%}
+      {% endif %}
         {% if myJournals %}
         <ul class="list-group mt-3">
             {% for journal in myJournals %}
@@ -15,13 +19,18 @@
 
                             <p>{{journal.journal_bio}}</p>
 
+                            <p>{{journal.journal_mood}}</p>
+
+
+
                             <p>Date Created: {{ journal.entry_date }}</p>
                         </div>
                     </div>
                 </li>
                 {%endfor%}
         {% else %}
-          <p>You have written no journels</p>
+        <br/>
+          <p>No journals :)</p>
         {% endif %}
         <a href="{% url 'dashboard' %}" class="btn btn-primary mt-3">Back to dashboard</a>
     </div>

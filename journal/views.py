@@ -29,7 +29,7 @@ def dashboard(request):
 
     current_year = datetime.now().year
     current_month = datetime.now().strftime("%B")
-    todays_journal = Journal.objects.filter(entry_date__date=today)
+    todays_journal = Journal.objects.filter(entry_date__date=today).filter(journal_owner=current_user)
 
     return render(
         request,
@@ -418,12 +418,38 @@ def all_journal_entries_view(request):
     journal_existence = Journal.objects.filter(journal_title__isnull=False)
     return render(request, 'all_entries.html', { 'user': current_user,  'journal_existence': journal_existence or False})
 
-            
 @login_required
 def my_journals_view(request):
     current_user = request.user
+    if request.method == 'POST':
+        filter_form = JournalFilterForm(current_user, request.POST)
+        if filter_form.is_valid():
+            myJournals = filter_form.filter_tasks()
+            myJournals = myJournals.filter(journal_owner=current_user)   
+        else:
+            context = {
+            'filter_form': filter_form,
+            'show_alert':True,
+            'myJournals': Journal.objects.filter(journal_owner=current_user)
+            }
+            return render(request, 'My_Journals.html', context)
+        context = {
+            'filter_form': filter_form,
+            'myJournals': myJournals
+        }
+        return render(request, 'my_journals.html', context) 
+    
     myjournals = Journal.objects.filter(journal_owner=current_user)
-    return render(request, 'my_journals.html', { 'user': current_user,  'myJournals': myjournals or False})
+    filter_form = JournalFilterForm(current_user)
+    
+    context = {
+            'filter_form': filter_form,
+            'myJournals': myjournals or False,
+            'user': current_user
+        }
+    
+    return render(request, 'my_journals.html', context)          
+
 
 @login_required
 def delete_account(request):
