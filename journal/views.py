@@ -425,25 +425,39 @@ def my_journals_view(request):
         filter_form = JournalFilterForm(current_user, request.POST)
         if filter_form.is_valid():
             myJournals = filter_form.filter_tasks()
-            myJournals = myJournals.filter(journal_owner=current_user)   
+            myJournals = myJournals.filter(journal_owner=current_user)
+            sort_form = JournalSortForm(request.POST) 
+            if sort_form.is_valid():
+                sort_order = sort_form.cleaned_data['sort_by_entry_date']
+                if sort_order == 'descending':
+                    myJournals = myJournals.order_by("entry_date")
+                    myJournals = myJournals.reverse()
+                elif sort_order == 'ascending':
+                    myJournals = myJournals.order_by("entry_date")    
         else:
+            sort_form = JournalSortForm()
             context = {
             'filter_form': filter_form,
+            'sort_form': sort_form,
             'show_alert':True,
             'myJournals': Journal.objects.filter(journal_owner=current_user)
             }
             return render(request, 'My_Journals.html', context)
+        
         context = {
             'filter_form': filter_form,
+            'sort_form': sort_form,
             'myJournals': myJournals
         }
         return render(request, 'my_journals.html', context) 
     
     myjournals = Journal.objects.filter(journal_owner=current_user)
     filter_form = JournalFilterForm(current_user)
+    sort_form = JournalSortForm()
     
     context = {
             'filter_form': filter_form,
+            'sort_form': sort_form,
             'myJournals': myjournals or False,
             'user': current_user
         }

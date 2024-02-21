@@ -164,19 +164,17 @@ class SendFriendRequestForm(forms.Form):
         super().__init__(*args, **kwargs)
         if friends is not None:
             self.fields['recipient'].queryset = User.objects.exclude(id__in=[user.id for user in friends]).exclude(id=user.id)
-    
-    
-
-
-
-    
-
 
 class CreateJournalForm(forms.ModelForm):
     journal_title = forms.CharField(label="Title")
     journal_description = forms.CharField(label="Description")
     journal_bio = forms.CharField(label="Bio")
-    journal_mood = forms.CharField(label="Mood")
+    journal_mood = forms.ChoiceField(choices=(
+        ('Happy', 'Happy'),
+        ('Sad', 'Sad'),
+        ('Angry', 'Angry'),
+        ('Neutral', 'Neutral'),
+    ), required=True)
 
     class Meta:
         model = Journal
@@ -188,8 +186,6 @@ class EditJournalTitleForm(forms.ModelForm):
     class Meta:
         model = Journal
         fields = ['journal_title']
-
-
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -211,7 +207,6 @@ class EditJournalDescriptionForm(forms.ModelForm):
             instance.save()
         return instance
 
-
 class EditJournalBioForm(forms.ModelForm):
     
     class Meta:
@@ -229,6 +224,7 @@ class ConfirmAccountDeleteForm(forms.Form):
     confirmation = forms.CharField(label='Type "YES" to confirm deletion', max_length=3)
 
 class JournalFilterForm(forms.Form):
+
     entry_date = forms.ChoiceField(choices=(
         ('', '---------'),
         ('24h', 'Within 24 Hours'),
@@ -248,22 +244,11 @@ class JournalFilterForm(forms.Form):
 
     title_search = forms.CharField(required=False)
 
-    #LABEL_CHOICES = Task.LABEL_CHOICES  
-    #PRIORITY_CHOICES = Task.PRIORITY_CHOICES
-
-    #label = forms.ChoiceField(choices=LABEL_CHOICES, required=False)
-
     def __init__(self, user, *args, **kwargs):
-        """Construct new form instance with a user instance, and set the teams and assignee fields accordingly."""
         super().__init__(*args, **kwargs)
     
     def filter_tasks(self):
-        """
-        Filter the tasks based on the filter selections.
 
-        Returns:
-        - QuerySet: tasks: the filtered tasks.
-        """
         myjournals = Journal.objects.all()
         #label = self.cleaned_data.get('label')
         title_contains = self.cleaned_data.get('title_contains')
@@ -294,3 +279,11 @@ class JournalFilterForm(forms.Form):
                 myjournals = myjournals.filter(entry_date__gte=time_threshold)
         
         return myjournals
+
+class JournalSortForm(forms.Form):
+
+    ORDER_CHOICES = [
+        ('ascending', 'Ascending'),
+        ('descending', 'Descending'),
+    ]
+    sort_by_entry_date = forms.ChoiceField(choices=ORDER_CHOICES)
