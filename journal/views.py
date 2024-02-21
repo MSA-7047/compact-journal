@@ -9,16 +9,14 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
-from journal.models import Group, GroupMembership, Journal, FriendRequest, User
-from journal.forms import (
-    LogInForm, PasswordForm, UserForm, SignUpForm, CreateJournalForm, SendFriendRequestForm, GroupForm,
-    EditJournalBioForm, EditJournalDescriptionForm, EditJournalTitleForm
-)
+from journal.models import *
+from journal.forms import *
 from journal.helpers import login_prohibited
 from django.views.generic import DetailView
 import calendar
 from calendar import HTMLCalendar
 from datetime import datetime
+from django.db import transaction
 
 
 @login_required
@@ -267,7 +265,6 @@ def accept_invitation(request, friend_request_id):
     friend_request.status = 'accepted'
 
     friend_request.save()
-    #invitation.delete()
 
     return redirect('view_friend_requests')
 
@@ -276,11 +273,8 @@ def accept_invitation(request, friend_request_id):
 @login_required
 def reject_invitation(request, friend_request_id):
     friend_request = get_object_or_404(FriendRequest, id=friend_request_id, recipient=request.user, is_accepted=False)
-
     friend_request.status =  'rejected'
     friend_request.save()
-    #invitation.delete()
-
     return redirect('view_friend_requests')
 
 
@@ -425,9 +419,30 @@ def all_journal_entries_view(request):
     return render(request, 'all_entries.html', { 'user': current_user,  'journal_existence': journal_existence or False})
 
             
+@login_required
+def my_journals_view(request):
+    current_user = request.user
+    myjournals = Journal.objects.filter(journal_owner=current_user)
+    return render(request, 'my_journals.html', { 'user': current_user,  'myJournals': myjournals or False})
 
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        form = ConfirmAccountDeleteForm(request.POST)
+        if form.is_valid() and form.cleaned_data['confirmation'].upper() == "YES":
+            to_del = request.user
+            
+            with transaction.atomic():
+                to_del.delete()
+                logout(request)
 
+            return redirect('home')
+        else:
+            form.add_error('confirmation', 'Please enter "YES" to confirm deletion.')
+    else:
+        form = ConfirmAccountDeleteForm()
 
+    return render(request, 'delete_account.html', {'form': form})
     
 
 

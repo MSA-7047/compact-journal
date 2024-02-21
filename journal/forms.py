@@ -223,5 +223,6 @@ class EditJournalBioForm(forms.ModelForm):
             instance.save()
         return instance
     
-
+class ConfirmAccountDeleteForm(forms.Form):
+    confirmation = forms.CharField(label='Type "YES" to confirm deletion', max_length=3)
 
