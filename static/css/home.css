@@ -114,3 +114,27 @@
   font-size: 30px;
   font-weight: 700;
 }
+
+/*-- ===== Features Section ===== --*/
+.features-section .features-box {
+  display: flex;
+}
+
+.features-section .features-box h4 {
+  color: #6ca5cd;
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.features-section .features-box i {
+  color: #700137;
+  font-size: 50px;
+  margin-left: 10px;
+  
+  margin-right: 20px;
+}
+
+.features-section .features-box p {
+  color: #848484;
+  font-size: 15px;
+}
