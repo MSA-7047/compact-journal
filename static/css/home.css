@@ -101,3 +101,16 @@
   padding-top: 125px;
   text-align: center;
 }
+
+/*-- ===== About Section ===== --*/
+.about-section .content {
+  background-color: #165acf;
+  border-radius: 25px;
+  padding: 40px;
+}
+
+.about-section .big-answer-text {
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: 700;
+}
