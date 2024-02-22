@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
 from .models import User, Group, GroupMembership, Journal
 from django_countries.widgets import CountrySelectWidget
+from django_ckeditor_5.widgets import CKEditor5Widget
 
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
@@ -153,57 +154,54 @@ class SendFriendRequestForm(forms.Form):
 
 
 class CreateJournalForm(forms.ModelForm):
-    journal_title = forms.CharField(label="Title")
-    journal_description = forms.CharField(label="Description")
-    journal_bio = forms.CharField(label="Bio")
-    journal_mood = forms.CharField(label="Mood")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # it is required to set it False,
+        # otherwise it will throw error in console
+        self.fields["journal_bio"].required = False
+
+    # journal_title = forms.CharField(label="Title")
+    # journal_description = forms.CharField(label="Description")
+    # journal_bio = forms.CharField(label="Bio")
+    # journal_mood = forms.CharField(label="Mood")
 
     class Meta:
         model = Journal
         fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood']
 
 
-class EditJournalTitleForm(forms.ModelForm):
+class EditJournalInfoForm(forms.ModelForm):
+
+
     
+    # class Meta:
+    #     model = Journal
+    #     fields = ['journal_title', 'journal_description', 'journal_bio']
+
+
+
+    # def save(self, commit=True):
+    #     instance = super().save(commit=False)
+    #     instance.journal_title = self.cleaned_data['journal_title']
+    #     instance.journal_description = self.cleaned_data['journal_description']
+    #     instance.journal_bio = self.cleaned_data['journal_bio']
+    #     if commit:
+    #         instance.save()
+    #     return instance
+
+    #journal_bio = forms.CharField(widget=CKEditor5Widget(config_name='extends'), required=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # it is required to set it False,
+        # otherwise it will throw error in console
+        self.fields["journal_bio"].required = False
+
+
+
     class Meta:
         model = Journal
-        fields = ['journal_title']
-
-
-
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        instance.journal_title = self.cleaned_data['journal_title']
-        if commit:
-            instance.save()
-        return instance
-
-class EditJournalDescriptionForm(forms.ModelForm):
-    
-    class Meta:
-        model = Journal
-        fields=['journal_description']
-
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        instance.task_name = self.cleaned_data['journal_description']
-        if commit:
-            instance.save()
-        return instance
-
-
-class EditJournalBioForm(forms.ModelForm):
-    
-    class Meta:
-        model = Journal
-        fields = ['journal_bio']
-
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        instance.task_name = self.cleaned_data['journal_bio']
-        if commit:
-            instance.save()
-        return instance
-    
+        fields = ['journal_title', 'journal_description', 'journal_bio']
 
 

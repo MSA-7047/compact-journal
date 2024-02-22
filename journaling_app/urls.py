@@ -15,10 +15,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from journal import views
 from django.conf.urls.static import static
 from django.conf import settings
+from journal.views import JournalDetail
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,10 +31,8 @@ urlpatterns = [
     path('profile/', views.ProfileUpdateView.as_view(), name='profile'),
     path('view_profile/', views.ProfileView.as_view(), name='view_profile'),
     path('sign_up/', views.SignUpView.as_view(), name='sign_up'),
-    path('create_journal_view/', views.create_journal, name='create_journal_view'),
-    path('change_journal_bio/<int:journalID>/', views.ChangeJournalBio, name='change_journal_bio'),
-    path('change_journal_description/<int:journalID>/', views.ChangeJournalDescription, name='change_journal_description'),
-    path('change_journal_title/<int:journalID>/', views.ChangeJournalTitle, name='change_journal_title'),
+    #path('create_journal_view/', views.create_journal, name='create_journal_view'),
+    path('change_journal_info/<int:journalID>/', views.ChangeJournalInfo, name='change_journal_info'),
     path('friend_requests/', views.view_friend_requests, name='view_friend_requests'),
     path('friends/', views.view_friends, name='friends'),
     path('send_friend_request/<int:user_id>', views.send_friend_request, name='send_request'),
@@ -44,5 +43,13 @@ urlpatterns = [
     path('calendar/<int:year>/<str:month>/', views.calendar_view, name='calendar' ),
     path('all_entries/', views.all_journal_entries_view, name='all_entries'),
     path('groups/', views.group, name='groups'),
-    path('create_group/', views.create_group, name='create_group')
+    path('create_group/', views.create_group, name='create_group'),
+    path('admin/', admin.site.urls),
+    path('ckeditor5/', include('django_ckeditor_5.urls')),
+    path('add-journal/', views.create_journal, name='add_journal'),
+    path('journal/<int:journalID>/', views.journal_detail_view, name='journal_detail')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+if settings.DEBUG:
+    urlpatterns+=static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
