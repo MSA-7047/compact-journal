@@ -1,0 +1,21 @@
+<button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#filterModal">
+    Filter Journal Entries
+  </button>
+    <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true" data-bs-backdrop="false" style="z-index: 400;">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="filterModalLabel">Journal Filters</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form method="post" action="{% url 'my_journals' %}">
+                {% csrf_token %}
+                {{ filter_form.as_p }}
+                {{ sort_form.as_p}}
+                <button type="submit" class="btn btn-primary" name="filter_form_submit">Apply Filter</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>

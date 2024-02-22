@@ -19,36 +19,47 @@ from django.urls import path, include
 from journal import views
 from django.conf.urls.static import static
 from django.conf import settings
-from journal.views import JournalDetail
+from journal.views import *
+
+
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home, name='home'),
-    path('dashboard/', views.dashboard, name='dashboard'),
-    path('log_in/', views.LogInView.as_view(), name='log_in'),
-    path('log_out/', views.log_out, name='log_out'),
-    path('password/', views.PasswordView.as_view(), name='password'),
-    path('profile/', views.ProfileUpdateView.as_view(), name='profile'),
-    path('view_profile/', views.ProfileView.as_view(), name='view_profile'),
-    path('sign_up/', views.SignUpView.as_view(), name='sign_up'),
-    #path('create_journal_view/', views.create_journal, name='create_journal_view'),
-    path('change_journal_info/<int:journalID>/', views.ChangeJournalInfo, name='change_journal_info'),
-    path('friend_requests/', views.view_friend_requests, name='view_friend_requests'),
-    path('friends/', views.view_friends, name='friends'),
-    path('send_friend_request/<int:user_id>', views.send_friend_request, name='send_request'),
-    path('friend_request/accept/<int:friend_request_id>', views.accept_invitation, name='accept_friend_request'),
-    path('friend_request/reject/<int:friend_request_id>', views.reject_invitation, name='reject_friend_request'),
-    path('delete_sent_request/<int:friend_request_id>/', views.delete_sent_request, name='delete_sent_request'),
-    path('remove_friend/<int:user_id>', views.remove_friend, name='remove_friend'),
-    path('calendar/<int:year>/<str:month>/', views.calendar_view, name='calendar' ),
-    path('all_entries/', views.all_journal_entries_view, name='all_entries'),
-    path('groups/', views.group, name='groups'),
-    path('create_group/', views.create_group, name='create_group'),
-    path('admin/', admin.site.urls),
-    path('ckeditor5/', include('django_ckeditor_5.urls')),
+    path('', home, name='home'),
+    path('dashboard/', dashboard, name='dashboard'),
+    
+    path('log_in/', LogInView.as_view(), name='log_in'),
+    path('log_out/', log_out, name='log_out'),
+    
+    path('password/', PasswordView.as_view(), name='password'),
+    path('profile/', ProfileUpdateView.as_view(), name='profile'),
+    path('view_profile/', ProfileView.as_view(), name='view_profile'),
+    path('delete_account/', views.delete_account, name='delete_account'),
+    path('sign_up/', SignUpView.as_view(), name='sign_up'),
+    
     path('add-journal/', views.create_journal, name='add_journal'),
-    path('journal/<int:journalID>/', views.journal_detail_view, name='journal_detail')
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    path('change_journal_info/<int:journalID>/', views.ChangeJournalInfo, name='change_journal_info'),
+    path('journal/<int:journalID>/', views.journal_detail_view, name='journal_detail'),
+    path('ckeditor5/', include('django_ckeditor_5.urls')),
+    
+    path('friend_requests/', view_friend_requests, name='view_friend_requests'),
+    path('friends/', view_friends, name='view_friends'),
+    path('send_friend_request/<int:user_id>', send_friend_request, name='send_request'),
+    path('friend_request/accept/<int:friend_request_id>', accept_invitation, name='accept_friend_request'),
+    path('friend_request/reject/<int:friend_request_id>', reject_invitation, name='reject_friend_request'),
+    path('delete_sent_request/<int:friend_request_id>/', delete_sent_request, name='delete_sent_request'),
+    path('remove_friend/<int:user_id>', remove_friend, name='remove_friend'),
+    
+    path('calendar/<int:year>/<str:month>/', calendar_view, name='calendar' ),
+    path('all_entries/', all_journal_entries_view, name='all_entries'),
+    path('my_journals/', my_journals_view, name='my_journals'),
+    
+    path('groups/', group, name='groups'),
+    path('create_group/',create_group, name='create_group')
+
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:
     urlpatterns+=static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

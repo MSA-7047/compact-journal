@@ -9,12 +9,8 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse, reverse_lazy
-from journal.models import Group, GroupMembership, Journal, FriendRequest, User
-from journal.forms import (
-    LogInForm, PasswordForm, UserForm, 
-    SignUpForm, CreateJournalForm, SendFriendRequestForm, 
-    GroupForm, EditJournalInfoForm
-)
+from journal.models import *
+from journal.forms import *
 from journal.helpers import login_prohibited
 from django.views.generic import DetailView
 import calendar
@@ -225,57 +221,55 @@ class SignUpView(LoginProhibitedMixin, FormView):
     def get_success_url(self):
         return reverse(settings.REDIRECT_URL_WHEN_LOGGED_IN)
 
+def get_friend_requests_and_sent_invitations(user):
+    requests = FriendRequest.objects.filter(recipient=user, is_accepted=False)
+    sent_pending_invitations = user.sent_invitations.filter(status='pending')
+    sent_accepted_invitations = user.sent_invitations.filter(status='accepted')
+    sent_rejected_invitations = user.sent_invitations.filter(status='rejected')
+    return requests, sent_pending_invitations, sent_accepted_invitations, sent_rejected_invitations
+
+
 
 @login_required
 def view_friend_requests(request):
-    requests = FriendRequest.objects.filter(user=request.user, is_accepted=False)
+    requests, sent_pending_invitations, sent_accepted_invitations, sent_rejected_invitations = get_friend_requests_and_sent_invitations(request.user)
+    form = SendFriendRequestForm(user=request.user)
 
-    sent_pending_invitations = request.user.sent_invitations.filter(status='pending')
-    sent_accepted_invitations = request.user.sent_invitations.filter(status='accepted')
-    sent_rejected_invitations = request.user.sent_invitations.filter(status='rejected')
-
-    return render(request, 'friend_requests.html', {'requests': requests, 'sent_pending_invitations': sent_pending_invitations, 'sent_accepted_invitations': sent_accepted_invitations, 'sent_rejected_invitations': sent_rejected_invitations})
-
-
+    return render(request, 'friend_requests.html', {'form': form, 'requests': requests, 'sent_pending_invitations': sent_pending_invitations, 'sent_accepted_invitations': sent_accepted_invitations, 'sent_rejected_invitations': sent_rejected_invitations})
 
 @login_required
 def view_friends(request):
-    user = request.user
-    friends = user.friends.all()
+    friends = request.user.friends.all()
     return render(request, 'friends.html', {"friends": friends})
-
-
 
 @login_required
 def send_friend_request(request, user_id):
-    user = get_object_or_404(User, pk = user_id)
-    friends = user.friends.all()
-
     if request.method == 'POST':
-        form = SendFriendRequestForm(request.POST)
+        form = SendFriendRequestForm(request.POST, user=request.user)
         if form.is_valid():
-            user = form.cleaned_data['user']
-            FriendRequest.objects.get_or_create(user=user, sender=request.user, status='pending')
+            recipient = form.cleaned_data['recipient']
+            FriendRequest.objects.get_or_create(recipient=recipient, sender=request.user, status='pending')
             return redirect('send_request', user_id=user_id)
     else:
-        form = SendFriendRequestForm()
+        form = SendFriendRequestForm(user=request.user)
 
-    return render(request, 'friends.html', {'add_member_form': form, "user": user, "friends": friends})
+    requests, sent_pending_invitations, sent_accepted_invitations, sent_rejected_invitations = get_friend_requests_and_sent_invitations(request.user)
+
+    return render(request, 'friend_requests.html', {'form': form, 'requests': requests, 'sent_pending_invitations': sent_pending_invitations, 'sent_accepted_invitations': sent_accepted_invitations, 'sent_rejected_invitations': sent_rejected_invitations})
 
 
 
 @login_required
 def accept_invitation(request, friend_request_id):
-    friend_request = get_object_or_404(FriendRequest, id=friend_request_id, user=request.user, is_accepted=False)
+    friend_request = get_object_or_404(FriendRequest, id=friend_request_id, recipient=request.user, is_accepted=False)
 
     # Add the user to the team and mark the invitation as accepted
-    friend_request.user.friends.add(friend_request.sender)
-    friend_request.sender.friends.add(friend_request.user)
+    friend_request.recipient.friends.add(friend_request.sender)
+    friend_request.sender.friends.add(friend_request.recipient)
     friend_request.is_accepted = True
     friend_request.status = 'accepted'
 
     friend_request.save()
-    #invitation.delete()
 
     return redirect('view_friend_requests')
 
@@ -283,12 +277,9 @@ def accept_invitation(request, friend_request_id):
 
 @login_required
 def reject_invitation(request, friend_request_id):
-    friend_request = get_object_or_404(FriendRequest, id=friend_request_id, user=request.user, is_accepted=False)
-
+    friend_request = get_object_or_404(FriendRequest, id=friend_request_id, recipient=request.user, is_accepted=False)
     friend_request.status =  'rejected'
     friend_request.save()
-    #invitation.delete()
-
     return redirect('view_friend_requests')
 
 
@@ -437,11 +428,73 @@ def all_journal_entries_view(request):
     journal_existence = Journal.objects.filter(journal_title__isnull=False)
     return render(request, 'all_entries.html', { 'user': current_user,  'journal_existence': journal_existence or False})
 
-            
-
-
-
+@login_required
+def my_journals_view(request):
+    current_user = request.user
+    if request.method == 'POST':
+        filter_form = JournalFilterForm(current_user, request.POST)
+        if filter_form.is_valid():
+            myJournals = filter_form.filter_tasks()
+            myJournals = myJournals.filter(journal_owner=current_user)
+            sort_form = JournalSortForm(request.POST) 
+            if sort_form.is_valid():
+                sort_order = sort_form.cleaned_data['sort_by_entry_date']
+                if sort_order == 'descending':
+                    myJournals = myJournals.order_by("entry_date")
+                    myJournals = myJournals.reverse()
+                elif sort_order == 'ascending':
+                    myJournals = myJournals.order_by("entry_date")    
+        else:
+            sort_form = JournalSortForm()
+            context = {
+            'filter_form': filter_form,
+            'sort_form': sort_form,
+            'show_alert':True,
+            'myJournals': Journal.objects.filter(journal_owner=current_user)
+            }
+            return render(request, 'My_Journals.html', context)
+        
+        context = {
+            'filter_form': filter_form,
+            'sort_form': sort_form,
+            'myJournals': myJournals
+        }
+        return render(request, 'my_journals.html', context) 
     
+    myjournals = Journal.objects.filter(journal_owner=current_user)
+    filter_form = JournalFilterForm(current_user)
+    sort_form = JournalSortForm()
+    
+    context = {
+            'filter_form': filter_form,
+            'sort_form': sort_form,
+            'myJournals': myjournals or False,
+            'user': current_user
+        }
+    
+    return render(request, 'my_journals.html', context)          
+
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        form = ConfirmAccountDeleteForm(request.POST)
+        if form.is_valid() and form.cleaned_data['confirmation'].upper() == "YES":
+            to_del = request.user
+            
+            with transaction.atomic():
+                to_del.delete()
+                logout(request)
+
+            return redirect('home')
+        else:
+            form.add_error('confirmation', 'Please enter "YES" to confirm deletion.')
+    else:
+        form = ConfirmAccountDeleteForm()
+
+    return render(request, 'delete_account.html', {'form': form})
+    
+
 
 
 

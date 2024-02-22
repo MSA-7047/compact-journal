@@ -15,6 +15,7 @@
         {% include 'partials/bootstrap_form.html' with form=form %}
         <input type="submit" value="Update">
       </form>
+      <a href="{% url 'delete_account' %}">Delete Account</a>
   </div>
 </div>
 {% endblock %}
