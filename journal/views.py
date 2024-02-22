@@ -393,6 +393,12 @@ def ChangeJournalDescription(request, journalID):
     return render(request, 'change_journal_description.html', {'form': form, 'journal': journal})
 
 @login_required
+def DeleteJournal(request, journalID):
+    journal = get_object_or_404(Journal, id=journalID)
+    journal.delete()
+    return redirect('all_entries')
+
+@login_required
 
 def calendar_view(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
     name = "Journaller"

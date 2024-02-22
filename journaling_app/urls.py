@@ -35,6 +35,7 @@ urlpatterns = [
     path('change_journal_bio/<int:journalID>/', ChangeJournalBio, name='change_journal_bio'),
     path('change_journal_description/<int:journalID>/', ChangeJournalDescription, name='change_journal_description'),
     path('change_journal_title/<int:journalID>/', ChangeJournalTitle, name='change_journal_title'),
+    path('delete_journal/<int:journalID>/', DeleteJournal, name='delete_journal'),
     path('friend_requests/', view_friend_requests, name='view_friend_requests'),
     path('friends/', view_friends, name='view_friends'),
     path('send_friend_request/<int:user_id>', send_friend_request, name='send_request'),
