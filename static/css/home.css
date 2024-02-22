@@ -1,21 +1,31 @@
 /*-- ===== Header ===== --*/
 .header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
   transition: all 0.3s;
   padding: 20px 0;
+}
+
+.header .bar {
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header .logo-name {
+  justify-content: center;
+  text-decoration: none;
+  color: #012970;
+  font-family: "Tilt-Warp", sans-serif;
+  font-size: 25px;
+  font-weight: 650;
 }
 
 .header.header-scrolled {  
   background: #fff;
   box-shadow: 0px 2px 20px #494850;
   padding: 20px 0;
-}
-
-.header .logo-name {
-  text-decoration: none;
-  color: #012970;
-  font-family: "Tilt-Warp", sans-serif;
-  font-size: 25px;
-  font-weight: 650;
 }
 
 /*-- ===== Navbar ===== --*/
@@ -59,15 +69,17 @@
   height: 100vh;
   background: url("") top center no-repeat;
   background-attachment: fixed;
+  align-items: center;
+  justify-content: center;
 }
 
-.top-section h1 {
+.top-section .header-text-area h1 {
   color: #165acf;
   font-size: 65px;
   font-weight: bold;
 }
 
-.top-section h2 {
+.top-section .header-text-area h2 {
   color: #303030;
   margin: 20px 0;
   font-size: 30px;
@@ -103,7 +115,7 @@
 }
 
 /*-- ===== About Section ===== --*/
-.about-section .content {
+.about-section .about-section-content {
   background-color: #165acf;
   border-radius: 25px;
   padding: 40px;
@@ -149,29 +161,29 @@
   text-decoration: none;
 }
 
-.footer-section .container .footer-logo-name {
+.footer-section .footer-logo-name {
   margin-bottom: 10px;
 }
 
-.footer-section .container .footer-logo-name img {
+.footer-section .footer-logo-name img {
   margin-right: 10px;
 }
 
-.footer-section .container .footer-logo-name span {
+.footer-section .footer-logo-name span {
   color: #012970;
   font-size: 30px;
   font-weight: 700;
   font-family: "Nunito", sans-serif;
 }
 
-.footer-section .container .footer-logo-name p {
+.footer-section .footer-logo-name p {
   font-size: 15px;
   font-family: "Tilt-Warp", sans-serif;
   text-align: center;
   text-decoration: none;
 }
 
-.footer-section .container h4 {
+.footer-section h4 {
   color: #012970;
   font-size: 20px;
   font-weight: 700;

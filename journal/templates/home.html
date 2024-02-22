@@ -24,11 +24,11 @@
 </head>
 
 <body>
-  <!-- ======= Header + Navbar ======= -->
-  <div class="header">
-    <div class="container">
+  <!-- ======= Header + Navbar Section ======= -->
+  <header class="header" id="header">
+    <div class="bar container-fluid container-xl d-flex">
 
-      <a class="logo-name" href="{% url 'home' %}">
+      <a class="logo-name d-flex" href="{% url 'home' %}">
         <span>Compact Journals</span>
       </a>
 
@@ -37,59 +37,61 @@
           <li><a class="nav-link" href="#top-section">Home</a></li>
           <li><a class="nav-link" href="#about-section">About</a></li>
           <li><a class="nav-link" href="#features-section">Features</a></li>
-          <li><div><a class="log-in-button" href="{% url 'log_in' %}">Log in</a></li>
+          <li><a class="log-in-button" href="{% url 'log_in' %}">Log in</a></li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </div>
-
     </div>
-  </div>
+
+  </header>
 
   <!-- ======= Top Section ======= -->
-  <div class="top-section">
-
-    <div class="container">
-      <div class="row">
+  <section class="top-section d-flex" id="top-section">
+    <div class="row">
+      <div class="header-text-area col-lg-6 d-flex flex-column">
         <h1>Compact.</h1>
         <h2>Track your progress.</h2>
         <div>
-          <div>
-            <a class="sign-up-button" href="{% url 'sign_up' %}">
+          <div class="text-lg-start text-center">
+            <a class="sign-up-button d-inline-flex align-items-center justify-content-center align-self-center" href="{% url 'sign_up' %}">
               <span>Sign up</span>
               <i class="bi bi-arrow-right"></i>
             </a>
           </div>
         </div>
       </div>
+
+      <div class="top-section-image-area col-lg-6">
+        <img class="top-section-image" src="" alt="">
+      </div>
     </div>
-  </div>
+  </section>
 
   <!-- ===== About Section ===== -->
-  <div class="about-section">
-
-    <div class="container">
+  <section class="about-section" id="about-section">
       <div class="section-header">
         <h2>About</h2>
         <p>What is Compact Journals?</p>
       </div>
-      <div class="row">
 
-        <div class="col">
-          <div class="content">
-            <h2 class="big-answer-text">Compact Journals is a web-based journalling application created using the Python Django framework.</h2>
-            <p>
-              This web application was built by 8 students from King's College London as part of their 
-              large group software engineering project for the module 5CCS2SEG. This group project took 
-              place during the second semester of academic year 2023-24. 
-            </p>
-          </div>
+      <div class="row">
+        <div class="about-section-content col-lg-6 d-flex flex-column justify-content-center">
+          <h2 class="big-answer-text">Compact Journals is a web-based journalling application created using the Python Django framework.</h2>
+          <p>
+            This web application was built by 8 students from King's College London as part of their 
+            large group software engineering project for the module 5CCS2SEG. This group project took 
+            place during the second semester of academic year 2023-24. 
+          </p>
+        </div>
+
+        <div class="about-section-image-area col-lg-6 d-flex align-items-center">
+          <img class="about-section-image" src="" alt="">
         </div>
       </div>
-    </div>
-  </div>
+  </section>
 
   <!-- ===== Features Section ===== -->
-  <div class="features-section">
+  <section class="features-section" id="features-section">
 
     <div class="container">
 
@@ -99,10 +101,14 @@
       </div>
 
       
-      <div class="col">
+      <div class="row">
         <div class="row">
 
-          <div class="features-box">
+          <div class="features-section-image-area col-xl-4 text-center">
+            <img class="features-section-image" src="" alt="">
+          </div>
+
+          <div class="features-box col-xl-8 d-flex">
             <i class="bi bi-graph-up"></i>
             <div>
               <h4>Track your progress</h4>
@@ -110,7 +116,7 @@
             </div>
           </div>
 
-          <div class="features-box">
+          <div class="features-box col-xl-8 d-flex">
             <i class="bi bi-trophy"></i>
             <div>
               <h4>Earn badges</h4>
@@ -118,7 +124,7 @@
             </div>
           </div>
 
-          <div class="features-box">
+          <div class="features-box col-xl-8 d-flex">
             <i class="bi bi-pen"></i>
             <div>
               <h4>Write journals</h4>
@@ -126,7 +132,7 @@
             </div>
           </div>
 
-          <div class="features-box">
+          <div class="features-box col-xl-8 d-flex">
             <i class="bi bi-emoji-smile"></i>
             <div>
               <h4>Track your mood </h4>
@@ -134,7 +140,7 @@
             </div>
           </div>
 
-          <div class="features-box">
+          <div class="features-box col-xl-8 d-flex">
             <i class="bi bi-calendar4-week"></i>
             <div>
               <h4>Check previous journal entries</h4>
@@ -142,7 +148,7 @@
             </div>
           </div>
 
-          <div class="features-box">
+          <div class="features-box col-xl-8 d-flex">
             <i class="bi bi-people"></i>
             <div>
               <h4>Collaborate on group journals</h4>
@@ -154,37 +160,32 @@
       </div>
 
     </div>
-  </div>
-
+  </section>
 
   <!-- ===== Footer Section ===== -->
-  <div class="footer-section">
-
-      <div class="container">
-        <div class="row">
-          <div class="footer-logo-name">
-            <a class="logo" href="{% static 'home' %}">
-              <span>Compact Journals</span>
-            </a>
-            <p>Track your progress.</p>
-          </div>
-
-          <div>
-            <h4>Contact Us</h4>
-            <p>
-              30 Aldwych <br>
-              London, WC2B 4BG <br>
-              United Kingdom <br>
-              <br>
-              <strong>Phone:</strong> +44 0000 000000<br>
-              <strong>Email:</strong> help@ccw.com<br>
-            </p>
-          </div>
-          
-        </div>
+  <footer class="footer-section" id="footer-section">
+    <div class="row">
+      <div class="footer-logo-name col-lg-6 col-md-6 text-center text-sm-start justify-content-center">
+        <a class="logo d-flex text-center align-items-center justify-content-center" href="{% static 'home' %}">
+          <span>Compact Journals</span>
+        </a>
+        <p>Track your progress.</p>
       </div>
+
+      <div class="col-lg-6 col-md-6 footer-contact-area text-center text-sm-center">
+        <h4>Contact Us</h4>
+        <p>
+          30 Aldwych <br>
+          London, WC2B 4BG <br>
+          United Kingdom <br>
+          <br>
+          <strong>Phone:</strong> +44 0000 000000<br>
+          <strong>Email:</strong> help@ccw.com<br>
+        </p>
+      </div>
+      
     </div>
-  </div>
+  </footer>
 
 </body>
 
