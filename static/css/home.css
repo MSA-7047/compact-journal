@@ -1,0 +1,103 @@
+/*-- ===== Header ===== --*/
+.header {
+  transition: all 0.3s;
+  padding: 20px 0;
+}
+
+.header.header-scrolled {  
+  background: #fff;
+  box-shadow: 0px 2px 20px #494850;
+  padding: 20px 0;
+}
+
+.header .logo-name {
+  text-decoration: none;
+  color: #012970;
+  font-family: "Tilt-Warp", sans-serif;
+  font-size: 25px;
+  font-weight: 650;
+}
+
+/*-- ===== Navbar ===== --*/
+.navbar ul {
+  display: flex;
+  list-style: none;
+  align-items: center;
+}
+
+.navbar a, .navbar a:focus {
+  color: #494850;
+  padding: 5px 15px;
+  font-size: 20px;
+  font-weight: 650;
+}
+
+.navbar a:hover, .navbar .active, .navbar .active:focus, .navbar li:hover>a {
+  color: #70ABAF;
+}
+
+
+/* log in button */
+.navbar .log-in-button, .navbar .log-in-button:focus {
+  color: #ffffff;
+  background: #494850;
+  padding: 15px 40px;
+  margin-left: 30px;
+  border-radius: 1000px;
+  text-decoration: none;
+}
+
+.navbar .log-in-button:hover, .navbar .log-in-button:focus:hover {
+  color: #ffffff;
+  background: #5969f3;
+  opacity: 1;
+}
+
+/*-- ===== Top Section ===== --*/
+.top-section {
+  width: 100%;
+  height: 100vh;
+  background: url("") top center no-repeat;
+  background-attachment: fixed;
+}
+
+.top-section h1 {
+  color: #165acf;
+  font-size: 65px;
+  font-weight: bold;
+}
+
+.top-section h2 {
+  color: #303030;
+  margin: 20px 0;
+  font-size: 30px;
+}
+
+.top-section .sign-up-button {
+  color: #fff;
+  background: #494850;
+  margin-top: 30px;
+  padding: 15px 30px;
+  border-radius: 1000px;
+  box-shadow: 0px 5px 10px #303030;
+  text-decoration: none;
+}
+
+.top-section .sign-up-button span {
+  font-family: "Tilt-Warp", sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.top-section .sign-up-button i {
+  margin-left: 25px;
+  font-size: 20px;
+}
+
+.top-section .sign-up-button i {
+  transform: translateX(10px);
+}
+.top-section .hero-img {
+  padding-top: 125px;
+  text-align: center;
+}
