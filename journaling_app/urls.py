@@ -43,6 +43,7 @@ urlpatterns = [
     path('change_journal_info/<int:journalID>/', views.ChangeJournalInfo, name='change_journal_info'),
     path('journal/<int:journalID>/', views.journal_detail_view, name='journal_detail'),
     path('ckeditor5/', include('django_ckeditor_5.urls')),
+    path('delete_journal/<int:journalID>/', DeleteJournal, name='delete_journal'),
     
     path('friend_requests/', view_friend_requests, name='view_friend_requests'),
     path('friends/', view_friends, name='view_friends'),

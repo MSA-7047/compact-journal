@@ -8,11 +8,14 @@
           <p>
             {% for journal in journal_existence %}
             <br/>
-            <a href="{% url 'change_journal_info' journalID=journal.id%}" class="btn btn-lg btn-secondary">
+            <a href="{% url 'change_journal_info' journalID=journal.id%}" class="btn btn-sm btn-secondary">
               Edit Journal
             </a>
-            <a href="{% url 'journal_detail' journalID=journal.id %}" class="btn btn-lg btn-secondary">
+            <a href="{% url 'journal_detail' journalID=journal.id %}" class="btn btn-sm btn-secondary">
               View Journal
+            </a>
+            <a href="{% url 'delete_journal' journalID=journal.id%}" class="btn btn-sm btn-outline-danger">
+              Delete Journal Entry
             </a>
             <br/>
             <br/>
@@ -39,7 +42,7 @@
         {% else %}
           <p>There are no journal entries available.</p>
           <p>
-            <a href="{% url 'create_journal_view' %}" class="btn btn-lg btn-secondary">
+            <a href="{% url 'add_journal' %}" class="btn btn-lg btn-secondary">
               Create a Journal
             </a>
           </p>
