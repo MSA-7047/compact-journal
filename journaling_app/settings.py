@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'journal',
     'django_countries',
-    'django_ckeditor_5'
+    'django_ckeditor_5',
 ]
 
 MIDDLEWARE = [
@@ -310,3 +310,6 @@ CKEDITOR_5_CONFIGS = {
         },
     },
 }
+
+
+CKEDITOR_5_FILE_STORAGE = "journal.storage.CustomStorage"

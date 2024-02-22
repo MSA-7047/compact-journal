@@ -349,13 +349,13 @@ def create_journal(request):
             journal_description = form.cleaned_data.get("journal_description")
             journal_bio = form.cleaned_data.get("journal_bio")
             journal_mood = form.cleaned_data.get("journal_mood")
-            #journal_owner = current_user
+            journal_owner = current_user
             journal = Journal.objects.create(
                 journal_title = journal_title,
                 journal_description = journal_description,
                 journal_bio = journal_bio,
                 journal_mood = journal_mood,
-                #journal_owner = journal_owner
+                journal_owner = journal_owner
             )
             journal.save()
             #old render that would stick on create journal view after creating journal, thus repeating entry when reloaded
@@ -391,7 +391,7 @@ def ChangeJournalInfo(request, journalID):
         form = EditJournalInfoForm(request.POST, instance=journal)
         if form.is_valid():
             form.save()
-            return redirect('all_entries')  # Redirect to the detail view of the edited journal
+            return redirect('dashboard')  # Redirect to the detail view of the edited journal
     else:
         form = EditJournalInfoForm(instance=journal)
 

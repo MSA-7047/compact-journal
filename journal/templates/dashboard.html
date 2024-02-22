@@ -114,6 +114,10 @@
           Todays Mood: {{ journal.journal_mood }}
           <br/>
           Created on: {{ journal.entry_date }}
+          <br/>
+          <a href="{% url 'change_journal_info' journalID=journal.id%}" class="btn btn-lg btn-secondary">
+            Edit
+          </a>
           {% endfor %}
 
 
