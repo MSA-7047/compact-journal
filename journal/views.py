@@ -447,13 +447,12 @@ def edit_group(request, group_id):
 
 @login_required
 def send_group_request(request):
+    """Allows a user to send a group request."""
     if request.method == 'POST':
         form = SendGroupRequestForm(request.POST, currentUser=request.user)
         if form.is_valid():
             recipient = form.cleaned_data['recipient']
-            # Create GroupRequest instance
             GroupRequest.objects.create(sender=request.user, recipient=recipient)
-            # Redirect to success page or home page
             return redirect('home') 
     else:
         form = SendGroupRequestForm(currentUser=request.user)
@@ -461,6 +460,7 @@ def send_group_request(request):
 
 @login_required
 def accept_group_request(request, group_request_id): 
+    """Allows a user that has a sent request to accept the request."""
     group_request = get_object_or_404(GroupRequest, id=group_request_id, recipient=request.user, is_accepted=True)
 
     # Add the user to the group
@@ -478,6 +478,7 @@ def accept_group_request(request, group_request_id):
 
 @login_required
 def reject_invitation(request, group_request_id):
+    """Allows the user with the sent friend request to reject it"""
     group_request = get_object_or_404(GroupRequest, id=group_request_id, recipient=request.user, is_accepted=False)
     group_request.status =  'rejected'
     group_request.save()
@@ -489,36 +490,33 @@ def reject_invitation(request, group_request_id):
 
 @login_required
 def delete_sent_request(request, friend_request_id):
+    """Deletes the friend request once it is accepted or deleted."""
     group_request = get_object_or_404(GroupRequest, id=group_request_id, recipient=request.user, is_accepted=False)
     group_request.delete()
     return redirect('group')
 
 @login_required
 def delete_group(request, group_id):
-    # Retrieve the group object
+    """Allows the owner to delete the group"""
     group = get_object_or_404(Group, pk=group_id)
 
-    # Check if the current user is the owner of the group
     if request.user == group.owner:
         # Only allow deletion via POST method to prevent accidental deletions
         if request.method == 'POST':
-            # Delete the group
             group.delete()
-            # Optionally, you can redirect the user to a specific page after deletion
             return redirect('home') 
         else:
             # Handle GET requests (e.g., show a confirmation page)
             return render(request, 'confirm_group_deletion.html', {'group': group})
     else:
-        # User is not the owner, return forbidden response
         return HttpResponseForbidden('You are not authorized to delete this group.')
 
 @login_required
 def leave_group(request, group_id):
+    """Allows users to leave a group"""
     group = get_object_or_404(Group, pk=group_id)
     user = request.user
 
-    # Check if the user is the owner of the group
     if user == group.owner:
         if group.members.count() == 1:
             # The owner is the only member, delete the group
@@ -529,20 +527,44 @@ def leave_group(request, group_id):
             if request.method == 'POST':
                 new_owner_id = request.POST.get('new_owner')
                 new_owner = get_object_or_404(User, pk=new_owner_id)
-
-                # Transfer ownership to the selected user
                 group.owner = new_owner
                 group.save()
 
-            # Render the page to select a new owner
             return render(request, 'select_new_owner.html', {'group': group})
     else:
-        # If the user is not the owner, remove them from the group
         group_membership = GroupMembership.objects.get(group=group, user=user)
         group_membership.delete()
 
-        # If there are no members left, delete the group
         if group.members.count() == 0:
             group.delete()
 
         return redirect('home')
+
+@login_required
+def remove_player_from_group(request, group_id, player_id):
+    """Allows the owner to remove a player from the group."""
+    
+    group = get_object_or_404(Group, id=group_id)
+    player = get_object_or_404(User, id=player_id)
+
+    if request.user != group.owner:
+        return HttpResponseForbidden('You are not authorized to remove a player from this group.')
+
+    if player == group.owner:
+        messages.error(request, "The owner cannot be removed from the group.")
+        return redirect('group_detail', group_id=group.id)
+
+    try:
+        membership = GroupMembership.objects.get(group=group, user=player)
+    except GroupMembership.DoesNotExist:
+        messages.error(request, f"{player.username} is not a member of the group.")
+        return redirect('group_detail', group_id=group.id)
+
+    membership.delete()
+    messages.success(request, f"Successfully removed {player.username} from the group.")
+    
+    if group.members.count() == 0:
+        group.delete()
+        messages.info(request, "The group has been deleted as there are no members left.")
+
+    return redirect('group_detail', group_id=group.id)
