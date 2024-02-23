@@ -1,28 +1,63 @@
-/*-- ===== Features Section ===== --*/
-.features .feature-icons .content .icon-box {
+/*-- ==================== Sections ==================== --*/
+section {
+  padding: 60px 0;
+  overflow: hidden;
+}
+
+.section-header {
+  text-align: center;
+  padding-bottom: 40px;
+}
+
+.section-header h2 {
+  color: #4154f1;
+  font-size: 13px;
+  letter-spacing: 1px;
+  font-weight: bold;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.section-header p {
+  color: #012970;
+  margin: 10px 0 0 0;
+  padding: 0;
+  font-size: 38px;
+  line-height: 42px;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .section-header p {
+    font-size: 28px;
+    line-height: 32px;
+  }
+}
+
+/*-- ==================== Features Section ==================== --*/
+.features-section .feature-boxes .feature {
   display: flex;
 }
 
-.features .feature-icons .content .icon-box h4 {
+.features-section .feature-boxes .feature h3 {
   color: #6ca5cd;
   font-size: 25px;
   font-weight: 600;
 }
 
-.features .feature-icons .content .icon-box i {
+.features-section .feature-boxes .feature i {
   color: #700137;
   font-size: 50px;
   margin-left: 10px;
-  
   margin-right: 20px;
 }
 
-.features .feature-icons .content .icon-box p {
+.features-section .feature-boxes .feature p {
   color: #848484;
   font-size: 15px;
 }
 
-/*-- ===== Footer Section ===== --*/
+/*-- ==================== Footer Section ==================== --*/
 .footer {
   color:#494850;
   background: #d3ddf0;

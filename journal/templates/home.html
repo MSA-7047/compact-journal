@@ -38,7 +38,7 @@
         <ul>
           <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
           <li><a class="nav-link scrollto" href="#about-section">About</a></li>
-          <li><a class="nav-link scrollto" href="#features">Features</a></li>
+          <li><a class="nav-link scrollto" href="#features-section">Features</a></li>
           <li><a class="getstarted scrollto" href="{% url 'log_in' %}">Log in</a></li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
@@ -103,9 +103,8 @@
 
     </section><!-- End About Section -->
 
-    <!-- ======= Features Section ======= -->
-    <section class="features" id="features">
-
+    <!-- ==================== Features Section ==================== -->
+    <section class="features-section" id="features-section">
       <div class="container">
 
         <header class="section-header">
@@ -113,75 +112,68 @@
           <p>What can you do with Compact Journals?</p>
         </header>
 
-        <!-- Feature Icons -->
-        <div class="row feature-icons">
-          
-          <div class="row">
+        <div class="row">
 
-            <div class="col-xl-4 text-center">
-              <img class="img-fluid p-4" src="{% static 'img/shared-goals-bro.png' %}" alt="">
-            </div>
-
-            <div class="col-xl-8 d-flex content">
-              <div class="row align-self-center gy-4">
-
-                <div class="col-md-6 icon-box">
-                  <i class="bi bi-graph-up"></i>
-                  <div>
-                    <h4>Track your progress</h4>
-                    <p>Keep an eye on how you're doing each day.</p>
-                  </div>
-                </div>
-
-                <div class="col-md-6 icon-box">
-                  <i class="bi bi-trophy"></i>
-                  <div>
-                    <h4>Earn badges</h4>
-                    <p>Get rewarded with badges for writing in your journal every day</p>
-                  </div>
-                </div>
-
-                <div class="col-md-6 icon-box">
-                  <i class="bi bi-pen"></i>
-                  <div>
-                    <h4>Write journals</h4>
-                    <p>Record your thoughts and experiences regularly.</p>
-                  </div>
-                </div>
-
-                <div class="col-md-6 icon-box">
-                  <i class="bi bi-emoji-smile"></i>
-                  <div>
-                    <h4>Track your mood </h4>
-                    <p>Keep tabs on how you're feeling over the month.</p>
-                  </div>
-                </div>
-
-                <div class="col-md-6 icon-box">
-                  <i class="bi bi-calendar4-week"></i>
-                  <div>
-                    <h4>Check previous journal entries</h4>
-                    <p>Take a peek at what you've written in the past.</p>
-                  </div>
-                </div>
-
-                <div class="col-md-6 icon-box">
-                  <i class="bi bi-people"></i>
-                  <div>
-                    <h4>Collaborate on group journals</h4>
-                    <p>Work together on shared journal entries with friends.</p>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
+          <div class="col-xl-4 text-center">
+            <img class="img-fluid p-4" src="{% static 'img/shared-goals-bro.png' %}" alt="">
           </div>
 
-        </div><!-- End Feature Icons -->
+          <div class="feature-boxes col-xl-8 d-flex">
+            <div class="row align-self-center gy-4">
 
+              <div class="feature col-md-6">
+                <i class="bi bi-graph-up"></i>
+                <div>
+                  <h3>Track your progress</h3>
+                  <p>Keep an eye on how you're doing each day.</p>
+                </div>
+              </div>
+
+              <div class="feature col-md-6">
+                <i class="bi bi-trophy"></i>
+                <div>
+                  <h3>Earn badges</h3>
+                  <p>Get rewarded with badges for writing in your journal every day</p>
+                </div>
+              </div>
+
+              <div class="feature col-md-6">
+                <i class="bi bi-pen"></i>
+                <div>
+                  <h3>Write journals</h3>
+                  <p>Record your thoughts and experiences regularly.</p>
+                </div>
+              </div>
+
+              <div class="feature col-md-6">
+                <i class="bi bi-emoji-smile"></i>
+                <div>
+                  <h3>Track your mood </h3>
+                  <p>Keep tabs on how you're feeling over the month.</p>
+                </div>
+              </div>
+
+              <div class="feature col-md-6">
+                <i class="bi bi-calendar4-week"></i>
+                <div>
+                  <h3>Check previous journal entries</h3>
+                  <p>Take a peek at what you've written in the past.</p>
+                </div>
+              </div>
+
+              <div class="feature col-md-6">
+                <i class="bi bi-people"></i>
+                <div>
+                  <h3>Collaborate on group journals</h3>
+                  <p>Work together on shared journal entries with friends.</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
       </div>
-
     </section><!-- End Features Section -->
 
   </main>
