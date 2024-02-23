@@ -1,3 +1,39 @@
+/*-- ===== Section ===== --*/
+section {
+  padding: 60px 0;
+  overflow: hidden;
+}
+
+.section-header {
+  text-align: center;
+  padding-bottom: 40px;
+}
+
+.section-header h2 {
+  color: #4154f1;
+  font-size: 13px;
+  letter-spacing: 1px;
+  font-weight: bold;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.section-header p {
+  color: #012970;
+  margin: 10px 0 0 0;
+  padding: 0;
+  font-size: 38px;
+  line-height: 42px;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .section-header p {
+    font-size: 28px;
+    line-height: 32px;
+  }
+}
+
 /*-- ===== Header ===== --*/
 .header {
   position: fixed;
@@ -69,8 +105,6 @@
   height: 100vh;
   background: url("") top center no-repeat;
   background-attachment: fixed;
-  align-items: center;
-  justify-content: center;
 }
 
 .top-section .header-text-area h1 {
@@ -106,13 +140,47 @@
   font-size: 20px;
 }
 
-.top-section .sign-up-button i {
+.top-section .sign-up-button:hover i {
   transform: translateX(10px);
 }
 .top-section .top-section-image-area .top-section-image {
   padding-top: 125px;
   text-align: center;
-  width: 60%;
+}
+
+@media (max-width: 992px) {
+  .top-section {
+    height: auto;
+    text-align: center;
+    padding-top: 100px;
+  }
+
+  .top-section .top-section-image-area .top-section-image {
+    text-align: center;
+    margin-top: 80px;
+  }
+
+  .top-section .top-section-image-area .top-section-image img {
+    width: 75%;
+  }
+}
+
+@media (max-width: 768px) {
+  .top-section {
+    text-align: center;
+  }
+
+  .top-section h1 {
+    font-size: 50px;
+  }
+
+  .top-section .header-text-area h2 {
+    font-size: 25px;
+  }
+
+  .top-section .top-section-image-area .top-section-image img {
+    width: 65%;
+  }
 }
 
 /*-- ===== About Section ===== --*/
