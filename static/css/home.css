@@ -116,9 +116,9 @@
 }
 
 /*-- ===== About Section ===== --*/
-.about-section .content {
-  background-color: #cdccf0;
-  border-radius: 15px;
+.about-section .about-section-content {
+  background-color: #165acf;
+  border-radius: 25px;
   padding: 40px;
 }
 
@@ -129,17 +129,17 @@
 }
 
 /*-- ===== Features Section ===== --*/
-.features .feature-icons .content .icon-box {
+.features-section .features-box {
   display: flex;
 }
 
-.features .feature-icons .content .icon-box h4 {
+.features-section .features-box h4 {
   color: #6ca5cd;
   font-size: 25px;
   font-weight: 600;
 }
 
-.features .feature-icons .content .icon-box i {
+.features-section .features-box i {
   color: #700137;
   font-size: 50px;
   margin-left: 10px;
@@ -147,44 +147,44 @@
   margin-right: 20px;
 }
 
-.features .feature-icons .content .icon-box p {
+.features-section .features-box p {
   color: #848484;
   font-size: 15px;
 }
 
 /*-- ===== Footer Section ===== --*/
-.footer {
+.footer-section {
   color:#494850;
   background: #d3ddf0;
 }
 
-.footer a {
+.footer-section a {
   text-decoration: none;
 }
 
-.footer .footer-top .footer-info .logo {
+.footer-section .footer-logo-name {
   margin-bottom: 10px;
 }
 
-.footer .footer-top .footer-info .logo img {
+.footer-section .footer-logo-name img {
   margin-right: 10px;
 }
 
-.footer .footer-top .footer-info .logo span {
+.footer-section .footer-logo-name span {
   color: #012970;
   font-size: 30px;
   font-weight: 700;
   font-family: "Nunito", sans-serif;
 }
 
-.footer .footer-top .footer-info p {
+.footer-section .footer-logo-name p {
   font-size: 15px;
   font-family: "Tilt-Warp", sans-serif;
   text-align: center;
   text-decoration: none;
 }
 
-.footer .footer-top h4 {
+.footer-section h4 {
   color: #012970;
   font-size: 20px;
   font-weight: 700;

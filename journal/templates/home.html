@@ -25,24 +25,25 @@
 
 <body>
   <!-- ======= Header + Navbar Section ======= -->
-  <header class="header" id="header">
-    <div class="bar container-fluid container-xl d-flex align-items-center justify-content-between">
+  <header id="header" class="header fixed-top">
+    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
 
-      <a class="logo-name d-flex align-items-center" href="{% url 'home' %}">
+      <a href="{% url 'home' %}" class="logo d-flex align-items-center">
+        <img src="" alt="">
         <span>Compact Journals</span>
       </a>
 
-      <nav class="navbar">
+      <nav id="navbar" class="navbar">
         <ul>
-          <li><a class="nav-link" href="#top-section">Home</a></li>
-          <li><a class="nav-link" href="#about-section">About</a></li>
-          <li><a class="nav-link" href="#features-section">Features</a></li>
-          <li><a class="log-in-button" href="{% url 'log_in' %}">Log in</a></li>
+          <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
+          <li><a class="nav-link scrollto" href="#about-section">About</a></li>
+          <li><a class="nav-link scrollto" href="#features">Features</a></li>
+          <li><a class="getstarted scrollto" href="{% url 'log_in' %}">Log in</a></li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav>
-    </div>
 
+    </div>
   </header>
 
   <!-- ======= Top Section ======= -->
@@ -55,8 +56,8 @@
           <h2>Track your progress.</h2>
           <div>
             <div class="text-center text-lg-start">
-              <a href="{% url 'home' %}" class="btn-get-started scrollto d-inline-flex align-items-center justify-content-center align-self-center">
-                <span>Get Started</span>
+              <a href="{% url 'sign_up' %}" class="btn-get-started scrollto d-inline-flex align-items-center justify-content-center align-self-center">
+                <span>Sign up</span>
                 <i class="bi bi-arrow-right"></i>
               </a>
             </div>
