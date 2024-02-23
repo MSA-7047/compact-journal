@@ -34,6 +34,24 @@ section {
   }
 }
 
+/*-- ==================== About Section ==================== --*/
+.about-section .answer {
+  background-color: #cdccf0;
+  border-radius: 50px;
+  padding: 0 20px;
+}
+
+.about-section .answer .big-answer-text {
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.about-section img {
+  width: 70%;
+  height: auto;
+}
+
 /*-- ==================== Features Section ==================== --*/
 .features-section .feature-boxes .feature {
   display: flex;
