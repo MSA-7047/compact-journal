@@ -36,7 +36,7 @@
 
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
+          <li><a class="nav-link scrollto active" href="#top-section">Home</a></li>
           <li><a class="nav-link scrollto" href="#about-section">About</a></li>
           <li><a class="nav-link scrollto" href="#features-section">Features</a></li>
           <li><a class="getstarted scrollto" href="{% url 'log_in' %}">Log in</a></li>
@@ -47,135 +47,135 @@
     </div>
   </header><!-- End Header -->
 
-  <!-- ======= Hero Section ======= -->
-  <section class="hero d-flex align-items-center" id="hero">
-
+  <!-- ==================== Top Section ==================== -->
+  <section class="top-section d-flex align-items-center" id="top-section">
     <div class="container">
+
       <div class="row">
-        <div class="col-lg-6 d-flex flex-column justify-content-center">
-          <h1>Compact.</h1>
-          <h2>Track your progress.</h2>
-          <div>
-            <div class="text-center text-lg-start">
-              <a class="btn-get-started scrollto d-inline-flex align-items-center justify-content-center align-self-center" href="{% url 'sign_up' %}" >
-                <span>Sign up</span>
-                <i class="bi bi-arrow-right"></i>
-              </a>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-6 hero-img">
+
+        <div class="top-section-image col-lg-6">
           <img class="img-fluid" src="{% static 'img/blog-post-bro.png' %}" alt="">
         </div>
+
+        <div class="main-text col-lg-6 d-flex flex-column justify-content-center">
+          <h1>Compact.</h1>
+          <h2>Track your progress.</h2>
+        
+          <div class="text-lg-start text-center">
+            <a class="sign-up-button scrollto d-inline-flex" href="{% url 'sign_up' %}">
+              <span>Sign up</span>
+              <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+
+        </div>
+
       </div>
     </div>
 
-  </section><!-- End Hero -->
+  </section>
 
-  <main id="main">
-    <!-- ======= About Section ======= -->
-    <section class="about-section" id="about-section">
-      <div class="container">
+  <!-- ==================== About Section ==================== -->
+  <section class="about-section" id="about-section">
+    <div class="container">
 
-        <header class="section-header">
-          <h2>About</h2>
-          <p>What is Compact Journals?</p>
-        </header>
+      <header class="section-header">
+        <h2>About</h2>
+        <p>What is Compact Journals?</p>
+      </header>
 
-        <div class="row">
+      <div class="row">
 
-          <div class="answer col-lg-6 d-flex flex-column justify-content-center">
-            <h2 class="big-answer-text">Compact Journals is a web-based journalling application created using the Python Django framework.</h2>
-            <p>
-              This web application was built by 8 students from King's College London as part of their 
-              large group software engineering project for the module 5CCS2SEG. This group project took 
-              place during the second semester of academic year 2023-24. 
-            </p>
-          </div>
-
-          <div class="col-xl-6 d-flex align-items-center justify-content-center">
-            <img class="img-fluid" src="{% static 'img/programming-bro.png' %}" alt="">
-          </div>
-          
+        <div class="answer col-lg-6 d-flex flex-column justify-content-center">
+          <h2 class="big-answer-text">Compact Journals is a web-based journalling application created using the Python Django framework.</h2>
+          <p>
+            This web application was built by 8 students from King's College London as part of their 
+            large group software engineering project for the module 5CCS2SEG. This group project took 
+            place during the second semester of academic year 2023-24. 
+          </p>
         </div>
+
+        <div class="col-xl-6 d-flex align-items-center justify-content-center">
+          <img class="img-fluid" src="{% static 'img/programming-bro.png' %}" alt="">
+        </div>
+
       </div>
+    </div>
 
-    </section>
+  </section>
 
-    <!-- ==================== Features Section ==================== -->
-    <section class="features-section" id="features-section">
-      <div class="container">
+  <!-- ==================== Features Section ==================== -->
+  <section class="features-section" id="features-section">
+    <div class="container">
 
-        <header class="section-header">
-          <h2>Features</h2>
-          <p>What can you do with Compact Journals?</p>
-        </header>
+      <header class="section-header">
+        <h2>Features</h2>
+        <p>What can you do with Compact Journals?</p>
+      </header>
 
-        <div class="row">
+      <div class="row">
 
-          <div class="col-xl-4 text-center">
-            <img class="img-fluid p-4" src="{% static 'img/shared-goals-bro.png' %}" alt="">
-          </div>
+        <div class="col-xl-4 text-center">
+          <img class="img-fluid p-4" src="{% static 'img/shared-goals-bro.png' %}" alt="">
+        </div>
 
-          <div class="feature-boxes col-xl-8 d-flex">
-            <div class="row align-self-center gy-4">
+        <div class="feature-boxes col-xl-8 d-flex">
+          <div class="row align-self-center gy-4">
 
-              <div class="feature col-md-6">
-                <i class="bi bi-graph-up"></i>
-                <div>
-                  <h3>Track your progress</h3>
-                  <p>Keep an eye on how you're doing each day.</p>
-                </div>
+            <div class="feature col-md-6">
+              <i class="bi bi-graph-up"></i>
+              <div>
+                <h3>Track your progress</h3>
+                <p>Keep an eye on how you're doing each day.</p>
               </div>
-
-              <div class="feature col-md-6">
-                <i class="bi bi-trophy"></i>
-                <div>
-                  <h3>Earn badges</h3>
-                  <p>Get rewarded with badges for writing in your journal every day</p>
-                </div>
-              </div>
-
-              <div class="feature col-md-6">
-                <i class="bi bi-pen"></i>
-                <div>
-                  <h3>Write journals</h3>
-                  <p>Record your thoughts and experiences regularly.</p>
-                </div>
-              </div>
-
-              <div class="feature col-md-6">
-                <i class="bi bi-emoji-smile"></i>
-                <div>
-                  <h3>Track your mood </h3>
-                  <p>Keep tabs on how you're feeling over the month.</p>
-                </div>
-              </div>
-
-              <div class="feature col-md-6">
-                <i class="bi bi-calendar4-week"></i>
-                <div>
-                  <h3>Check previous journal entries</h3>
-                  <p>Take a peek at what you've written in the past.</p>
-                </div>
-              </div>
-
-              <div class="feature col-md-6">
-                <i class="bi bi-people"></i>
-                <div>
-                  <h3>Collaborate on group journals</h3>
-                  <p>Work together on shared journal entries with friends.</p>
-                </div>
-              </div>
-
             </div>
+
+            <div class="feature col-md-6">
+              <i class="bi bi-trophy"></i>
+              <div>
+                <h3>Earn badges</h3>
+                <p>Get rewarded with badges for writing in your journal every day</p>
+              </div>
+            </div>
+
+            <div class="feature col-md-6">
+              <i class="bi bi-pen"></i>
+              <div>
+                <h3>Write journals</h3>
+                <p>Record your thoughts and experiences regularly.</p>
+              </div>
+            </div>
+
+            <div class="feature col-md-6">
+              <i class="bi bi-emoji-smile"></i>
+              <div>
+                <h3>Track your mood </h3>
+                <p>Keep tabs on how you're feeling over the month.</p>
+              </div>
+            </div>
+
+            <div class="feature col-md-6">
+              <i class="bi bi-calendar4-week"></i>
+              <div>
+                <h3>Check previous journal entries</h3>
+                <p>Take a peek at what you've written in the past.</p>
+              </div>
+            </div>
+
+            <div class="feature col-md-6">
+              <i class="bi bi-people"></i>
+              <div>
+                <h3>Collaborate on group journals</h3>
+                <p>Work together on shared journal entries with friends.</p>
+              </div>
+            </div>
+
           </div>
-
         </div>
-      </div>
-    </section>
 
-  </main>
+      </div>
+    </div>
+  </section>
 
   <!-- ==================== Footer ==================== -->
   <footer class="footer" id="footer">
