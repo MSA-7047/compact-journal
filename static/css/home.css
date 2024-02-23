@@ -109,9 +109,10 @@
 .top-section .sign-up-button i {
   transform: translateX(10px);
 }
-.top-section .hero-img {
+.top-section .top-section-image-area .top-section-image {
   padding-top: 125px;
   text-align: center;
+  width: 60%;
 }
 
 /*-- ===== About Section ===== --*/

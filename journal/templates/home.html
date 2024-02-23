@@ -26,13 +26,13 @@
 <body>
   <!-- ======= Header + Navbar Section ======= -->
   <header class="header" id="header">
-    <div class="bar container-fluid container-xl d-flex">
+    <div class="bar container-fluid container-xl d-flex align-items-center justify-content-between">
 
-      <a class="logo-name d-flex" href="{% url 'home' %}">
+      <a class="logo-name d-flex align-items-center" href="{% url 'home' %}">
         <span>Compact Journals</span>
       </a>
 
-      <div class="navbar">
+      <nav class="navbar">
         <ul>
           <li><a class="nav-link" href="#top-section">Home</a></li>
           <li><a class="nav-link" href="#about-section">About</a></li>
@@ -40,29 +40,29 @@
           <li><a class="log-in-button" href="{% url 'log_in' %}">Log in</a></li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
-      </div>
+      </nav>
     </div>
 
   </header>
 
   <!-- ======= Top Section ======= -->
-  <section class="top-section d-flex" id="top-section">
+  <section class="top-section d-flex align-items-center" id="top-section">
     <div class="row">
-      <div class="header-text-area col-lg-6 d-flex flex-column">
+      <div class="header-text-area col-lg-6 d-flex flex-column justify-content-center">
         <h1>Compact.</h1>
         <h2>Track your progress.</h2>
-        <div>
-          <div class="text-lg-start text-center">
-            <a class="sign-up-button d-inline-flex align-items-center justify-content-center align-self-center" href="{% url 'sign_up' %}">
-              <span>Sign up</span>
-              <i class="bi bi-arrow-right"></i>
-            </a>
-          </div>
+
+        <div class="text-lg-start text-center">
+          <a class="sign-up-button d-inline-flex align-items-center justify-content-center align-self-center" href="{% url 'sign_up' %}">
+            <span>Sign up</span>
+            <i class="bi bi-arrow-right"></i>
+          </a>
         </div>
+        
       </div>
 
       <div class="top-section-image-area col-lg-6">
-        <img class="top-section-image" src="" alt="">
+        <img class="top-section-image" src="{% static 'img/blog-post-bro.png' %}" alt="">
       </div>
     </div>
   </section>
@@ -85,7 +85,7 @@
         </div>
 
         <div class="about-section-image-area col-lg-6 d-flex align-items-center">
-          <img class="about-section-image" src="" alt="">
+          <img class="about-section-image" src="{% static 'img/programming-bro.png' %}" alt="">
         </div>
       </div>
   </section>
@@ -105,7 +105,7 @@
         <div class="row">
 
           <div class="features-section-image-area col-xl-4 text-center">
-            <img class="features-section-image" src="" alt="">
+            <img class="features-section-image" src="{% static 'img/shared-goals-bro.png' %}" alt="">
           </div>
 
           <div class="features-box col-xl-8 d-flex">
