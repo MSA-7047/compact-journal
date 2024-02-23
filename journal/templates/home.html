@@ -62,7 +62,7 @@
       </div>
 
       <div class="top-section-image-area col-lg-6">
-        <img class="top-section-image" src="{% static 'img/blog-post-bro.png' %}" alt="">
+        <img class="top-section-image" src="{% static 'img/Programming-bro.png' %}" alt="">
       </div>
     </div>
   </section>
@@ -85,105 +85,121 @@
         </div>
 
         <div class="about-section-image-area col-lg-6 d-flex align-items-center">
-          <img class="about-section-image" src="{% static 'img/programming-bro.png' %}" alt="">
+          <img class="about-section-image" src="" alt="">
         </div>
       </div>
   </section>
 
   <!-- ===== Features Section ===== -->
-  <section class="features-section" id="features-section">
+  <section id="features" class="features">
 
-    <div class="container">
+    <div class="container" data-aos="fade-up">
 
-      <div class="section-header">
+      <header class="section-header">
         <h2>Features</h2>
         <p>What can you do with Compact Journals?</p>
-      </div>
+      </header>
 
-      
-      <div class="row">
+      <!-- Feature Icons -->
+      <div class="row feature-icons" data-aos="fade-up">
+        
         <div class="row">
 
-          <div class="features-section-image-area col-xl-4 text-center">
-            <img class="features-section-image" src="{% static 'img/shared-goals-bro.png' %}" alt="">
+          <div class="col-xl-4 text-center" data-aos="fade-right" data-aos-delay="100">
+            <img src="assets/img/shared-goals-bro.png" class="img-fluid p-4" alt="">
           </div>
 
-          <div class="features-box col-xl-8 d-flex">
-            <i class="bi bi-graph-up"></i>
-            <div>
-              <h4>Track your progress</h4>
-              <p>Keep an eye on how you're doing each day.</p>
-            </div>
-          </div>
+          <div class="col-xl-8 d-flex content">
+            <div class="row align-self-center gy-4">
 
-          <div class="features-box col-xl-8 d-flex">
-            <i class="bi bi-trophy"></i>
-            <div>
-              <h4>Earn badges</h4>
-              <p>Get rewarded with badges for writing in your journal every day</p>
-            </div>
-          </div>
+              <div class="col-md-6 icon-box" data-aos="fade-right" data-aos-delay="100">
+                <i class="bi bi-graph-up"></i>
+                <div>
+                  <h4>Track your progress</h4>
+                  <p>Keep an eye on how you're doing each day.</p>
+                </div>
+              </div>
 
-          <div class="features-box col-xl-8 d-flex">
-            <i class="bi bi-pen"></i>
-            <div>
-              <h4>Write journals</h4>
-              <p>Record your thoughts and experiences regularly.</p>
-            </div>
-          </div>
+              <div class="col-md-6 icon-box" data-aos="fade-right" data-aos-delay="100">
+                <i class="bi bi-trophy"></i>
+                <div>
+                  <h4>Earn badges</h4>
+                  <p>Get rewarded with badges for writing in your journal every day</p>
+                </div>
+              </div>
 
-          <div class="features-box col-xl-8 d-flex">
-            <i class="bi bi-emoji-smile"></i>
-            <div>
-              <h4>Track your mood </h4>
-              <p>Keep tabs on how you're feeling over the month.</p>
-            </div>
-          </div>
+              <div class="col-md-6 icon-box" data-aos="fade-right" data-aos-delay="300">
+                <i class="bi bi-pen"></i>
+                <div>
+                  <h4>Write journals</h4>
+                  <p>Record your thoughts and experiences regularly.</p>
+                </div>
+              </div>
 
-          <div class="features-box col-xl-8 d-flex">
-            <i class="bi bi-calendar4-week"></i>
-            <div>
-              <h4>Check previous journal entries</h4>
-              <p>Take a peek at what you've written in the past.</p>
-            </div>
-          </div>
+              <div class="col-md-6 icon-box" data-aos="fade-right" data-aos-delay="300">
+                <i class="bi bi-emoji-smile"></i>
+                <div>
+                  <h4>Track your mood </h4>
+                  <p>Keep tabs on how you're feeling over the month.</p>
+                </div>
+              </div>
 
-          <div class="features-box col-xl-8 d-flex">
-            <i class="bi bi-people"></i>
-            <div>
-              <h4>Collaborate on group journals</h4>
-              <p>Work together on shared journal entries with friends.</p>
+              <div class="col-md-6 icon-box" data-aos="fade-right" data-aos-delay="500">
+                <i class="bi bi-calendar4-week"></i>
+                <div>
+                  <h4>Check previous journal entries</h4>
+                  <p>Take a peek at what you've written in the past.</p>
+                </div>
+              </div>
+
+              <div class="col-md-6 icon-box" data-aos="fade-right" data-aos-delay="500">
+                <i class="bi bi-people"></i>
+                <div>
+                  <h4>Collaborate on group journals</h4>
+                  <p>Work together on shared journal entries with friends.</p>
+                </div>
+              </div>
+
             </div>
           </div>
 
         </div>
-      </div>
+
+      </div><!-- End Feature Icons -->
 
     </div>
+
   </section>
 
   <!-- ===== Footer Section ===== -->
-  <footer class="footer-section" id="footer-section">
-    <div class="row">
-      <div class="footer-logo-name col-lg-6 col-md-6 text-center text-sm-start justify-content-center">
-        <a class="logo d-flex text-center align-items-center justify-content-center" href="{% static 'home' %}">
-          <span>Compact Journals</span>
-        </a>
-        <p>Track your progress.</p>
-      </div>
+  <footer id="footer" class="footer">
 
-      <div class="col-lg-6 col-md-6 footer-contact-area text-center text-sm-center">
-        <h4>Contact Us</h4>
-        <p>
-          30 Aldwych <br>
-          London, WC2B 4BG <br>
-          United Kingdom <br>
-          <br>
-          <strong>Phone:</strong> +44 0000 000000<br>
-          <strong>Email:</strong> help@ccw.com<br>
-        </p>
+    <div class="footer-top">
+      <div class="container">
+        <div class="row gy-4 ">
+          <div class="col-lg-6 col-md-6 footer-info text-center text-sm-start justify-content-center">
+            <a href="index.html" class="logo d-flex text-center align-items-center justify-content-center">
+              <img src="assets/img/logo.png" alt="">
+              <span>Compact Journals</span>
+            </a>
+            <p>Track your progress.</p>
+          </div>
+
+          <div class="col-lg-6 col-md-6 footer-contact text-center text-sm-center">
+
+            <h4>Contact Us</h4>
+            <p>
+              30 Aldwych <br>
+              London, WC2B 4BG <br>
+              United Kingdom <br>
+              <br>
+              <strong>Phone:</strong> +44 0000 000000<br>
+              <strong>Email:</strong> help@ccw.com<br>
+            </p>
+          </div>
+          
+        </div>
       </div>
-      
     </div>
   </footer>
 
