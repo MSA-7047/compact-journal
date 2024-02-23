@@ -116,9 +116,9 @@
 }
 
 /*-- ===== About Section ===== --*/
-.about-section .about-section-content {
-  background-color: #165acf;
-  border-radius: 25px;
+.about-section .content {
+  background-color: #cdccf0;
+  border-radius: 15px;
   padding: 40px;
 }
 
