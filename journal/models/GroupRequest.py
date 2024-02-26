@@ -13,7 +13,7 @@ class GroupRequest(models.Model):
     
     recipient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='group_invitations')
     sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='group_sent_invitations')
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='group_requests')  
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='group_requests', default=None)  
     creation_date = models.DateField(auto_now=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
     is_accepted = models.BooleanField(default=False)
