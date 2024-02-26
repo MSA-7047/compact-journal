@@ -17,7 +17,7 @@ import calendar
 from calendar import HTMLCalendar
 from datetime import datetime
 from django.db import transaction
-
+from .models.Notification import Notification
 
 @login_required
 def dashboard(request):
@@ -30,6 +30,8 @@ def dashboard(request):
     current_year = datetime.now().year
     current_month = datetime.now().strftime("%B")
     todays_journal = Journal.objects.filter(entry_date__date=today).filter(journal_owner=current_user)
+
+    create_notification(request)
 
     return render(
         request,
@@ -352,6 +354,8 @@ def ChangeJournalTitle(request, journalID):
 
 
 
+
+
 @login_required
 def ChangeJournalBio(request, journalID):
     journal = get_object_or_404(Journal, id=journalID)
@@ -483,8 +487,18 @@ def delete_account(request):
         form = ConfirmAccountDeleteForm()
 
     return render(request, 'delete_account.html', {'form': form})
-    
 
+@login_required
+def create_notification(request):
+    current_user = request.user
+
+    notification = Notification.objects.create(
+        user=current_user,
+        message="This is a test notification message."
+    )
+
+    print("I am testing the notifications system, object creation. If this message shows, it works :)")
+    
 
 
 
