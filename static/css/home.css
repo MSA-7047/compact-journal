@@ -3,18 +3,126 @@
   padding: 20px 0;
 }
 
-.header.scroll {  
+.header.header-scrolled {  
   background: #fff;
   padding: 20px 0;
 }
 
 .header .logo-name {
-  color: #263238;
+  color: #26363e;
   font-family: "Tilt-Warp", sans-serif;
   font-size: 30px;
   font-weight: 800;
   text-decoration: none;
 }
+
+/*-- ==================== Navbar Section ==================== --*/
+/*-- ========== Desktop Navigation ========== --*/
+.navbar {
+  padding: 0;
+}
+
+.navbar ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar a, .navbar a:focus {
+  color: #26363e;
+  font-size: 20px;
+  font-weight: 800;
+  font-family: "Nunito", sans-serif;
+  display: flex;
+  padding: 10px 30px;
+  
+}
+
+.navbar a:hover, .navbar .active, .navbar .active:focus {
+  color: #90caf9;
+}
+
+.navbar .log-in-button, .navbar .log-in-button:focus {
+  color: #ffffff;
+  background: #26363e;
+  padding: 10px 30px;
+  margin-left: 50px;
+  border-radius: 1000px;
+  text-decoration: none;
+}
+
+.navbar .log-in-button:hover, .navbar .log-in-button:focus:hover {
+  color: #ffffff;
+  background: #93c9f7;
+}
+
+/*-- ========== Mobile Navigation ========== --*/
+.mobile-nav-toggle {
+  color: #26363e;
+  font-size: 35px;
+  cursor: pointer;
+  display: none;
+}
+
+.mobile-nav-toggle.bi-x {
+  color: #ffffff;
+}
+
+@media (max-width: 1200px) {
+  .mobile-nav-toggle {
+    display: block;
+  }
+
+  .navbar ul {
+    display: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  .mobile-nav-toggle.bi-x {
+    display: block;
+  }
+}
+
+.navbar-mobile {
+  background: #797d84;
+  position: fixed;
+  inset: 0;
+}
+
+.navbar-mobile .mobile-nav-toggle {
+  position: absolute;
+  font-size: 50px;
+  top: 50px;
+  right: 50px;
+}
+
+.navbar-mobile ul {
+  background-color: #ffffff;
+  display: block;
+  position: absolute;
+  inset: 100px;
+  padding: 15vh 0;
+  border-radius: 25px;
+}
+
+.navbar-mobile a, .navbar-mobile a:focus {
+  justify-content: center;
+  font-size: 20px;
+  color: #26363e;
+}
+
+.navbar-mobile a:hover, .navbar-mobile .active {
+  color: #93c9f7;
+}
+
+.navbar-mobile .log-in-button, .navbar-mobile .log-in-button:focus {
+  color: #ffffff;
+  margin: 75px;
+  padding: 10px 30px;
+}
+
 
 /*-- ==================== Sections ==================== --*/
 section {
@@ -59,9 +167,7 @@ section {
   background: url("") top center no-repeat;
   background-attachment: fixed;
 }
-.top-section .main-text {
-  padding-left: 100px;
-}
+
 .top-section h1 {
   color: #165acf;
   font-size: 65px;
@@ -77,7 +183,7 @@ section {
 .top-section .sign-up-button {
   color: #fff;
   background: #494850;
-  margin-top: 30px;
+  margin-top: 25px;
   padding: 15px 30px;
   border-radius: 1000px;
   box-shadow: 0px 5px 10px #303030;
@@ -117,6 +223,10 @@ section {
 
   .top-section .top-section-img img {
     width: 75%;
+  }
+
+  .top-section .sign-up-button-area {
+    display: flex;
   }
 }
 

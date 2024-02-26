@@ -25,7 +25,7 @@
 </head>
 
 <body>
-  <!-- ======= Header ======= -->
+  <!-- ==================== Header + Navbar Section ==================== -->
   <header class="header fixed-top" id="header">
     <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
 
@@ -38,9 +38,9 @@
           <li><a class="nav-link scrollto active" href="#top-section">Home</a></li>
           <li><a class="nav-link scrollto" href="#about-section">About</a></li>
           <li><a class="nav-link scrollto" href="#features-section">Features</a></li>
-          <li><a class="getstarted scrollto" href="{% url 'log_in' %}">Log in</a></li>
+          <li><a class="log-in-button scrollto" href="{% url 'log_in' %}">Log in</a></li>
         </ul>
-        <i class="bi bi-list mobile-nav-toggle"></i>
+        <i class="mobile-nav-toggle bi bi-list"></i>
       </nav>
 
     </div>
@@ -60,8 +60,8 @@
           <h1>Compact.</h1>
           <h2>Track your progress.</h2>
         
-          <div class="text-lg-start text-center">
-            <a class="sign-up-button scrollto d-inline-flex" href="{% url 'sign_up' %}">
+          <div class="sign-up-button-area text-lg-start text-center justify-content-center">
+            <a class="sign-up-button d-inline-flex" href="{% url 'sign_up' %}">
               <span>Sign up</span>
               <i class="bi bi-arrow-right"></i>
             </a>
