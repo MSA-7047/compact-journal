@@ -104,10 +104,9 @@ document.querySelectorAll('.navbar .dropdown > a').forEach(item => {
 // Initialization of AOS (Animate On Scroll) library for scroll animations
 function aos_init() {
     AOS.init({
-        duration: 1000,
+        duration: 750,
         easing: "ease-in-out",
-        once: true,
-        mirror: false
+        once: true
     });
 }
 window.addEventListener('load', () => {

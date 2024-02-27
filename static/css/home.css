@@ -1,12 +1,11 @@
 /*-- ==================== Sections ==================== --*/
 section {
     padding: 60px 0;
-    overflow: hidden;
   }
   
   .section-header {
     text-align: center;
-    padding-bottom: 40px;
+    padding-bottom: 40px;   
   }
   
   .section-header h2 {
@@ -198,13 +197,14 @@ section {
 
 .top-section .sign-up-button span {
   font-family: "Tilt-Warp", sans-serif;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 20px;
 }
 
 .top-section .sign-up-button i {
   margin-left: 25px;
   font-size: 20px;
+  transition: 0.5s;
 }
 
 .top-section .sign-up-button:hover {
@@ -223,7 +223,6 @@ section {
 
 @media (max-width: 992px) {
   .top-section {
-    height: auto;
     text-align: center;
     padding-top: 100px;
   }
@@ -233,8 +232,8 @@ section {
     margin-top: 80px;
   }
 
-  .top-section .top-section-img img {
-    width: 75%;
+  .top-section img {
+    max-width: 65%;
   }
 
   .top-section .sign-up-button-area {
@@ -254,21 +253,17 @@ section {
   .top-section h2 {
     font-size: 25px;
   }
-
-  .top-section .top-section-img img {
-    width: 65%;
-  }
 }
 
 /*-- ==================== About Section ==================== --*/
 .about-section .answer {
   background-color: #c8e5fc;
   box-shadow: 0px 5px 10px #797d84;
+  height: 60vh;
   font-size:20px;
   text-align: center;
   border-radius: 20px;
   padding: 20px;
-  margin: 0;
 }
 
 .about-section .answer .big-answer-text {
@@ -287,8 +282,7 @@ section {
 }
 
 .about-section img {
-  width: 80%;
-  height: auto;
+    width: 75%;
 }
 
 @media (max-width: 1200px) {
@@ -318,6 +312,10 @@ section {
 .features-section .feature-boxes .feature p {
   color: #797d84;
   font-size: 15px;
+}
+
+.features-section img {
+    width: 75vw;
 }
 
 /*-- ==================== Footer Section ==================== --*/
