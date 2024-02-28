@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from journal.models import *
 from journal.forms import *
 from journal.helpers import login_prohibited
@@ -16,7 +16,10 @@ from django.views.generic import DetailView
 import calendar
 from calendar import HTMLCalendar
 from datetime import datetime
-from django.db import transaction
+from django.views.generic.edit import CreateView
+from django.views.generic.detail import DetailView
+from django.contrib.messages.views import SuccessMessageMixin
+
 
 
 @login_required
@@ -29,7 +32,7 @@ def dashboard(request):
 
     current_year = datetime.now().year
     current_month = datetime.now().strftime("%B")
-    todays_journal = Journal.objects.filter(entry_date__date=today).filter(journal_owner=current_user)
+    todays_journal = Journal.objects.filter(entry_date__date=today)
 
     return render(
         request,
@@ -225,6 +228,8 @@ def get_friend_requests_and_sent_invitations(user):
     sent_rejected_invitations = user.sent_invitations.filter(status='rejected')
     return requests, sent_pending_invitations, sent_accepted_invitations, sent_rejected_invitations
 
+
+
 @login_required
 def view_friend_requests(request):
     requests, sent_pending_invitations, sent_accepted_invitations, sent_rejected_invitations = get_friend_requests_and_sent_invitations(request.user)
@@ -294,15 +299,47 @@ def remove_friend(request, user_id):
     friend.friends.remove(request.user)
     return redirect('friends')
 
+# class AddJournal(SuccessMessageMixin, CreateView):
+#     form_class = CreateJournalForm
+#     model = Journal
+#     template_name = "add_journal.html"
+#     success_message = "Added Succesfully"
+#     success_url = reverse_lazy('dashboard')
+
+
+# class JournalDetail(DetailView):
+#     model = Journal
+#     context_object_name = 'journal'
+#     template_name = "journal_detail.html"
+
+
+class JournalDetail(DetailView):
+    model = Journal
+    template_name = 'journal_detail.html'
+
+    def get_object(self, queryset=None):
+        journal_id = self.kwargs.get('journal_id')
+        queryset = self.get_queryset().filter(id=journal_id)
+        obj = queryset.first()
+        return obj
+
+def journal_detail_view(request, journalID):
+    # Retrieve the journal object based on the journal_id
+    current_user = request.user
+    journal = Journal.objects.get(id=journalID)
+
+    # Pass the journal object to the template context
+    return render(request, 'journal_detail.html', {'user': current_user, 'journal': journal})
 
 @login_required    
 def create_journal(request):
     today = datetime.now().date()
 
     current_user = request.user
-    current_year = datetime.now().year
-    current_month = datetime.now().strftime("%B")
-    todays_journal = Journal.objects.filter(entry_date__date=today)
+    form_class = CreateJournalForm
+    model = Journal
+    template_name = "add_journal.html"
+    success_message = "Added Succesfully"
     form = CreateJournalForm()
     current_user = request.user
     if (request.method == 'POST'):
@@ -324,70 +361,49 @@ def create_journal(request):
             #old render that would stick on create journal view after creating journal, thus repeating entry when reloaded
             #return render(request, 'dashboard.html', {'form': form, 'user': current_user, 'current_year': current_year, 'current_month': current_month, 'todays_journal': todays_journal or None})
             return redirect('/dashboard/')
-
-            return render(request, 'dashboard.html', {'form': form, 'user': current_user, 'current_year': current_year, 'current_month': current_month, 'todays_journal': todays_journal or None})
         else:
-            return render(request, 'create_journal_view.html', {'form': form})
+            return render(request, 'add_journal.html', {'form': form})
     else:
-        return render(request, 'create_journal_view.html', {'form': form})
-
-    
+        return render(request, 'add_journal.html', {'form': form})
 
 @login_required
-def ChangeJournalTitle(request, journalID):
+def ChangeJournalInfo(request, journalID):
+    # journal = get_object_or_404(Journal, id=journalID)
+    
+    # if request.method == 'POST':
+    #     form = EditJournalInfoForm(request.POST, instance=journal)
+    #     if form.is_valid():
+    #         new_title = form.cleaned_data['journal_title']
+    #         journal.journal_title = new_title
+    #         new_description = form.cleaned_data['journal_description']
+    #         journal.journal_description = new_description
+    #         new_bio = form.cleaned_data['journal_bio']
+    #         journal.journal_bio = new_bio
+    #         journal.save()
+    #         return redirect('all_entries')
+    # else:
+    #     form = EditJournalInfoForm(instance=journal)
+    
+    # return render(request, 'change_journal_info.html', {'form': form, 'journal': journal})
     journal = get_object_or_404(Journal, id=journalID)
-    
+
     if request.method == 'POST':
-        form = EditJournalTitleForm(request.POST, instance=journal)
+        form = EditJournalInfoForm(request.POST, instance=journal)
         if form.is_valid():
-            new_title = form.cleaned_data['journal_title']
-            journal.journal_title = new_title
-            journal.save()
-            return redirect('all_entries')
+            form.save()
+            return redirect('dashboard')  # Redirect to the detail view of the edited journal
     else:
-        form = EditJournalTitleForm(instance=journal)
-    
-    return render(request, 'change_journal_title.html', {'form': form, 'journal': journal})
+        form = EditJournalInfoForm(instance=journal)
 
-
-
+    return render(request, 'change_journal_info.html', {'form': form, 'journal': journal})
 
 @login_required
-def ChangeJournalBio(request, journalID):
+def DeleteJournal(request, journalID):
     journal = get_object_or_404(Journal, id=journalID)
-    
-    if request.method == 'POST':
-        form = EditJournalBioForm(request.POST, instance=journal)
-        if form.is_valid():
-            new_bio = form.cleaned_data['journal_bio']
-            journal.journal_bio = new_bio
-            journal.save()
-            return redirect('all_entries')
-    else:
-        form = EditJournalBioForm(instance=journal)
-    
-    return render(request, 'change_journal_bio.html', {'form': form, 'journal': journal})
-
-
-    
-@login_required
-def ChangeJournalDescription(request, journalID):
-    journal = get_object_or_404(Journal, id=journalID)
-    
-    if request.method == 'POST':
-        form = EditJournalDescriptionForm(request.POST, instance=journal)
-        if form.is_valid():
-            new_description = form.cleaned_data['journal_description']
-            journal.journal_description = new_description
-            journal.save()
-            return redirect('all_entries')
-    else:
-        form = EditJournalDescriptionForm(instance=journal)
-    
-    return render(request, 'change_journal_description.html', {'form': form, 'journal': journal})
+    journal.delete()
+    return redirect('dashboard')
 
 @login_required
-
 def calendar_view(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
     name = "Journaller"
     month = month.capitalize()
@@ -484,6 +500,7 @@ def delete_account(request):
 
     return render(request, 'delete_account.html', {'form': form})
     
+
 
 
 

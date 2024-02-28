@@ -96,10 +96,11 @@
       <div class="content-large">
         <h1>Today's Journal:</h1>
         {% if todays_journal is None %}
-        <p>
-          You have not created a journal today!
-          Press the button below to add your journal for the day
-            <a href="{% url 'create_journal_view'%}" class="btn btn-lg btn-secondary">
+        <br/>
+        You have not created a journal today!
+        Press the button below to add your journal for the day
+          <p>
+            <a href="{% url 'add_journal'%}" class="btn btn-lg btn-secondary">
               +
             </a>
         {% else %}
@@ -108,11 +109,15 @@
           <h2>{{ journal.journal_title }}</h2>
           Summary: {{ journal.journal_description }}
           <br/>
-          Journal: {{ journal.journal_bio }}
+          Journal: {{ journal.journal_bio|safe }}
           <br/>
           Todays Mood: {{ journal.journal_mood }}
           <br/>
           Created on: {{ journal.entry_date }}
+          <br/>
+          <a href="{% url 'change_journal_info' journalID=journal.id%}" class="btn btn-lg btn-secondary">
+            Edit
+          </a>
           {% endfor %}
 
 
