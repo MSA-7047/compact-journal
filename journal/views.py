@@ -32,7 +32,7 @@ def dashboard(request):
 
     current_year = datetime.now().year
     current_month = datetime.now().strftime("%B")
-    todays_journal = Journal.objects.filter(entry_date__date=today)
+    todays_journal = Journal.objects.filter(entry_date__date=today, journal_owner=current_user)
 
     return render(
         request,
