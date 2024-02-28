@@ -1,0 +1,28 @@
+{% extends 'base_content.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1>{{ group.name }}</h1>
+            <div class="group-list">
+                {% if journals %}
+                    {% for journal in journals %}
+
+                    {% endfor %}
+                {% endif %}
+                <!-- Create Group Journal Button -->
+            </div>
+            <div class="group-list">
+                {% if members %}
+                    {% for member in members %}
+
+                    {% endfor %}
+                {% endif %}
+                <!-- Invite Member Button -->
+            </div>
+            <!-- Add leave button -->
+            <!-- Add leave button -->
+        </div>
+    </div>
+</div>
+{% endblock %}
