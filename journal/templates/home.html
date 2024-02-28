@@ -1,23 +1,221 @@
-{% extends 'base.html' %}
-{% block body %}
-  <div class="container vh-100">
-    <div class="row h-100">
-      <div class="col-12 my-auto">
-        <div class="card cover-card offset-sm-2 offset-md-4 offset-lg-7">
-          <h1 class="cover-heading">Task Manager</h1>
-          <p class="cover-text">A task manager application by Team <i>Insert team name here (or revise this home screen as you see fit)</i></p>
-          <p>
-            <a href='{% url 'sign_up' %}' class="btn btn-lg btn-secondary">
-              Sign up
-            </a>
-          </p>
-          <p>
-            <a href='{% url 'log_in' %}' class="btn btn-lg btn-secondary">
-              Log in
-            </a>
-          </p>
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Compact Jounals</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap">
+  
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Static CSS File -->
+  <link rel="stylesheet" href="{% static 'css/home.css'%}">
+
+</head>
+
+<body>
+  <!-- ==================== Header + Navbar Section ==================== -->
+  <header class="header fixed-top" id="header">
+    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+
+      <a class="logo-name d-flex align-items-center" href="{% url 'home' %}">
+        Compact Journals
+      </a>
+
+      <nav class="navbar" id="navbar">
+        <ul>
+          <li><a class="nav-link scrollable current" href="#top-section">Home</a></li>
+          <li><a class="nav-link scrollable" href="#about-section">About</a></li>
+          <li><a class="nav-link scrollable" href="#features-section">Features</a></li>
+          <li><a class="log-in-button scrollable" href="{% url 'log_in' %}">Log in</a></li>
+        </ul>
+        <i class="navbar-button bi bi-list"></i>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- ==================== Top Section ==================== -->
+  <section class="top-section d-flex align-items-center" id="top-section">
+    <div class="container">
+
+      <div class="row">
+
+        <div class="top-section-image col-lg-6" data-aos="fade-in" data-aos-delay="100">
+          <img class="img-fluid" src="{% static 'img/blog-post-bro.png' %}" alt="">
         </div>
+
+        <div class="main-text col-lg-6 d-flex flex-column justify-content-center" data-aos="fade-in" data-aos-delay="300">
+          <h1>Compact.</h1>
+          <h2>Track your progress.</h2>
+        
+          <div class="sign-up-button-area text-lg-start text-center justify-content-center" data-aos="fade-in" data-aos-delay="600">
+            <a class="sign-up-button d-inline-flex" href="{% url 'sign_up' %}">
+              <span>Sign up</span>
+              <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+
+        </div>
+
       </div>
     </div>
-  </div>
-{% endblock %}
+
+  </section>
+
+  <!-- ==================== About Section ==================== -->
+  <section class="about-section" id="about-section">
+    <div class="container">
+
+      <header class="section-header" data-aos="fade-in" data-aos-delay="100">
+        <h2>About</h2>
+        <p>What is Compact Journals?</p>
+      </header>
+
+      <div class="row">
+
+        <div class="answer col-lg-6 d-flex flex-column justify-content-center" data-aos="fade-in" data-aos-delay="700">
+          <h2 class="big-answer-text">Compact Journals is a web-based journalling application created using the Python Django framework.</h2>
+          <p>
+            This web application was built by 8 students from King's College London as part of their 
+            large group software engineering project for the module 5CCS2SEG. This group project took 
+            place during the second semester of academic year 2023-24. 
+          </p>
+        </div>
+
+        <div class="col-xl-6 d-flex align-items-center justify-content-center" data-aos="zoom-in-left" data-aos-delay="400">
+          <img class="img-fluid" src="{% static 'img/programming-bro.png' %}" alt="">
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ==================== Features Section ==================== -->
+  <section class="features-section" id="features-section">
+    <div class="container">
+
+      <header class="section-header" data-aos="fade-in" data-aos-delay="100">
+        <h2>Features</h2>
+        <p>What can you do with Compact Journals?</p>
+      </header>
+
+      <div class="row">
+
+        <div class="col-xl-4 text-center" data-aos="zoom-in-right" data-aos-delay="400">
+          <img class="img-fluid p-4" src="{% static 'img/shared-goals-bro.png' %}" alt="">
+        </div>
+
+        <div class="feature-boxes col-xl-8 d-flex">
+          <div class="row align-self-center gy-4">
+
+            <div class="feature col-md-6"data-aos="fade-in" data-aos-delay="700">
+              <i class="bi bi-graph-up"></i>
+              <div>
+                <h3>Track your progress</h3>
+                <p>Keep an eye on how you're doing each day.</p>
+              </div>
+            </div>
+
+            <div class="feature col-md-6"data-aos="fade-in" data-aos-delay="700">
+              <i class="bi bi-trophy"></i>
+              <div>
+                <h3>Earn badges</h3>
+                <p>Get rewarded with badges for writing in your journal every day</p>
+              </div>
+            </div>
+
+            <div class="feature col-md-6" data-aos="fade-in" data-aos-delay="700">
+              <i class="bi bi-pen"></i>
+              <div>
+                <h3>Write journals</h3>
+                <p>Record your thoughts and experiences regularly.</p>
+              </div>
+            </div>
+
+            <div class="feature col-md-6" data-aos="fade-in" data-aos-delay="700">
+              <i class="bi bi-emoji-smile"></i>
+              <div>
+                <h3>Track your mood </h3>
+                <p>Keep tabs on how you're feeling over the month.</p>
+              </div>
+            </div>
+
+            <div class="feature col-md-6" data-aos="fade-in" data-aos-delay="700">
+              <i class="bi bi-calendar4-week"></i>
+              <div>
+                <h3>Check previous journal entries</h3>
+                <p>Take a peek at what you've written in the past.</p>
+              </div>
+            </div>
+
+            <div class="feature col-md-6" data-aos="fade-in" data-aos-delay="700">
+              <i class="bi bi-people"></i>
+              <div>
+                <h3>Collaborate on group journals</h3>
+                <p>Work together on shared journal entries with friends.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== Footer Section ==================== -->
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="row gy-4">
+
+        <div class="footer-logo col-lg-6 col-md-6 text-center text-sm-start justify-content-center">
+          <a class="logo-name d-flex text-center align-items-center justify-content-center" href="{% url 'home' %}">
+            Compact Journals
+          </a>
+          <p>Track your progress.</p>
+        </div>
+
+        <div class="contact-us-section col-lg-6 col-md-6 text-center text-sm-center">
+          <h3>Contact Us</h3>
+          <p>
+            30 Aldwych<br>
+            London, WC2B 4BG<br>
+            United Kingdom<br>
+            <br>
+            <strong>Phone:</strong> +44 0000 000000<br>
+            <strong>Email:</strong> help@ccw.com<br>
+          </p>
+        </div>
+        
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== Return To Top Button ==================== -->
+  <a class="return-button d-flex align-items-center justify-content-center" href="#">
+    <i class="bi bi-arrow-up-short"></i>
+  </a>
+
+  <!-- ==================== External libraries JS ==================== -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- ==================== Home JS File ==================== -->
+  <script src="{% static 'home.js' %}"></script>
+
+</body>
+
+</html>
