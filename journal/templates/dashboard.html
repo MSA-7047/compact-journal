@@ -83,22 +83,98 @@
     <div class="container">
       <div class="row">
         <div class="col-12">
-          <h1>Welcome to your dashboard {{ user.username }}</h1>
-          <p>
-            <a href="{% url 'calendar' %}" class="btn btn-lg btn-secondary">
-              Calendar
-            </a>
-          </p>
+
         </div>
       </div>
     </div>
     <div class="container2">
-      <div class="header">Header</div>
+      <div class="header">
+        <h1>Welcome to your dashboard {{ user.username }}</h1>
+      </div>
       <div class="content-small">Content #1</div>
-      <div class="content-large">Content #2a</div>
-      <div class="content-large">Content #2b</div>
-      <div class="content-small">Content #3</div>
-      <div class="content-small">Content #4</div>
+
+      <div class="content-large">
+        <h1>Today's Journal:</h1>
+        {% if todays_journal is None %}
+        <br/>
+        You have not created a journal today!
+        Press the button below to add your journal for the day
+          <p>
+            <a href="{% url 'add_journal'%}" class="btn btn-lg btn-secondary">
+              +
+            </a>
+        {% else %}
+        <p>
+          {% for journal in todays_journal%}
+          <h2>{{ journal.journal_title }}</h2>
+          Summary: {{ journal.journal_description }}
+          <br/>
+          Journal: {{ journal.journal_bio|safe }}
+          <br/>
+          Todays Mood: {{ journal.journal_mood }}
+          <br/>
+          Created on: {{ journal.entry_date }}
+          <br/>
+          <a href="{% url 'change_journal_info' journalID=journal.id%}" class="btn btn-lg btn-secondary">
+            Edit
+          </a>
+          {% endfor %}
+
+
+
+        </p>
+        {% endif %}
+        
+      </div>
+
+      <div class="content-large">
+        Your Groups
+        <br>
+        {% if not groups %}
+          Get some friends
+        {% endif %}
+        {% if groups %}
+          <div class="btn-group-vertical container-fluid" role="group">
+            {% for group in groups %}
+              <a role="button" href="#" class="btn btn-info content-large">{{ group.name }}</a>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="content-small">
+        <h1><a href="{% url 'view_friends'%}">Your Friends:</a></h1>
+          {% if user.friends.all %}
+              {% for friend in user.friends.all %}
+                  <li>{{ friend.username }}</li>
+              {% endfor %}
+          {% else %}
+              You currently have no Friends, <br>
+              View requests to add some you lonely guy
+              <br>
+          {% endif %}
+
+        </style>
+        <a class="bottom" href="{% url 'view_friend_requests' %}">View Requests</a></li>
+      </div>
+
+
+      <div class="content-small">
+        <a href="{% url 'calendar' year=current_year month=current_month%}" class="btn btn-lg btn-secondary">
+          Calendar
+        </a>
+        <br/>
+        <br/>
+        <a href="{% url 'all_entries'%}" class="btn btn-lg btn-secondary">
+          See all Journal Entries
+        </a>
+        <br/>
+        <br/>
+        <a href="{% url 'my_journals'%}" class="btn btn-lg btn-secondary">
+          See Your Journals (List View)
+        </a>
+      </div>
+
     </div>
   </body>
 </html>  

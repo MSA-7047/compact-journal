@@ -1,7 +1,15 @@
-<h1> Greetings {{name}}! Journals in {{month}} {{year}}</h1>
-
-{{cal|safe}}
-<br/><br/><br/><br/>
-Copyright (CCW) {{current_year}}
-
-</center>
+{% extends 'base_content.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1> Welcome {{ user.username }}! Journals in {{month}} {{year}}</h1>
+            <center>
+            {{cal|safe}}
+            <br/> <br/> <br/> <br/>
+            </center>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

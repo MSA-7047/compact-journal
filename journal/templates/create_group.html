@@ -1,0 +1,18 @@
+{% extends 'base_content.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1>Create Group</h1>
+            <form action="{% url 'create_group' %}" method="post">
+                {% csrf_token %}
+
+                <label for="name">Group Name:</label>
+                <input type="text" id="name" name="name" required>
+                <br>
+                <input type="submit" value="Create Team +" class="btn btn-success">
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

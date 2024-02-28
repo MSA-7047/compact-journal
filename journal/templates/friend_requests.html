@@ -9,7 +9,7 @@
           <ul>
             {% for request in requests %}
               <li>
-                {{ request.sender.username }} has sent you a friend request ({{request.created_at}})
+                {{request}}
                 {% if request.status == 'pending' %}
                   <a href="{% url 'accept_friend_request' friend_request_id=request.id %}" class="btn btn-primary btn-sm">Accept</a>
                   <a href="{% url 'reject_friend_request' friend_request_id=request.id %}" class="btn btn-primary btn-sm">Reject</a>
@@ -34,7 +34,7 @@
           <ul>
             {% for request in sent_pending_invitations %}
               <li>
-                You sent {{ request.user.username }} a friend request ({{request.created_at}})
+                {{request}}
                 <span class="badge badge-warning text-dark">Pending</span>
                 <a href="{% url 'delete_sent_request' friend_request_id=request.id %}" class="btn btn-danger btn-sm">Delete</a>
               </li>
@@ -49,7 +49,7 @@
           <ul>
             {% for request in sent_accepted_invitations %}
               <li>
-                You sent {{ request.user.username }} a friend request ({{request.created_at}})
+                {{request}}
                 <span class="text-success">Accepted</span>
                 <a href="{% url 'delete_sent_request' friend_request_id=request.id %}" class="btn btn-danger btn-sm">Delete</a>
               </li>
@@ -64,7 +64,7 @@
           <ul>
             {% for request in sent_rejected_invitations %}
               <li>
-                You sent {{ request.user.username }} a friend request ({{request.created_at}})
+                {{request}}
                 <span class="text-danger">Rejected</span>
                 <a href="{% url 'delete_sent_request' friend_request_id=request.id %}" class="btn btn-danger btn-sm">Delete</a>
               </li>
@@ -73,7 +73,13 @@
         {% else %}
           <p>No rejected sent friend requests.</p>
         {% endif %}
-
+      <h2>Add Friend:</h2>
+      <form method="post" action="{% url 'send_request' user.id %}">
+        {% csrf_token %}
+        {% include 'partials/bootstrap_form.html' with form=form %}
+        <button type="submit" class="btn btn-primary">Send Friend Request</button>
+      </form>
+      <br/> <br/> <br/>
         <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
       </div>
     </div>

@@ -1,14 +1,18 @@
 [
   {
-    "model": "tasks.user",
+    "model": "journal.user",
     "pk": 1,
     "fields": {
-      "first_name": "John",
-      "last_name": "Doe",
+      "first_name": "Default",
+      "last_name": "User",
       "username": "@johndoe",
-      "email": "johndoe@example.org",
-      "password": "pbkdf2_sha256$260000$4BNvFuAWoTT1XVU8D6hCay$KqDCG+bHl8TwYcvA60SGhOMluAheVOnF1PMz0wClilc=",
-      "is_active": true
+      "email": "johndoe@example.com",
+      "dob": "1990-01-01",
+      "bio": "This is the default user's bio.",
+      "location": "London",
+      "nationality": "US",
+      "date_joined": "2022-01-01T00:00:00Z"
     }
   }
 ]
+

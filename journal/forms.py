@@ -2,7 +2,13 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
-from .models import User, Journal
+from .models import User, Group, GroupMembership, Journal
+from .models import *
+from django_countries.widgets import CountrySelectWidget
+from django_ckeditor_5.widgets import CKEditor5Widget
+from django.core.exceptions import ValidationError
+from django.utils import timezone
+from datetime import timedelta
 
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
@@ -20,6 +26,7 @@ class LogInForm(forms.Form):
             user = authenticate(username=username, password=password)
         return user
 
+
 class UserForm(forms.ModelForm):
     """Form to update user profiles."""
 
@@ -27,10 +34,21 @@ class UserForm(forms.ModelForm):
         """Form options."""
 
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email', 'dob', 'bio']
+        fields = [
+            'first_name',
+            'last_name',
+            'username',
+            'email',
+            'dob',
+            'bio',
+            'location',
+            'nationality'
+        ]
 
         labels = {
-        'dob': 'Date of Birth'}
+            'dob': 'Date of Birth',
+            'nationality': 'Nationality'
+        }
 
         widgets = {
             'dob': forms.DateInput(attrs={'type': 'date'}),
@@ -114,64 +132,186 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
             password=self.cleaned_data.get('new_password'),
         )
         return user
-    
+
+
+class GroupForm(forms.ModelForm):
+    """Form allowing the user to create a group"""
+
+    class Meta:
+        model = Group
+        fields = ['name']
+
+    def save(self, commit=True, creator=None):
+        group_instance = super().save(commit=False)
+        if commit and not group_instance.pk:
+            group_instance.save()
+            GroupMembership.objects.create(
+                user=creator,
+                group=group_instance,
+                is_owner=True
+            )
+        return group_instance
+
+
 class SendFriendRequestForm(forms.Form):
-    user = forms.ModelChoiceField(queryset=User.objects.all(), label='Select User')
+
+    recipient = forms.ModelChoiceField(queryset=User.objects.all(), label='Select User')
+
+    class Meta:
+        model = FriendRequest
+        fields = ['recipient']
+
+    def __init__(self, *args, user=None,  **kwargs):
+        friends = user.friends.all()
+        super().__init__(*args, **kwargs)
+        if friends is not None:
+            self.fields['recipient'].queryset = User.objects.exclude(id__in=[user.id for user in friends]).exclude(id=user.id)
+
+
 
 class CreateJournalForm(forms.ModelForm):
-    journal_title = forms.CharField(label="Title")
-    journal_description = forms.CharField(label="Description")
-    journal_bio = forms.CharField(label="Bio")
-    journal_mood = forms.CharField(label="Mood")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # it is required to set it False,
+        # otherwise it will throw error in console
+        self.fields["journal_bio"].required = False
+
+    # journal_title = forms.CharField(label="Title")
+    # journal_description = forms.CharField(label="Description")
+    # journal_bio = forms.CharField(label="Bio")
+    # journal_mood = forms.ChoiceField(choices=(
+    #     ('Happy', 'Happy'),
+    #     ('Sad', 'Sad'),
+    #     ('Angry', 'Angry'),
+    #     ('Neutral', 'Neutral'),
+    # ), required=True)
+
+
+    # journal_title = forms.CharField(label="Title")
+    # journal_description = forms.CharField(label="Description")
+    # journal_bio = forms.CharField(label="Bio")
+    # journal_mood = forms.CharField(label="Mood")
 
     class Meta:
         model = Journal
         fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood']
 
-class EditJournalTitleForm(forms.ModelForm):
+
+class EditJournalInfoForm(forms.ModelForm):
+
+
     
-        class Meta:
-            model = Journal
-            fields=['journal_title']
+    # class Meta:
+    #     model = Journal
+    #     fields = ['journal_title', 'journal_description', 'journal_bio']
 
-        
 
-        def save(self, commit=True):
-            instance = super().save(commit=False)
-            instance.task_name = self.cleaned_data['journal_title']
-            if commit:
-                instance.save()
-            return instance
 
-class EditJournalDescriptionForm(forms.ModelForm):
+    # def save(self, commit=True):
+    #     instance = super().save(commit=False)
+    #     instance.journal_title = self.cleaned_data['journal_title']
+    #     instance.journal_description = self.cleaned_data['journal_description']
+    #     instance.journal_bio = self.cleaned_data['journal_bio']
+    #     if commit:
+    #         instance.save()
+    #     return instance
+
+    #journal_bio = forms.CharField(widget=CKEditor5Widget(config_name='extends'), required=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # it is required to set it False,
+        # otherwise it will throw error in console
+        self.fields["journal_bio"].required = False
+
+
+
+    class Meta:
+        model = Journal
+        fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood']
+
+
+
+class JournalFilterForm(forms.Form):
+
+    entry_date = forms.ChoiceField(choices=(
+        ('', '---------'),
+        ('24h', 'Within 24 Hours'),
+        ('3d', 'Within 3 Days'),
+        ('1w', 'Within 1 Week'),
+        ('1m', 'Within 1 Month'),
+        ('6m+', '6+ Months')
+    ), required=False)
+
+    mood = forms.ChoiceField(choices=(
+        ('', '---------'),
+        ('Happy', 'Happy'),
+        ('Sad', 'Sad'),
+        ('Angry', 'Angry'),
+        ('Neutral', 'Neutral'),
+    ), required=False)
+
+    title_search = forms.CharField(required=False)
+
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
     
-        class Meta:
-            model = Journal
-            fields=['journal_description']
+    def filter_tasks(self):
 
+        myjournals = Journal.objects.all()
+        #label = self.cleaned_data.get('label')
+        title_contains = self.cleaned_data.get('title_contains')
+        entry_date = self.cleaned_data.get('entry_date')
+        mood = self.cleaned_data.get('mood')
+
+        #if label:
+           # tasks = tasks.filter(label=label)
+        if title_contains:
+            myjournals = myjournals.filter(journal_title__icontains=title_contains)
+        if mood:
+            myjournals = myjournals.filter(journal_mood = mood)
+        if entry_date:
+            if entry_date == '24h':
+                time_threshold = timezone.now() - timedelta(days=1)
+                myjournals = myjournals.filter(entry_date__gte=time_threshold)
+            elif entry_date == '3d':
+                time_threshold = timezone.now() - timedelta(days=3)
+                myjournals = myjournals.filter(entry_date__gte=time_threshold)
+            elif entry_date == '1w':
+                time_threshold = timezone.now() - timedelta(weeks=1)
+                myjournals = myjournals.filter(entry_date__gte=time_threshold)
+            elif entry_date == '1m':
+                time_threshold = timezone.now() - timedelta(weeks=4)
+                myjournals = myjournals.filter(entry_date__gte=time_threshold)
+            elif entry_date == '6m+':
+                time_threshold = timezone.now() - timedelta(weeks=26)
+                myjournals = myjournals.filter(entry_date__gte=time_threshold)
         
+        return myjournals
 
-        def save(self, commit=True):
-            instance = super().save(commit=False)
-            instance.task_name = self.cleaned_data['journal_description']
-            if commit:
-                instance.save()
-            return instance
-        
-class EditJournalBioForm(forms.ModelForm):
-    
-        class Meta:
-            model = Journal
-            fields=['journal_bio']
+class JournalSortForm(forms.Form):
 
-        
+    ORDER_CHOICES = [
+        ('ascending', 'Ascending'),
+        ('descending', 'Descending'),
+    ]
+    sort_by_entry_date = forms.ChoiceField(choices=ORDER_CHOICES)
 
-        def save(self, commit=True):
-            instance = super().save(commit=False)
-            instance.task_name = self.cleaned_data['journal_bio']
-            if commit:
-                instance.save()
-            return instance
+class ConfirmAccountDeleteForm(forms.Form):
+    confirmation = forms.CharField(label='Type "YES" to confirm deletion', max_length=3)
+
+
+
+
+
+
+
+
+
+
+
+
     
 
 
