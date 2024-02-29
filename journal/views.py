@@ -244,6 +244,12 @@ def view_friends(request):
     return render(request, 'friends.html', {"friends": friends})
 
 @login_required
+def view_friends_profile(request, friendID):
+    friend = get_object_or_404(User, id=friendID)
+    return render(request, 'view_friends_profile.html', {"user": friend})
+
+
+@login_required
 def send_friend_request(request, user_id):
     if request.method == 'POST':
         form = SendFriendRequestForm(request.POST, user=request.user)
@@ -350,13 +356,15 @@ def create_journal(request):
             journal_description = form.cleaned_data.get("journal_description")
             journal_bio = form.cleaned_data.get("journal_bio")
             journal_mood = form.cleaned_data.get("journal_mood")
+            is_private = form.cleaned_data.get("private")
             journal_owner = current_user
             journal = Journal.objects.create(
                 journal_title = journal_title,
                 journal_description = journal_description,
                 journal_bio = journal_bio,
                 journal_mood = journal_mood,
-                journal_owner = journal_owner
+                journal_owner = journal_owner,
+                private = is_private
             )
             journal.save()
             #old render that would stick on create journal view after creating journal, thus repeating entry when reloaded
@@ -436,10 +444,12 @@ def all_journal_entries_view(request):
     return render(request, 'my_journals.html', { 'user': current_user,  'journal_existence': journal_existence or False})
 
 @login_required
-def my_journals_view(request):
-    current_user = request.user
+def my_journals_view(request, userID):
+    current_user = get_object_or_404(User, id=userID)
+    isLoggedInUser = current_user == request.user
     if request.method == 'POST':
         filter_form = JournalFilterForm(current_user, request.POST)
+
         if filter_form.is_valid():
             myJournals = filter_form.filter_tasks()
             myJournals = myJournals.filter(journal_owner=current_user)
@@ -453,30 +463,45 @@ def my_journals_view(request):
                     myJournals = myJournals.order_by("entry_date")    
         else:
             sort_form = JournalSortForm()
+            myJournals = Journal.objects.filter(journal_owner=current_user)
+            if not isLoggedInUser:
+                myJournals = myJournals.filter(private=False)
             context = {
             'filter_form': filter_form,
             'sort_form': sort_form,
             'show_alert':True,
-            'myJournals': Journal.objects.filter(journal_owner=current_user)
+            'myJournals': myJournals,
+            'user': current_user,
+            'isUserCurrentlyLoggedIn': isLoggedInUser
             }
             return render(request, 'My_Journals.html', context)
         
+        if not isLoggedInUser:
+            myJournals = myJournals.filter(private=False)
+
         context = {
             'filter_form': filter_form,
             'sort_form': sort_form,
-            'myJournals': myJournals
+            'myJournals': myJournals,
+            'user': current_user,
+            'isUserCurrentlyLoggedIn': isLoggedInUser
         }
         return render(request, 'my_journals.html', context) 
     
-    myjournals = Journal.objects.filter(journal_owner=current_user)
+    myJournals = Journal.objects.filter(journal_owner=current_user)
+
+    if not isLoggedInUser:
+            myJournals = myJournals.filter(private=False)
+
     filter_form = JournalFilterForm(current_user)
     sort_form = JournalSortForm()
     
     context = {
             'filter_form': filter_form,
             'sort_form': sort_form,
-            'myJournals': myjournals or False,
-            'user': current_user
+            'myJournals': myJournals or False,
+            'user': current_user,
+            'isUserCurrentlyLoggedIn': isLoggedInUser
         }
     
     return render(request, 'my_journals.html', context)          

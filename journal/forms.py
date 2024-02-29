@@ -180,7 +180,7 @@ class CreateJournalForm(forms.ModelForm):
 
     class Meta:
         model = Journal
-        fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood']
+        fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood', 'private']
 
 
 class EditJournalInfoForm(forms.ModelForm):
@@ -194,7 +194,7 @@ class EditJournalInfoForm(forms.ModelForm):
 
     class Meta:
         model = Journal
-        fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood']
+        fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood', 'private']
 
 
 

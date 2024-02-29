@@ -5,10 +5,26 @@
     <div class="col-12">
       <h1>Your Friends:</h1>
         {% if user.friends.all %}
+        <ul class="list-group mt-3"></ul>
               {% for friend in user.friends.all %}
-                  <li>{{ friend.username }} 
-                    <a href="{% url 'remove_friend' user_id=friend.id %}" class="btn btn-danger btn-sm">remove</a>
-                  </li>
+                <li class="list-group-item">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h4>{{ friend.username }}</h4>
+                      <p>
+                        <a href="{% url 'view_friends_profile' friendID=friend.id %}" class="btn btn-sm btn-secondary">
+                          View Profile
+                        </a>
+                        <a href="{% url 'my_journals' userID=friend.id %}" class="btn btn-sm btn-secondary">
+                          View Friends Journals
+                        </a>
+                        <a href="{% url 'remove_friend' user_id=friend.id %}" class="btn btn-sm btn-outline-danger">
+                          Remove friend
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+                </li>
               {% endfor %}
           {% else %}
               You currently have no Friends
