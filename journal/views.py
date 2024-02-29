@@ -345,7 +345,7 @@ def create_journal(request):
     current_user = request.user
     form_class = CreateJournalForm
     model = Journal
-    template_name = "add_journal.html"
+    template_name = "create_journal.html"
     success_message = "Added Succesfully"
     form = CreateJournalForm()
     current_user = request.user
@@ -371,29 +371,12 @@ def create_journal(request):
             #return render(request, 'dashboard.html', {'form': form, 'user': current_user, 'current_year': current_year, 'current_month': current_month, 'todays_journal': todays_journal or None})
             return redirect('/dashboard/')
         else:
-            return render(request, 'add_journal.html', {'form': form})
+            return render(request, 'create_journal.html', {'form': form})
     else:
-        return render(request, 'add_journal.html', {'form': form})
+        return render(request, 'create_journal.html', {'form': form})
 
 @login_required
-def ChangeJournalInfo(request, journalID):
-    # journal = get_object_or_404(Journal, id=journalID)
-    
-    # if request.method == 'POST':
-    #     form = EditJournalInfoForm(request.POST, instance=journal)
-    #     if form.is_valid():
-    #         new_title = form.cleaned_data['journal_title']
-    #         journal.journal_title = new_title
-    #         new_description = form.cleaned_data['journal_description']
-    #         journal.journal_description = new_description
-    #         new_bio = form.cleaned_data['journal_bio']
-    #         journal.journal_bio = new_bio
-    #         journal.save()
-    #         return redirect('all_entries')
-    # else:
-    #     form = EditJournalInfoForm(instance=journal)
-    
-    # return render(request, 'change_journal_info.html', {'form': form, 'journal': journal})
+def ChangeJournalInfo(request, journalID): 
     journal = get_object_or_404(Journal, id=journalID)
 
     if request.method == 'POST':
@@ -404,7 +387,7 @@ def ChangeJournalInfo(request, journalID):
     else:
         form = EditJournalInfoForm(instance=journal)
 
-    return render(request, 'change_journal_info.html', {'form': form, 'journal': journal})
+    return render(request, 'create_journal.html', {'form': form, 'journal': journal})
 
 @login_required
 def DeleteJournal(request, journalID):

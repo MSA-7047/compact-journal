@@ -8,11 +8,8 @@
       {% else %}
       <h1> {{user.username}}'s public journals</h1>
       {%endif%}
-      {% include 'partials/filter_partial.html' with filter_form=filter_form %}
-      {% if show_alert %}
-        {% include 'partials/invalid_filter_partial.html'%}
-      {% endif %}
         {% if myJournals %}
+        {% include 'partials/filter_partial.html' with filter_form=filter_form %}
         <ul class="list-group mt-3">
             {% for journal in myJournals %}
                 <li class="list-group-item">
@@ -48,7 +45,11 @@
                 {%endfor%}
         {% else %}
         <br/>
-          <p>No journals :)</p>
+          {% if isUserCurrentlyLoggedIn %}
+          <p>No journals to view</p>
+          {% else %}
+          <p> {{user.username}} has no public journals available<p>
+          {%endif%}
         {% endif %}
         <a href="{% url 'dashboard' %}" class="btn btn-primary mt-3">Back to dashboard</a>
     </div>

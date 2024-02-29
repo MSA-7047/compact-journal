@@ -40,7 +40,7 @@ urlpatterns = [
     path('delete_account/', views.delete_account, name='delete_account'),
     path('sign_up/', SignUpView.as_view(), name='sign_up'),
     
-    path('add-journal/', views.create_journal, name='add_journal'),
+    path('create-journal/', views.create_journal, name='create_journal'),
     path('change_journal_info/<int:journalID>/', views.ChangeJournalInfo, name='change_journal_info'),
     path('journal/<int:journalID>/', views.journal_detail_view, name='journal_detail'),
     path('ckeditor5/', include('django_ckeditor_5.urls')),
