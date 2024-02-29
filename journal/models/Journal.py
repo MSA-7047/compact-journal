@@ -6,7 +6,7 @@ from django_ckeditor_5.fields import CKEditor5Field
 class Journal(models.Model):
     """Model to represent the Journals the User will be writing on."""
     journal_title = models.CharField('Title', max_length=50, blank=False)
-    journal_description = models.CharField('Description', max_length=1000)
+    journal_description = models.TextField('Description', max_length=1000)
     journal_bio = CKEditor5Field('Entry', config_name='extends', max_length=10000)
     entry_date = models.DateTimeField(auto_now_add=True)
     MOOD_OPTIONS = [

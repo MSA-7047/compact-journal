@@ -178,9 +178,6 @@ class CreateJournalForm(forms.ModelForm):
         # otherwise it will throw error in console
         self.fields["journal_bio"].required = False
 
-    # journal_description = forms.CharField(label="Description")
-    # journal_bio = forms.CharField(label="Bio")
-
     class Meta:
         model = Journal
         fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood']
