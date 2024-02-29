@@ -433,7 +433,7 @@ def all_journal_entries_view(request):
     # current_year = datetime.now().year
     # current_month = datetime.now().strftime("%B")
     journal_existence = Journal.objects.filter(journal_title__isnull=False)
-    return render(request, 'all_entries.html', { 'user': current_user,  'journal_existence': journal_existence or False})
+    return render(request, 'my_journals.html', { 'user': current_user,  'journal_existence': journal_existence or False})
 
 @login_required
 def my_journals_view(request):
