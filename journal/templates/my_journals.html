@@ -3,32 +3,53 @@
 <div class="container">
   <div class="row">
     <div class="col-12">
+      {% if isUserCurrentlyLoggedIn %}
       <h1>All Journal Entries</h1>
-      {% include 'partials/filter_partial.html' with filter_form=filter_form %}
-      {% if show_alert %}
-        {% include 'partials/invalid_filter_partial.html'%}
-      {% endif %}
+      {% else %}
+      <h1> {{user.username}}'s public journals</h1>
+      {%endif%}
         {% if myJournals %}
+        {% include 'partials/filter_partial.html' with filter_form=filter_form %}
         <ul class="list-group mt-3">
             {% for journal in myJournals %}
                 <li class="list-group-item">
                     <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h5>Title: {{ journal.journal_title }}</h5>
-                            <p>Summary: {{ journal.journal_description }}</p>
+                      <div>
+                        {% if isUserCurrentlyLoggedIn %}
+                          <p>
+                            <a href="{% url 'change_journal_info' journalID=journal.id%}" class="btn btn-sm btn-secondary">
+                              Edit Journal
+                            </a>
+                            <a href="{% url 'journal_detail' journalID=journal.id %}" class="btn btn-sm btn-secondary">
+                              View Journal
+                            </a>
+                            <a href="{% url 'delete_journal' journalID=journal.id%}" class="btn btn-sm btn-outline-danger">
+                              Delete Journal Entry
+                            </a>
+                          </p>
+                        {% endif %}
+                        <h5>Title: {{ journal.journal_title }}</h5>
+                        <p>Summary: {{ journal.journal_description }}</p>
+                          <h4>Journal Entry:</h4>
+                        <p><hr/>
+                          {{journal.journal_bio|safe}}
+                          <hr/>
+                        </p>
 
-                            <p>Journal: {{journal.journal_bio|safe}}</p>
+                        <p>Mood: {{journal.journal_mood}}</p>
 
-                            <p>Mood: {{journal.journal_mood}}</p>
-
-                            <p>Entry Date: {{ journal.entry_date }}</p>
+                        <p>Entry Date: {{ journal.entry_date }}</p>
                         </div>
                     </div>
                 </li>
                 {%endfor%}
         {% else %}
         <br/>
-          <p>No journals :)</p>
+          {% if isUserCurrentlyLoggedIn %}
+          <p>No journals to view</p>
+          {% else %}
+          <p> {{user.username}} has no public journals available<p>
+          {%endif%}
         {% endif %}
         <a href="{% url 'dashboard' %}" class="btn btn-primary mt-3">Back to dashboard</a>
     </div>

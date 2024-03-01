@@ -100,7 +100,7 @@
         You have not created a journal today!
         Press the button below to add your journal for the day
           <p>
-            <a href="{% url 'add_journal'%}" class="btn btn-lg btn-secondary">
+            <a href="{% url 'create_journal'%}" class="btn btn-lg btn-secondary">
               +
             </a>
         {% else %}
@@ -165,12 +165,7 @@
         </a>
         <br/>
         <br/>
-        <a href="{% url 'all_entries'%}" class="btn btn-lg btn-secondary">
-          See all Journal Entries
-        </a>
-        <br/>
-        <br/>
-        <a href="{% url 'my_journals'%}" class="btn btn-lg btn-secondary">
+        <a href="{% url 'my_journals' userID=user.id%}" class="btn btn-lg btn-secondary">
           See Your Journals (List View)
         </a>
       </div>
