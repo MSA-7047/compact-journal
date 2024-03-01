@@ -17,7 +17,7 @@
                             <h5>Title: {{ journal.journal_title }}</h5>
                             <p>Summary: {{ journal.journal_description }}</p>
 
-                            <p>Journal: {{journal.journal_bio}}</p>
+                            <p>Journal: {{journal.journal_bio|safe}}</p>
 
                             <p>Mood: {{journal.journal_mood}}</p>
 
