@@ -509,11 +509,83 @@ def delete_account(request):
 
     return render(request, 'delete_account.html', {'form': form})
     
+@login_required    
+def create_group_journal(request):
+    today = datetime.now().date()
 
+    current_user = request.user
+    form_class = CreateGroupJournalForm
+    model = GroupJournal
+    template_name = "create_group_journal.html"
+    success_message = "Added Succesfully"
+    form = CreateGroupJournalForm()
+    current_user = request.user
+    if (request.method == 'POST'):
+        form = CreateGroupJournalForm(request.POST)
+        if (form.is_valid()):
+            journal_title = form.cleaned_data.get("journal_title")
+            journal_description = form.cleaned_data.get("journal_description")
+            journal_bio = form.cleaned_data.get("journal_bio")
+            journal_mood = form.cleaned_data.get("journal_mood")
+            journal_group = form.cleaned_data.get("journal_group")
+            journal = Journal.objects.create(
+                journal_title = journal_title,
+                journal_description = journal_description,
+                journal_bio = journal_bio,
+                journal_mood = journal_mood,
+                journal_group = journal_group,
+            )
+            journal.save()
+            #old render that would stick on create journal view after creating journal, thus repeating entry when reloaded
+            #return render(request, 'dashboard.html', {'form': form, 'user': current_user, 'current_year': current_year, 'current_month': current_month, 'todays_journal': todays_journal or None})
+            return redirect('/dashboard/')
+        else:
+            return render(request, 'create_group_journal.html', {'form': form})
+    else:
+        return render(request, 'create_group_journal.html', {'form': form})
 
+@login_required
+def edit_group_journal(request, journal_id):
 
+    journal = get_object_or_404(GroupJournal, pk=journal_id)
 
+    # Check if the user is the owner of the journal or a member of the group
+    if not (request.user == journal.journal_group.owner or GroupMembership.objects.filter(user=request.user, group=journal.journal_group).exists()):
+        return redirect('home') 
 
+    if request.method == 'POST':
+        form = CreateGroupJournalForm(request.POST, instance=journal)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = CreateGroupJournalForm(instance=journal)
 
+    return render(request, 'edit_journal.html', {'form': form})
 
+@login_required
+def delete_group_journal(request, journal_id):
+
+    journal = get_object_or_404(GroupJournal, pk=journal_id)
+    group_membership = GroupMembership.objects.filter(user=request.user, group=journal.journal_group).first()
+
+    if not group_membership or not group_membership.is_owner:
+        return redirect('home') 
     
+    if request.method == 'POST':
+        journal.delete()
+        return redirect('home') 
+
+    # Render the confirmation template for the user to confirm deletion
+    return render(request, 'delete_journal_confirm.html', {'journal': journal})
+
+@login_required
+def view_all_group_journals(request, group_id):
+    # Retrieve the group object
+    group = get_object_or_404(Group, pk=group_id)
+    
+    # Retrieve all journals belonging to the group
+    group_journals = GroupJournal.objects.filter(journal_group=group)
+    
+    # Pass the group and journals to the template
+    return render(request, 'group_journals.html', {'group': group, 'group_journals': group_journals})

@@ -266,17 +266,14 @@ class JournalSortForm(forms.Form):
 class ConfirmAccountDeleteForm(forms.Form):
     confirmation = forms.CharField(label='Type "YES" to confirm deletion', max_length=3)
 
+class CreateGroupJournalForm(forms.ModelForm):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # it is required to set it False,
+        # otherwise it will throw error in console
+        self.fields["journal_bio"].required = False
 
-
-
-
-
-
-
-
-
-
-    
-
-
+    class Meta:
+        model = Journal
+        fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood', 'private']
