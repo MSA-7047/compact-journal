@@ -7,21 +7,46 @@
             <div class="group-list">
                 {% if journals %}
                     {% for journal in journals %}
-
+                        <div class="list-group-item">
+                            {{ journal.name }}
+                            {{ journal.name }}
+                            {{ journal.name }}
+                            {{ journal.name }}
+                            {% if is_owner %}
+                                <button>Kick Player</button>
+                                <button>Make player owner</button>
+                            {% endif %}
+                        </div>
                     {% endfor %}
                 {% endif %}
-                <!-- Create Group Journal Button -->
+                {% if not journals %}
+                    <div class="list-group-item">
+                        Your group has no journals
+                    </div>
+                {% endif %}
             </div>
-            <div class="group-list">
+            <button class="">Create Journal</button>
+            <div class="list-group">
                 {% if members %}
                     {% for member in members %}
-
+                        <div class="list-group-item">
+                            {{ member.name }}
+                            {% if is_owner %}
+                                <button>Kick Player</button>
+                                <button>Make player owner</button>
+                            {% endif %}
+                        </div>
                     {% endfor %}
                 {% endif %}
-                <!-- Invite Member Button -->
+                {% if not members %}
+                    <div class="list-group-item">There are no members</div>
+                {% endif %}
             </div>
-            <!-- Add leave button -->
-            <!-- Add leave button -->
+            {% if is_owner %}
+                <button>Invite Member</button>
+                <button>Delete Group</button>
+            {% endif %}
+            <button>Leave Group</button>
         </div>
     </div>
 </div>

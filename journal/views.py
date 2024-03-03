@@ -60,6 +60,11 @@ def group(request) -> HttpResponse:
     current_user_groups = current_user.groups.all()
     return render(request, 'group.html', {'user': current_user, 'groups': current_user_groups})
 
+@login_required
+def group_dashboard(request, given_group) -> HttpResponse:
+    """Displays the journals & members of a given group"""
+
+    
 
 @login_required
 def create_group(request) -> HttpResponse:
