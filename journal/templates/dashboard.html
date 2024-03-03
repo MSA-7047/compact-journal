@@ -1,7 +1,3 @@
-{% extends 'base_content.html' %}
-{% block content %}
-
-
 {% load static %}
 <!DOCTYPE html> 
 <html lang="en">
@@ -9,92 +5,84 @@
     <title>Main Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
-    <!--<link rel="stylesheet" href="{% static 'custom.css' %}">-->
-    <style>
-      body {
-        margin: 0;
-      }
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 
-      .container2 {
-        width: 100%;
-        height: 90vh;
-  
-        font-family: "Quicksand", sans-serif;
-        font-weight: bold;
-        font-size: 20px;
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-        display: grid;
 
-        grid-template-columns: repeat(1, 1fr);
-        
-        gap: 10px;
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap">
 
-        padding: 10px;
-        box-sizing: border-box;
-      }
-
-      .container2 div {
-        padding: 10px;
-        border: 1px solid #000000;
-      }
-
-      .header {
-        grid-column-start: 1;
-        grid-column-end: 3;
-      }
-      
-      
-      
-      @media only screen and (min-width: 100px) { 
-        .container2 {
-          grid-template-columns: repeat(2, 1fr);
-          grid-template-rows: 6;          
-        }
-        .header {
-          grid-column-start: 1;
-          grid-column-end: 2;
-        }
-        .content-large {
-
-          grid-row-start: 2;
-          grid-row-end: 5;
-        }
-      }
-
-      @media only screen and (min-width: 960px) {
-        .container2 {
-          grid-template-columns: repeat(3, 1fr);
-          grid-template-rows: 0.3fr 1fr 1fr 0px;;
-        }
-        .header {
-          grid-column-start: 1;
-          grid-column-end: 3;
-        }
-        .content-large {
-          grid-row-start: 2;
-          grid-row-end: 5;
-        }
-      }
-      
-    </style>
   </head>
 
   <body>
+    <!-- ==================== Navbar ==================== -->
     <div class="container">
+      <header class="header fixed-top" id="header">
+        <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+    
+          <a class="logo-name d-flex align-items-center" href="{% url 'dashboard' %}">
+            Compact Journals
+          </a>
+          {% if user.is_authenticated %}
+          <nav class="navbar" id="navbar">
+            <ul>
+              <li><a class="nav-link" href="{% url 'profile' %}">Profile</a></li>
+              <li><a class="nav-link" href="{% url 'view_friends' %}">Friends</a></li>
+              <li><a class = "nav-link" href="{% url 'groups' %}">Groups</a></li>
+              <li><a class="log-out-button" href="{% url 'log_out' %}">Log out</a></li>
+            </ul>
+            <i class="navbar-button bi bi-list"></i>
+          </nav>
+          {% endif %}
+    
+        </div>
+      </header>
+    </div>
+    <!--card layout start-->
+    
+    <section class="container">
       <div class="row">
-        <div class="col-12">
+        <div class="card-01"></div>
+        <div class="card-01"></div>
+        <div class="card-01"></div>
+      </div>
+      <div class="row">
+        <div class="card-02"></div>
+        <div class="card-02"></div>
+      </div>
+      <div class="row">
+        <div class="card-03"></div>
+      </div>
+    </section>
+    <!--card layout end-->
 
+
+    <!--<section>
+    <div class="container">
+      <div class="row justify-content-between">
+        <div class="welcome-header col-xl-7 d-flex align-items-center px-4">
+          <h1>Welcome to your dashboard {{ user.username }}</h1>
+        </div>
+        
+        <div class="content-small col-xl-4 d-flex align-items-center justify-content-center px-4">
+          Content #1
+          <a href="{% url 'calendar' year=current_year month=current_month%}" class="btn btn-lg btn-secondary">
+            Calendar
+          </a>
+          <a href="{% url 'my_journals' userID=user.id%}" class="btn btn-lg btn-secondary">
+            View All Journals (List View)
+          </a>
         </div>
       </div>
-    </div>
-    <div class="container2">
-      <div class="header">
-        <h1>Welcome to your dashboard {{ user.username }}</h1>
-      </div>
-      <div class="content-small">Content #1</div>
 
       <div class="content-large">
         <h1>Today's Journal:</h1>
+
         {% if todays_journal is None %}
         <br/>
         You have not created a journal today!
@@ -128,7 +116,8 @@
       </div>
 
       <div class="content-large">
-        Your Groups
+        <h1>Your Groups:</h1>
+
         <br>
         {% if not groups %}
           Get some friends
@@ -142,8 +131,8 @@
         {% endif %}
       </div>
 
-      <div class="content-small">
-        <h1><a href="{% url 'view_friends'%}">Your Friends:</a></h1>
+      <div class="content-large">
+        <h1>Your Friends:</h1>
           {% if user.friends.all %}
               {% for friend in user.friends.all %}
                   <li>{{ friend.username }}</li>
@@ -155,24 +144,14 @@
           {% endif %}
 
         </style>
+        <a href="{% url 'view_friends'%}">View Friends</a>
         <a class="bottom" href="{% url 'view_friend_requests' %}">View Requests</a></li>
       </div>
 
-
-      <div class="content-small">
-        <a href="{% url 'calendar' year=current_year month=current_month%}" class="btn btn-lg btn-secondary">
-          Calendar
-        </a>
-        <br/>
-        <br/>
-        <a href="{% url 'my_journals' userID=user.id%}" class="btn btn-lg btn-secondary">
-          See Your Journals (List View)
-        </a>
-      </div>
-
     </div>
+    </section>-->
+  
   </body>
 </html>  
 
-{% endblock %}
 
