@@ -64,7 +64,7 @@ def group(request) -> HttpResponse:
 def group_dashboard(request, given_group) -> HttpResponse:
     """Displays the journals & members of a given group"""
 
-    
+
 
 @login_required
 def create_group(request) -> HttpResponse:
@@ -374,7 +374,7 @@ def create_journal(request):
 @login_required
 def ChangeJournalInfo(request, journalID):
     # journal = get_object_or_404(Journal, id=journalID)
-    
+
     # if request.method == 'POST':
     #     form = EditJournalInfoForm(request.POST, instance=journal)
     #     if form.is_valid():
@@ -388,7 +388,7 @@ def ChangeJournalInfo(request, journalID):
     #         return redirect('all_entries')
     # else:
     #     form = EditJournalInfoForm(instance=journal)
-    
+
     # return render(request, 'change_journal_info.html', {'form': form, 'journal': journal})
     journal = get_object_or_404(Journal, id=journalID)
 
@@ -407,6 +407,22 @@ def DeleteJournal(request, journalID):
     journal = get_object_or_404(Journal, id=journalID)
     journal.delete()
     return redirect('dashboard')
+
+@login_required
+def ChangeJournalDescription(request, journalID):
+    journal = get_object_or_404(Journal, id=journalID)
+    
+    if request.method == 'POST':
+        form = EditJournalDescriptionForm(request.POST, instance=journal)
+        if form.is_valid():
+            new_description = form.cleaned_data['journal_description']
+            journal.journal_description = new_description
+            journal.save()
+            return redirect('all_entries')
+    else:
+        form = EditJournalDescriptionForm(instance=journal)
+    
+    return render(request, 'change_journal_description.html', {'form': form, 'journal': journal})
 
 @login_required
 def calendar_view(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
@@ -447,14 +463,14 @@ def my_journals_view(request):
         if filter_form.is_valid():
             myJournals = filter_form.filter_tasks()
             myJournals = myJournals.filter(journal_owner=current_user)
-            sort_form = JournalSortForm(request.POST) 
+            sort_form = JournalSortForm(request.POST)
             if sort_form.is_valid():
                 sort_order = sort_form.cleaned_data['sort_by_entry_date']
                 if sort_order == 'descending':
                     myJournals = myJournals.order_by("entry_date")
                     myJournals = myJournals.reverse()
                 elif sort_order == 'ascending':
-                    myJournals = myJournals.order_by("entry_date")    
+                    myJournals = myJournals.order_by("entry_date")
         else:
             sort_form = JournalSortForm()
             context = {
@@ -464,27 +480,85 @@ def my_journals_view(request):
             'myJournals': Journal.objects.filter(journal_owner=current_user)
             }
             return render(request, 'My_Journals.html', context)
-        
+
         context = {
             'filter_form': filter_form,
             'sort_form': sort_form,
             'myJournals': myJournals
         }
-        return render(request, 'my_journals.html', context) 
-    
+        return render(request, 'my_journals.html', context)
+
     myjournals = Journal.objects.filter(journal_owner=current_user)
     filter_form = JournalFilterForm(current_user)
     sort_form = JournalSortForm()
-    
+
     context = {
             'filter_form': filter_form,
             'sort_form': sort_form,
             'myJournals': myjournals or False,
             'user': current_user
         }
-    
-    return render(request, 'my_journals.html', context)          
 
+    return render(request, 'my_journals.html', context)
+
+@login_required
+def edit_group(request, group_id):
+    """Allows owner of the group to edit the group."""
+    group = get_object_or_404(Group, pk=group_id)
+    if request.user == group.owner:
+        if request.method == 'POST':
+            form = GroupForm(request.POST, instance=group)
+            if form.is_valid():
+                form.save()
+                return JsonResponse({'message': 'Group edited successfully'})
+            else:
+                return JsonResponse({'errors': form.errors}, status=400)
+        else:
+            form = GroupForm(instance=group)
+            return render(request, 'edit_group.html', {'form': form})
+    else:
+        # User is not the owner, return forbidden response
+        return HttpResponseForbidden('You are not authorized to edit this group')
+
+@login_required
+def send_group_request(request):
+    """Allows a user to send a group request."""
+    if request.method == 'POST':
+        form = SendGroupRequestForm(request.POST, currentUser=request.user)
+        if form.is_valid():
+            recipient = form.cleaned_data['recipient']
+            GroupRequest.objects.create(sender=request.user, recipient=recipient)
+            return redirect('home')
+    else:
+        form = SendGroupRequestForm(currentUser=request.user)
+    return render(request, 'send_group_request.html', {'form': form})
+
+@login_required
+def accept_group_request(request, group_request_id):
+    """Allows a user that has a sent request to accept the request."""
+    group_request = get_object_or_404(GroupRequest, id=group_request_id, recipient=request.user, is_accepted=True)
+
+    # Add the user to the group
+    group = group_request.group  # Assuming group_request has a ForeignKey to Group model
+    user = group_request.sender  # The user who sent the group request
+
+    # Create GroupMembership for the user
+    GroupMembership.objects.create(user=user, group=group)
+
+    group_request.status = 'accepted'
+    group_request.save()
+    #invitation.delete()
+
+    return redirect('group')
+
+@login_required
+def reject_invitation(request, group_request_id):
+    """Allows the user with the sent friend request to reject it"""
+    group_request = get_object_or_404(GroupRequest, id=group_request_id, recipient=request.user, is_accepted=False)
+    group_request.status =  'rejected'
+    group_request.save()
+    #invitation.delete()
+    return redirect('group')
 
 @login_required
 def delete_account(request):
@@ -492,7 +566,7 @@ def delete_account(request):
         form = ConfirmAccountDeleteForm(request.POST)
         if form.is_valid() and form.cleaned_data['confirmation'].upper() == "YES":
             to_del = request.user
-            
+
             with transaction.atomic():
                 to_del.delete()
                 logout(request)
@@ -504,12 +578,85 @@ def delete_account(request):
         form = ConfirmAccountDeleteForm()
 
     return render(request, 'delete_account.html', {'form': form})
-    
 
 
+@login_required
+def delete_sent_request(request, friend_request_id):
+    """Deletes the friend request once it is accepted or deleted."""
+    group_request = get_object_or_404(GroupRequest, id=group_request_id, recipient=request.user, is_accepted=False)
+    group_request.delete()
+    return redirect('group')
 
+@login_required
+def delete_group(request, group_id):
+    """Allows the owner to delete the group"""
+    group = get_object_or_404(Group, pk=group_id)
 
+    if request.user == group.owner:
+        # Only allow deletion via POST method to prevent accidental deletions
+        if request.method == 'POST':
+            group.delete()
+            return redirect('home')
+        else:
+            # Handle GET requests (e.g., show a confirmation page)
+            return render(request, 'confirm_group_deletion.html', {'group': group})
+    else:
+        return HttpResponseForbidden('You are not authorized to delete this group.')
 
+@login_required
+def leave_group(request, group_id):
+    """Allows users to leave a group"""
+    group = get_object_or_404(Group, pk=group_id)
+    user = request.user
 
+    if user == group.owner:
+        if group.members.count() == 1:
+            # The owner is the only member, delete the group
+            group.delete()
+            return redirect('home')
+        else:
+            # The owner must select a new owner before leaving
+            if request.method == 'POST':
+                new_owner_id = request.POST.get('new_owner')
+                new_owner = get_object_or_404(User, pk=new_owner_id)
+                group.owner = new_owner
+                group.save()
 
-    
+            return render(request, 'select_new_owner.html', {'group': group})
+    else:
+        group_membership = GroupMembership.objects.get(group=group, user=user)
+        group_membership.delete()
+
+        if group.members.count() == 0:
+            group.delete()
+
+        return redirect('home')
+
+@login_required
+def remove_player_from_group(request, group_id, player_id):
+    """Allows the owner to remove a player from the group."""
+
+    group = get_object_or_404(Group, id=group_id)
+    player = get_object_or_404(User, id=player_id)
+
+    if request.user != group.owner:
+        return HttpResponseForbidden('You are not authorized to remove a player from this group.')
+
+    if player == group.owner:
+        messages.error(request, "The owner cannot be removed from the group.")
+        return redirect('group_detail', group_id=group.id)
+
+    try:
+        membership = GroupMembership.objects.get(group=group, user=player)
+    except GroupMembership.DoesNotExist:
+        messages.error(request, f"{player.username} is not a member of the group.")
+        return redirect('group_detail', group_id=group.id)
+
+    membership.delete()
+    messages.success(request, f"Successfully removed {player.username} from the group.")
+
+    if group.members.count() == 0:
+        group.delete()
+        messages.info(request, "The group has been deleted as there are no members left.")
+
+    return redirect('group_detail', group_id=group.id)

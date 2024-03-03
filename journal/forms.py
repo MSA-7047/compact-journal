@@ -2,13 +2,13 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
-from .models import User, Group, GroupMembership, Journal
-from .models import *
+from .models import User, Group, GroupMembership, Journal, FriendRequest
 from django_countries.widgets import CountrySelectWidget
 from django_ckeditor_5.widgets import CKEditor5Widget
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from datetime import timedelta
+
 
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
@@ -53,6 +53,7 @@ class UserForm(forms.ModelForm):
         widgets = {
             'dob': forms.DateInput(attrs={'type': 'date'}),
         }
+
 
 class NewPasswordMixin(forms.Form):
     """Form mixing for new_password and password_confirmation fields."""
@@ -168,7 +169,6 @@ class SendFriendRequestForm(forms.Form):
             self.fields['recipient'].queryset = User.objects.exclude(id__in=[user.id for user in friends]).exclude(id=user.id)
 
 
-
 class CreateJournalForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -200,8 +200,6 @@ class CreateJournalForm(forms.ModelForm):
 
 class EditJournalInfoForm(forms.ModelForm):
 
-
-    
     # class Meta:
     #     model = Journal
     #     fields = ['journal_title', 'journal_description', 'journal_bio']
@@ -225,12 +223,9 @@ class EditJournalInfoForm(forms.ModelForm):
         # otherwise it will throw error in console
         self.fields["journal_bio"].required = False
 
-
-
     class Meta:
         model = Journal
         fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood']
-
 
 
 class JournalFilterForm(forms.Form):
@@ -256,7 +251,7 @@ class JournalFilterForm(forms.Form):
 
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
-    
+
     def filter_tasks(self):
 
         myjournals = Journal.objects.all()
@@ -287,8 +282,9 @@ class JournalFilterForm(forms.Form):
             elif entry_date == '6m+':
                 time_threshold = timezone.now() - timedelta(weeks=26)
                 myjournals = myjournals.filter(entry_date__gte=time_threshold)
-        
+
         return myjournals
+
 
 class JournalSortForm(forms.Form):
 
@@ -298,20 +294,14 @@ class JournalSortForm(forms.Form):
     ]
     sort_by_entry_date = forms.ChoiceField(choices=ORDER_CHOICES)
 
+
 class ConfirmAccountDeleteForm(forms.Form):
     confirmation = forms.CharField(label='Type "YES" to confirm deletion', max_length=3)
 
 
-
-
-
-
-
-
-
-
-
-
-    
-
-
+class SendGroupRequestForm(forms.Form):
+    recipient = forms.ModelChoiceField(queryset=User.objects.all(), label='Select User')
+    def __init__(self, *args, currentUser=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if currentUser is not None:
+            self.fields['recipient'].queryset = User.objects.exclude(username=currentUser.username)
