@@ -17,9 +17,7 @@
                       <div>
                         {% if isUserCurrentlyLoggedIn %}
                           <p>
-                            <a href="{% url 'change_journal_info' journalID=journal.id%}" class="btn btn-sm btn-secondary">
-                              Edit Journal
-                            </a>
+
                             <a href="{% url 'journal_detail' journalID=journal.id %}" class="btn btn-sm btn-secondary">
                               View Journal
                             </a>

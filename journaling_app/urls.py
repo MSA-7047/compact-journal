@@ -41,6 +41,8 @@ urlpatterns = [
     path('sign_up/', SignUpView.as_view(), name='sign_up'),
     
     path('create-journal/', views.create_journal, name='create_journal'),
+    path('select-template/', views.select_template, name='select_template'),
+    path('select-template/<template>', views.select_template, name='create_journal_with_template'),
     path('change_journal_info/<int:journalID>/', views.ChangeJournalInfo, name='change_journal_info'),
     path('journal/<int:journalID>/', views.journal_detail_view, name='journal_detail'),
     path('ckeditor5/', include('django_ckeditor_5.urls')),

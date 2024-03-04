@@ -20,6 +20,12 @@ from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
+from journal.journal_templates import *
+templates = [{"title1": "title 1", "bio": "template_bio 1",  "default":"template description"},
+             {"title": "title 2", "bio": "template_bio 2",  "default":"template description", },
+             {"title": "title 3", "bio": "template_bio 3",  "default":"template description", },
+             {"title": "title 4", "bio": "template_bio 4",  "default":"template description", },
+             {"title": "title 5", "bio": "template_bio 5",  "default":"template description", }]
 
 
 
@@ -359,7 +365,7 @@ def create_journal(request):
             is_private = form.cleaned_data.get("private")
             journal_owner = current_user
             journal = Journal.objects.create(
-                journal_title = journal_title,
+                journal_title = template["title"],
                 journal_description = journal_description,
                 journal_bio = journal_bio,
                 journal_mood = journal_mood,
@@ -374,6 +380,28 @@ def create_journal(request):
             return render(request, 'create_journal.html', {'form': form})
     else:
         return render(request, 'create_journal.html', {'form': form})
+    
+def select_template(request):
+    template = templates[1]
+    return render(request, 'select_template.html', {"templates": template})
+
+@login_required    
+def create_journal_From_Templte(request, template):
+    current_user = request.user
+    form = CreateJournalForm()
+    current_user = request.user
+    journal = Journal.objects.create(
+                journal_title = template["title"],
+                journal_description = template["description"],
+                journal_bio = template["bio"],
+                journal_mood = "neutral",
+                journal_owner = current_user,
+                private = False
+            )
+    journal.save()
+    form = EditJournalInfoForm(instance=journal)
+    return render(request, 'create_journal.html', {'form': form, 'journal': journal})
+
 
 @login_required
 def ChangeJournalInfo(request, journalID): 
