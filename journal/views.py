@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from journal.models import *
 from journal.forms import *
 from journal.helpers import login_prohibited
@@ -16,8 +16,12 @@ from django.views.generic import DetailView
 import calendar
 from calendar import HTMLCalendar
 from datetime import datetime
+from django.views.generic.edit import CreateView
+from django.views.generic.detail import DetailView
+from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
 from .models.Notification import Notification
+
 
 @login_required
 def dashboard(request):
@@ -31,7 +35,6 @@ def dashboard(request):
     current_month = datetime.now().strftime("%B")
     todays_journal = Journal.objects.filter(entry_date__date=today).filter(journal_owner=current_user)
     notifications = Notification.objects.filter(user=request.user, is_read=False)
-
 
     return render(
         request,
@@ -231,6 +234,8 @@ def get_friend_requests_and_sent_invitations(user):
     sent_rejected_invitations = user.sent_invitations.filter(status='rejected')
     return requests, sent_pending_invitations, sent_accepted_invitations, sent_rejected_invitations
 
+
+
 @login_required
 def view_friend_requests(request):
     requests, sent_pending_invitations, sent_accepted_invitations, sent_rejected_invitations = get_friend_requests_and_sent_invitations(request.user)
@@ -243,6 +248,12 @@ def view_friend_requests(request):
 def view_friends(request):
     friends = request.user.friends.all()
     return render(request, 'friends.html', {"friends": friends})
+
+@login_required
+def view_friends_profile(request, friendID):
+    friend = get_object_or_404(User, id=friendID)
+    return render(request, 'view_friends_profile.html', {"user": friend})
+
 
 @login_required
 def send_friend_request(request, user_id):
@@ -301,15 +312,47 @@ def remove_friend(request, user_id):
     friend.friends.remove(request.user)
     return redirect('friends')
 
+# class AddJournal(SuccessMessageMixin, CreateView):
+#     form_class = CreateJournalForm
+#     model = Journal
+#     template_name = "add_journal.html"
+#     success_message = "Added Succesfully"
+#     success_url = reverse_lazy('dashboard')
+
+
+# class JournalDetail(DetailView):
+#     model = Journal
+#     context_object_name = 'journal'
+#     template_name = "journal_detail.html"
+
+
+class JournalDetail(DetailView):
+    model = Journal
+    template_name = 'journal_detail.html'
+
+    def get_object(self, queryset=None):
+        journal_id = self.kwargs.get('journal_id')
+        queryset = self.get_queryset().filter(id=journal_id)
+        obj = queryset.first()
+        return obj
+
+def journal_detail_view(request, journalID):
+    # Retrieve the journal object based on the journal_id
+    current_user = request.user
+    journal = Journal.objects.get(id=journalID)
+
+    # Pass the journal object to the template context
+    return render(request, 'journal_detail.html', {'user': current_user, 'journal': journal})
 
 @login_required    
 def create_journal(request):
     today = datetime.now().date()
 
     current_user = request.user
-    current_year = datetime.now().year
-    current_month = datetime.now().strftime("%B")
-    todays_journal = Journal.objects.filter(entry_date__date=today)
+    form_class = CreateJournalForm
+    model = Journal
+    template_name = "create_journal.html"
+    success_message = "Added Succesfully"
     form = CreateJournalForm()
     current_user = request.user
     if (request.method == 'POST'):
@@ -319,84 +362,52 @@ def create_journal(request):
             journal_description = form.cleaned_data.get("journal_description")
             journal_bio = form.cleaned_data.get("journal_bio")
             journal_mood = form.cleaned_data.get("journal_mood")
+            is_private = form.cleaned_data.get("private")
             journal_owner = current_user
             journal = Journal.objects.create(
                 journal_title = journal_title,
                 journal_description = journal_description,
                 journal_bio = journal_bio,
                 journal_mood = journal_mood,
-                journal_owner = journal_owner
+                journal_owner = journal_owner,
+                private = is_private
             )
             journal.save()
             #old render that would stick on create journal view after creating journal, thus repeating entry when reloaded
             #return render(request, 'dashboard.html', {'form': form, 'user': current_user, 'current_year': current_year, 'current_month': current_month, 'todays_journal': todays_journal or None})
             return redirect('/dashboard/')
-
-            return render(request, 'dashboard.html', {'form': form, 'user': current_user, 'current_year': current_year, 'current_month': current_month, 'todays_journal': todays_journal or None})
         else:
-            return render(request, 'create_journal_view.html', {'form': form})
+            return render(request, 'create_journal.html', {'form': form})
     else:
-        return render(request, 'create_journal_view.html', {'form': form})
-
-    
+        return render(request, 'create_journal.html', {'form': form})
 
 @login_required
-def ChangeJournalTitle(request, journalID):
+def ChangeJournalInfo(request, journalID): 
     journal = get_object_or_404(Journal, id=journalID)
-    
-    if request.method == 'POST':
-        form = EditJournalTitleForm(request.POST, instance=journal)
-        if form.is_valid():
-            new_title = form.cleaned_data['journal_title']
-            journal.journal_title = new_title
-            journal.save()
-            return redirect('all_entries')
-    else:
-        form = EditJournalTitleForm(instance=journal)
-    
-    return render(request, 'change_journal_title.html', {'form': form, 'journal': journal})
-
-
-
 
 
 
 @login_required
 def ChangeJournalBio(request, journalID):
     journal = get_object_or_404(Journal, id=journalID)
-    
+
     if request.method == 'POST':
-        form = EditJournalBioForm(request.POST, instance=journal)
+        form = EditJournalInfoForm(request.POST, instance=journal)
         if form.is_valid():
-            new_bio = form.cleaned_data['journal_bio']
-            journal.journal_bio = new_bio
-            journal.save()
-            return redirect('all_entries')
+            form.save()
+            return redirect('dashboard')  # Redirect to the detail view of the edited journal
     else:
-        form = EditJournalBioForm(instance=journal)
-    
-    return render(request, 'change_journal_bio.html', {'form': form, 'journal': journal})
+        form = EditJournalInfoForm(instance=journal)
 
+    return render(request, 'create_journal.html', {'form': form, 'journal': journal})
 
-    
 @login_required
-def ChangeJournalDescription(request, journalID):
+def DeleteJournal(request, journalID):
     journal = get_object_or_404(Journal, id=journalID)
-    
-    if request.method == 'POST':
-        form = EditJournalDescriptionForm(request.POST, instance=journal)
-        if form.is_valid():
-            new_description = form.cleaned_data['journal_description']
-            journal.journal_description = new_description
-            journal.save()
-            return redirect('all_entries')
-    else:
-        form = EditJournalDescriptionForm(instance=journal)
-    
-    return render(request, 'change_journal_description.html', {'form': form, 'journal': journal})
+    journal.delete()
+    return redirect('dashboard')
 
 @login_required
-
 def calendar_view(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
     name = "Journaller"
     month = month.capitalize()
@@ -425,13 +436,15 @@ def all_journal_entries_view(request):
     # current_year = datetime.now().year
     # current_month = datetime.now().strftime("%B")
     journal_existence = Journal.objects.filter(journal_title__isnull=False)
-    return render(request, 'all_entries.html', { 'user': current_user,  'journal_existence': journal_existence or False})
+    return render(request, 'my_journals.html', { 'user': current_user,  'journal_existence': journal_existence or False})
 
 @login_required
-def my_journals_view(request):
-    current_user = request.user
+def my_journals_view(request, userID):
+    current_user = get_object_or_404(User, id=userID)
+    isLoggedInUser = current_user == request.user
     if request.method == 'POST':
         filter_form = JournalFilterForm(current_user, request.POST)
+
         if filter_form.is_valid():
             myJournals = filter_form.filter_tasks()
             myJournals = myJournals.filter(journal_owner=current_user)
@@ -445,30 +458,45 @@ def my_journals_view(request):
                     myJournals = myJournals.order_by("entry_date")    
         else:
             sort_form = JournalSortForm()
+            myJournals = Journal.objects.filter(journal_owner=current_user)
+            if not isLoggedInUser:
+                myJournals = myJournals.filter(private=False)
             context = {
             'filter_form': filter_form,
             'sort_form': sort_form,
             'show_alert':True,
-            'myJournals': Journal.objects.filter(journal_owner=current_user)
+            'myJournals': myJournals,
+            'user': current_user,
+            'isUserCurrentlyLoggedIn': isLoggedInUser
             }
             return render(request, 'My_Journals.html', context)
         
+        if not isLoggedInUser:
+            myJournals = myJournals.filter(private=False)
+
         context = {
             'filter_form': filter_form,
             'sort_form': sort_form,
-            'myJournals': myJournals
+            'myJournals': myJournals,
+            'user': current_user,
+            'isUserCurrentlyLoggedIn': isLoggedInUser
         }
         return render(request, 'my_journals.html', context) 
     
-    myjournals = Journal.objects.filter(journal_owner=current_user)
+    myJournals = Journal.objects.filter(journal_owner=current_user)
+
+    if not isLoggedInUser:
+            myJournals = myJournals.filter(private=False)
+
     filter_form = JournalFilterForm(current_user)
     sort_form = JournalSortForm()
     
     context = {
             'filter_form': filter_form,
             'sort_form': sort_form,
-            'myJournals': myjournals or False,
-            'user': current_user
+            'myJournals': myJournals or False,
+            'user': current_user,
+            'isUserCurrentlyLoggedIn': isLoggedInUser
         }
     
     return render(request, 'my_journals.html', context)          
@@ -541,6 +569,7 @@ def notification_context(request):
 
 #     # Pass the notifications queryset to the template
 #     return render(request, 'notification_panel.html', {'notifications': notifications})
+
 
 
 
