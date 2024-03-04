@@ -1,3 +1,11 @@
+{% load static %}
+
+<head>
+  <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
+  <!-- <link rel="stylesheet" href="{% static 'custom.css' %}"> -->
+  
+</head>
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
   <div class="container">
     <a class="navbar-brand" href="{% url 'dashboard' %}">
@@ -8,6 +16,96 @@
     </button>
     {% if user.is_authenticated %}
       {% include 'partials/menu.html' %}
+
+      <li class="nav-item dropdown">
+
+        <a class="nav-link dropdown-toggle no-caret" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="icon ion-md-notifications-outline"></i>
+          {% if notifications.count %}
+            <span class="badge badge-warning" id="notificationBadge">{{ notifications.count }}</span>
+          {% endif %}
+        </a>
+        
+        <ul class="dropdown-menu" aria-labelledby="notificationDropdown">
+          {% include 'partials/notification_panel.html' %}
+        </ul>
+        
+      </li>
+
     {% endif %}
+
+
   </div>
+  
 </nav>
+
+<style>
+
+.container h6{
+  margin-right: 100px;
+  margin-top: 0px;
+  padding: 10px;
+  text-align: left;
+  line-height: 30px;
+  background-color: white;
+  position: relative;
+  color: #BFC484;
+
+}
+.navbar .dropdown-toggle::after {
+    display: none;
+}
+.navbar .dropdown-toggle .icon {
+    color: white;
+}
+.notfication li{
+  margin-top: 10px;
+}
+.notfication li div{
+  margin-left: 50px;
+  margin-top: -20px;
+  border: 1px solid #065143;
+  padding: 10px;
+  background-color: white;
+}
+.notfication li i{
+  width: 30px;
+  height: 30px;
+  display: block;
+  text-align: center;
+  line-height: 30px;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  background-color: #E5E9AB;
+}
+.notfication li i:after{
+  content: '';
+  width: 40px;
+  height: 1px;
+  position: absolute;
+  background-color: lavenderblush;
+  margin-top: 15px;
+  z-index: -1;
+}
+.notfication:after{
+  content: '';
+  width: 1px;
+  height: 100%;
+  background-color: #065143;
+  position: absolute;
+  top: 4px;
+  left: 15px;
+  z-index: -1;
+}
+
+#notificationBadge {
+  position: absolute;
+  top: -5px; 
+  right: -5px; 
+  padding: 5px 7px;
+  border-radius: 60%;
+  background-color: red;
+  color: white;
+  font-size: 10px;
+}
+</style>

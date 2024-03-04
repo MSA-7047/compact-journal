@@ -20,7 +20,7 @@ from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
-
+from .models.Notification import Notification
 
 
 @login_required
@@ -33,7 +33,8 @@ def dashboard(request):
 
     current_year = datetime.now().year
     current_month = datetime.now().strftime("%B")
-    todays_journal = Journal.objects.filter(entry_date__date=today, journal_owner=current_user)
+    todays_journal = Journal.objects.filter(entry_date__date=today).filter(journal_owner=current_user)
+    notifications = Notification.objects.filter(user=request.user, is_read=False)
 
     return render(
         request,
@@ -42,7 +43,8 @@ def dashboard(request):
             'user': current_user,
             'groups': user_groups,
             'current_year': current_year, 'current_month': current_month,
-            'todays_journal': todays_journal or None
+            'todays_journal': todays_journal or None,
+            'notifications': notifications
         }
     )
 
@@ -188,7 +190,6 @@ class ProfileView(LoginRequiredMixin, DetailView):
         return user
 
 
-
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     """Display user profile editing screen, and handle profile modifications."""
 
@@ -198,12 +199,16 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_object(self):
         """Return the object (user) to be updated."""
-        user = self.request.user
-        return user
+        return self.request.user
+
+    def form_valid(self, form):
+        """Process a valid form."""
+        create_notification(self.request)
+        messages.success(self.request, "Profile updated!")
+        return super().form_valid(form)
 
     def get_success_url(self):
         """Return redirect URL after successful update."""
-        messages.add_message(self.request, messages.SUCCESS, "Profile updated!")
         return reverse(settings.REDIRECT_URL_WHEN_LOGGED_IN)
 
 
@@ -235,6 +240,7 @@ def get_friend_requests_and_sent_invitations(user):
 def view_friend_requests(request):
     requests, sent_pending_invitations, sent_accepted_invitations, sent_rejected_invitations = get_friend_requests_and_sent_invitations(request.user)
     form = SendFriendRequestForm(user=request.user)
+    create_notification(request)
 
     return render(request, 'friend_requests.html', {'form': form, 'requests': requests, 'sent_pending_invitations': sent_pending_invitations, 'sent_accepted_invitations': sent_accepted_invitations, 'sent_rejected_invitations': sent_rejected_invitations})
 
@@ -379,6 +385,12 @@ def create_journal(request):
 def ChangeJournalInfo(request, journalID): 
     journal = get_object_or_404(Journal, id=journalID)
 
+
+
+@login_required
+def ChangeJournalBio(request, journalID):
+    journal = get_object_or_404(Journal, id=journalID)
+
     if request.method == 'POST':
         form = EditJournalInfoForm(request.POST, instance=journal)
         if form.is_valid():
@@ -508,10 +520,55 @@ def delete_account(request):
         form = ConfirmAccountDeleteForm()
 
     return render(request, 'delete_account.html', {'form': form})
+
+@login_required
+def create_notification(request):
+    current_user = request.user
+
+    Notification.objects.create(
+        user=current_user,
+        message="This is a test notification message."
+    )
+
+    print("I am testing the notifications system, object creation. If this message shows, it works :)")
+    messages.success(request, "Notification created!")
     
+@login_required
+def mark_notification_as_read(request, notification_id):
+    notification = get_object_or_404(Notification, id=notification_id, user=request.user)
+    if notification.is_read:
+        notification.is_read = False
+    else:
+        notification.is_read = True
+    time = notification.timeCreated.strftime("%Y-%m-%d %H:%M:%S")
+    messages.success(request, f"Notification for the {notification.notification_type} created at {time} was marked as read.")
+    notification.save()
 
+    return redirect(notification.get_absolute_url())
 
+@login_required
+def mark_all_notification_as_read(request):
+    Notification.objects.filter(user=request.user).update(is_read=True)
+    messages.success(request, "All notifications cleared.")
+    return redirect('dashboard')
 
+def notification_context(request):
+    if request.user.is_authenticated:
+        notifications = Notification.objects.filter(user=request.user, is_read=False)
+        return {'notifications': notifications}
+    else:
+        return {'notifications': []}
+    
+# @login_required
+# def notifications_panel(request):
+#     # Fetch notifications for the current user
+#     notifications = Notification.objects.filter(user=request.user)
+
+#     # Print out the notifications queryset for debugging
+#     print("Notifications Queryset:", notifications)
+
+#     # Pass the notifications queryset to the template
+#     return render(request, 'notification_panel.html', {'notifications': notifications})
 
 
 

@@ -60,7 +60,11 @@ urlpatterns = [
     path('view_friends_journals/<int:userID>/', my_journals_view, name='view_friends_journals'),
     
     path('groups/', group, name='groups'),
-    path('create_group/',create_group, name='create_group')
+    path('create_group/',create_group, name='create_group'),
+
+    path('notifications/<int:notification_id>/', views.mark_notification_as_read, name='mark_notification_as_read'),
+    path('notifications/', views.mark_all_notification_as_read, name='mark_all_notification_as_read')
+    #path('notifications/', views.notifications_panel, name='notifications_panel'),
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
