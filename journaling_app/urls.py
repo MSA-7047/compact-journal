@@ -42,7 +42,8 @@ urlpatterns = [
     
     path('create-journal/', views.create_journal, name='create_journal'),
     path('select-template/', views.select_template, name='select_template'),
-    path('select-template/<template>', views.select_template, name='create_journal_with_template'),
+    path('create-template/', views.create_template, name='create_template'),
+    path('createJournalWithTemplate/<int:templateID>/', views.create_journal_From_Template, name='create_journal_with_template'),
     path('change_journal_info/<int:journalID>/', views.ChangeJournalInfo, name='change_journal_info'),
     path('journal/<int:journalID>/', views.journal_detail_view, name='journal_detail'),
     path('ckeditor5/', include('django_ckeditor_5.urls')),

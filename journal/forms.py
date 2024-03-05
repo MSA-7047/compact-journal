@@ -197,42 +197,6 @@ class CreateJournalForm(forms.ModelForm):
         model = Journal
         fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood', 'private']
 
-
-class EditJournalInfoForm(forms.ModelForm):
-
-
-    
-    # class Meta:
-    #     model = Journal
-    #     fields = ['journal_title', 'journal_description', 'journal_bio']
-
-
-
-    # def save(self, commit=True):
-    #     instance = super().save(commit=False)
-    #     instance.journal_title = self.cleaned_data['journal_title']
-    #     instance.journal_description = self.cleaned_data['journal_description']
-    #     instance.journal_bio = self.cleaned_data['journal_bio']
-    #     if commit:
-    #         instance.save()
-    #     return instance
-
-    #journal_bio = forms.CharField(widget=CKEditor5Widget(config_name='extends'), required=False)
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # it is required to set it False,
-        # otherwise it will throw error in console
-        self.fields["journal_bio"].required = False
-
-
-
-    class Meta:
-        model = Journal
-        fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood', 'private']
-
-
-
 class JournalFilterForm(forms.Form):
 
     entry_date = forms.ChoiceField(choices=(
@@ -302,6 +266,15 @@ class ConfirmAccountDeleteForm(forms.Form):
     confirmation = forms.CharField(label='Type "YES" to confirm deletion', max_length=3)
 
 
+class CreateTemplateForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["bio"].required = False
+
+    class Meta:
+        model = Template
+        fields = ['title', 'description', 'bio',]
 
 
 

@@ -8,6 +8,7 @@ from .Journal import Journal
 from .FriendRequest import FriendRequest
 
 
+
 class User(AbstractUser):
     """"""
 
@@ -32,6 +33,7 @@ class User(AbstractUser):
     location = models.CharField(max_length=50, blank=False)
     nationality = CountryField()
     date_joined = models.DateTimeField(auto_now_add=True)
+
 
     class Meta:
         app_label = 'journal'

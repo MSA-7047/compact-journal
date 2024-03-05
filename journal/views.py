@@ -21,12 +21,38 @@ from django.views.generic.detail import DetailView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
 from journal.journal_templates import *
-templates = [{"title1": "title 1", "bio": "template_bio 1",  "default":"template description"},
-             {"title": "title 2", "bio": "template_bio 2",  "default":"template description", },
-             {"title": "title 3", "bio": "template_bio 3",  "default":"template description", },
-             {"title": "title 4", "bio": "template_bio 4",  "default":"template description", },
-             {"title": "title 5", "bio": "template_bio 5",  "default":"template description", }]
 
+def createTemplate(currentUser):
+    Template.objects.create(
+                    title = "template 1",
+                    description = "template summary 1",
+                    bio = "this is the first template",
+                    owner = currentUser
+                )
+    Template.objects.create(
+                    title = "template 2",
+                    description = "template summary 2",
+                    bio = "this is the first template",
+                    owner = currentUser
+                )
+    Template.objects.create(
+                    title = "template 3",
+                    description = "template summary 3",
+                    bio = "this is the first template",
+                    owner = currentUser
+                )
+    Template.objects.create(
+                    title = "template 4",
+                    description = "template summary 4",
+                    bio = "this is the first template",
+                    owner = currentUser
+                )
+    Template.objects.create(
+                    title = "template 5",
+                    description = "template summary 5",
+                    bio = "this is the first template",
+                    owner = currentUser
+                )
 
 
 @login_required
@@ -222,6 +248,7 @@ class SignUpView(LoginProhibitedMixin, FormView):
 
     def form_valid(self, form):
         self.object = form.save()
+        createTemplate(self.object)
         login(self.request, self.object)
         return super().form_valid(form)
 
@@ -365,7 +392,7 @@ def create_journal(request):
             is_private = form.cleaned_data.get("private")
             journal_owner = current_user
             journal = Journal.objects.create(
-                journal_title = template["title"],
+                journal_title = journal_title,
                 journal_description = journal_description,
                 journal_bio = journal_bio,
                 journal_mood = journal_mood,
@@ -380,27 +407,52 @@ def create_journal(request):
             return render(request, 'create_journal.html', {'form': form})
     else:
         return render(request, 'create_journal.html', {'form': form})
-    
-def select_template(request):
-    template = templates[1]
-    return render(request, 'select_template.html', {"templates": template})
 
 @login_required    
-def create_journal_From_Templte(request, template):
+def create_template(request):
+
     current_user = request.user
+    form = CreateTemplateForm()
+    if (request.method == 'POST'):
+        form = CreateTemplateForm(request.POST)
+        if (form.is_valid()):
+            template = Template.objects.create(
+                title = form.cleaned_data.get("title"),
+                description = form.cleaned_data.get("description"),
+                bio = form.cleaned_data.get("bio"),
+                owner = current_user,
+            )
+            template.save()
+            return redirect('/select-template/')
+        else:
+            return render(request, 'create_template.html', {'form': form})
+    else:
+        return render(request, 'create_template.html', {'form': form})
+    
+
+def select_template(request):
+    currentUser = request.user
+    templates = Template.objects.filter(owner=currentUser)
+    return render(request, 'select_template.html', {"templates": templates})
+
+@login_required    
+def create_journal_From_Template(request, templateID):
+    current_user = request.user
+    template = get_object_or_404(Template, id = templateID)
     form = CreateJournalForm()
-    current_user = request.user
+    template = get_object_or_404(Template, id = templateID)
     journal = Journal.objects.create(
-                journal_title = template["title"],
-                journal_description = template["description"],
-                journal_bio = template["bio"],
+                journal_title = template.title,
+                journal_description = template.description,
+                journal_bio = template.bio,
                 journal_mood = "neutral",
                 journal_owner = current_user,
                 private = False
             )
     journal.save()
-    form = EditJournalInfoForm(instance=journal)
-    return render(request, 'create_journal.html', {'form': form, 'journal': journal})
+    return redirect("change_journal_info", journalID=journal.id)
+
+
 
 
 @login_required
@@ -408,12 +460,12 @@ def ChangeJournalInfo(request, journalID):
     journal = get_object_or_404(Journal, id=journalID)
 
     if request.method == 'POST':
-        form = EditJournalInfoForm(request.POST, instance=journal)
+        form = CreateJournalForm(request.POST, instance=journal)
         if form.is_valid():
             form.save()
             return redirect('dashboard')  # Redirect to the detail view of the edited journal
     else:
-        form = EditJournalInfoForm(instance=journal)
+        form = CreateJournalForm(instance=journal)
 
     return render(request, 'create_journal.html', {'form': form, 'journal': journal})
 
