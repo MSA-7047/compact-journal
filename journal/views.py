@@ -21,7 +21,6 @@ from django.views.generic.detail import DetailView
 from django.contrib.messages.views import SuccessMessageMixin
 
 
-
 @login_required
 def dashboard(request):
     """Display the current user's dashboard."""
@@ -60,10 +59,25 @@ def group(request) -> HttpResponse:
     current_user_groups = current_user.groups.all()
     return render(request, 'group.html', {'user': current_user, 'groups': current_user_groups})
 
-@login_required
-def group_dashboard(request, given_group) -> HttpResponse:
-    """Displays the journals & members of a given group"""
 
+@login_required
+def group_dashboard(request, given_group_id) -> HttpResponse:
+    """Displays the journals & members of a given group"""
+    current_user = request.user
+    given_group = get_object_or_404(Group, pk=given_group_id)
+    all_members_in_group = ...
+    group_journals = ...
+    is_owner = ...
+    return render(
+        request,
+        'group_dashboard.html',
+        {
+            'group': given_group,
+            'members': all_members_in_group,
+            'journals': group_journals,
+            'is_owner': is_owner
+        }
+    )
 
 
 @login_required
@@ -180,7 +194,6 @@ class PasswordView(LoginRequiredMixin, FormView):
         return reverse('dashboard')
 
 
-
 class ProfileView(LoginRequiredMixin, DetailView):
     """Display user profile screen"""
 
@@ -190,7 +203,6 @@ class ProfileView(LoginRequiredMixin, DetailView):
         """Return the object (user) to be updated."""
         user = self.request.user
         return user
-
 
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
@@ -226,13 +238,13 @@ class SignUpView(LoginProhibitedMixin, FormView):
     def get_success_url(self):
         return reverse(settings.REDIRECT_URL_WHEN_LOGGED_IN)
 
+
 def get_friend_requests_and_sent_invitations(user):
     requests = FriendRequest.objects.filter(recipient=user, is_accepted=False)
     sent_pending_invitations = user.sent_invitations.filter(status='pending')
     sent_accepted_invitations = user.sent_invitations.filter(status='accepted')
     sent_rejected_invitations = user.sent_invitations.filter(status='rejected')
     return requests, sent_pending_invitations, sent_accepted_invitations, sent_rejected_invitations
-
 
 
 @login_required
@@ -242,10 +254,12 @@ def view_friend_requests(request):
 
     return render(request, 'friend_requests.html', {'form': form, 'requests': requests, 'sent_pending_invitations': sent_pending_invitations, 'sent_accepted_invitations': sent_accepted_invitations, 'sent_rejected_invitations': sent_rejected_invitations})
 
+
 @login_required
 def view_friends(request):
     friends = request.user.friends.all()
     return render(request, 'friends.html', {"friends": friends})
+
 
 @login_required
 def send_friend_request(request, user_id):
@@ -263,7 +277,6 @@ def send_friend_request(request, user_id):
     return render(request, 'friend_requests.html', {'form': form, 'requests': requests, 'sent_pending_invitations': sent_pending_invitations, 'sent_accepted_invitations': sent_accepted_invitations, 'sent_rejected_invitations': sent_rejected_invitations})
 
 
-
 @login_required
 def accept_invitation(request, friend_request_id):
     friend_request = get_object_or_404(FriendRequest, id=friend_request_id, recipient=request.user, is_accepted=False)
@@ -279,14 +292,12 @@ def accept_invitation(request, friend_request_id):
     return redirect('view_friend_requests')
 
 
-
 @login_required
 def reject_invitation(request, friend_request_id):
     friend_request = get_object_or_404(FriendRequest, id=friend_request_id, recipient=request.user, is_accepted=False)
-    friend_request.status =  'rejected'
+    friend_request.status = 'rejected'
     friend_request.save()
     return redirect('view_friend_requests')
-
 
 
 @login_required
@@ -294,7 +305,6 @@ def delete_sent_request(request, friend_request_id):
     friend_request = get_object_or_404(FriendRequest, id=friend_request_id, sender=request.user)
     friend_request.delete()
     return redirect('view_friend_requests')
-
 
 
 @login_required
@@ -328,6 +338,7 @@ class JournalDetail(DetailView):
         obj = queryset.first()
         return obj
 
+
 def journal_detail_view(request, journalID):
     # Retrieve the journal object based on the journal_id
     current_user = request.user
@@ -335,6 +346,7 @@ def journal_detail_view(request, journalID):
 
     # Pass the journal object to the template context
     return render(request, 'journal_detail.html', {'user': current_user, 'journal': journal})
+
 
 @login_required    
 def create_journal(request):
@@ -371,6 +383,7 @@ def create_journal(request):
     else:
         return render(request, 'add_journal.html', {'form': form})
 
+
 @login_required
 def ChangeJournalInfo(request, journalID):
     # journal = get_object_or_404(Journal, id=journalID)
@@ -402,11 +415,13 @@ def ChangeJournalInfo(request, journalID):
 
     return render(request, 'change_journal_info.html', {'form': form, 'journal': journal})
 
+
 @login_required
 def DeleteJournal(request, journalID):
     journal = get_object_or_404(Journal, id=journalID)
     journal.delete()
     return redirect('dashboard')
+
 
 @login_required
 def ChangeJournalDescription(request, journalID):
@@ -423,6 +438,7 @@ def ChangeJournalDescription(request, journalID):
         form = EditJournalDescriptionForm(instance=journal)
     
     return render(request, 'change_journal_description.html', {'form': form, 'journal': journal})
+
 
 @login_required
 def calendar_view(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
@@ -447,6 +463,7 @@ def calendar_view(request, year=datetime.now().year, month=datetime.now().strfti
                 }
                 )
 
+
 @login_required
 def all_journal_entries_view(request):
     current_user = request.user
@@ -454,6 +471,7 @@ def all_journal_entries_view(request):
     # current_month = datetime.now().strftime("%B")
     journal_existence = Journal.objects.filter(journal_title__isnull=False)
     return render(request, 'all_entries.html', { 'user': current_user,  'journal_existence': journal_existence or False})
+
 
 @login_required
 def my_journals_view(request):
@@ -474,10 +492,10 @@ def my_journals_view(request):
         else:
             sort_form = JournalSortForm()
             context = {
-            'filter_form': filter_form,
-            'sort_form': sort_form,
-            'show_alert':True,
-            'myJournals': Journal.objects.filter(journal_owner=current_user)
+                'filter_form': filter_form,
+                'sort_form': sort_form,
+                'show_alert':True,
+                'myJournals': Journal.objects.filter(journal_owner=current_user)
             }
             return render(request, 'My_Journals.html', context)
 
@@ -501,24 +519,27 @@ def my_journals_view(request):
 
     return render(request, 'my_journals.html', context)
 
+
 @login_required
 def edit_group(request, group_id):
     """Allows owner of the group to edit the group."""
     group = get_object_or_404(Group, pk=group_id)
-    if request.user == group.owner:
-        if request.method == 'POST':
-            form = GroupForm(request.POST, instance=group)
-            if form.is_valid():
-                form.save()
-                return JsonResponse({'message': 'Group edited successfully'})
-            else:
-                return JsonResponse({'errors': form.errors}, status=400)
-        else:
-            form = GroupForm(instance=group)
-            return render(request, 'edit_group.html', {'form': form})
-    else:
+
+    if request.user != group.owner:
         # User is not the owner, return forbidden response
         return HttpResponseForbidden('You are not authorized to edit this group')
+
+    if request.method != 'POST':
+        form = GroupForm(instance=group)
+        return render(request, 'edit_group.html', {'form': form})
+
+    form = GroupForm(request.POST, instance=group)
+    if form.is_valid():
+        form.save()
+        return JsonResponse({'message': 'Group edited successfully'})
+
+    return JsonResponse({'errors': form.errors}, status=400)
+
 
 @login_required
 def send_group_request(request):
@@ -532,6 +553,7 @@ def send_group_request(request):
     else:
         form = SendGroupRequestForm(currentUser=request.user)
     return render(request, 'send_group_request.html', {'form': form})
+
 
 @login_required
 def accept_group_request(request, group_request_id):
