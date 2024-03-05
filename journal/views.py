@@ -589,3 +589,4 @@ def view_all_group_journals(request, group_id):
     
     # Pass the group and journals to the template
     return render(request, 'group_journals.html', {'group': group, 'group_journals': group_journals})
+
