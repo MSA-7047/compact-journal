@@ -511,6 +511,7 @@ def delete_account(request):
     
 @login_required    
 def create_group_journal(request):
+    """View used to allow the user to create a group journal."""
     today = datetime.now().date()
 
     current_user = request.user
@@ -519,7 +520,6 @@ def create_group_journal(request):
     template_name = "create_group_journal.html"
     success_message = "Added Succesfully"
     form = CreateGroupJournalForm()
-    current_user = request.user
     if (request.method == 'POST'):
         form = CreateGroupJournalForm(request.POST)
         if (form.is_valid()):
@@ -528,65 +528,54 @@ def create_group_journal(request):
             journal_bio = form.cleaned_data.get("journal_bio")
             journal_mood = form.cleaned_data.get("journal_mood")
             journal_group = form.cleaned_data.get("journal_group")
+            private = form.cleaned_data.get("private")
             journal = Journal.objects.create(
                 journal_title = journal_title,
                 journal_description = journal_description,
                 journal_bio = journal_bio,
                 journal_mood = journal_mood,
                 journal_group = journal_group,
+                private = private
             )
             journal.save()
             #old render that would stick on create journal view after creating journal, thus repeating entry when reloaded
             #return render(request, 'dashboard.html', {'form': form, 'user': current_user, 'current_year': current_year, 'current_month': current_month, 'todays_journal': todays_journal or None})
-            return redirect('/dashboard/')
+            return redirect('dashboard')
         else:
             return render(request, 'create_group_journal.html', {'form': form})
     else:
         return render(request, 'create_group_journal.html', {'form': form})
 
 @login_required
-def edit_group_journal(request, journal_id):
-
-    journal = get_object_or_404(GroupJournal, pk=journal_id)
-
-    # Check if the user is the owner of the journal or a member of the group
-    if not (request.user == journal.journal_group.owner or GroupMembership.objects.filter(user=request.user, group=journal.journal_group).exists()):
-        return redirect('home') 
-
+def edit_group_journal(request, journalID): 
+    """Allows the user to edit a group journal."""
+    journal = get_object_or_404(Journal, id=journalID)
     if request.method == 'POST':
-        form = CreateGroupJournalForm(request.POST, instance=journal)
+        form = EditGroupJournalForm(request.POST, instance=journal)
         if form.is_valid():
             form.save()
-            return redirect('home')
+            return redirect('dashboard')
     else:
-        form = CreateGroupJournalForm(instance=journal)
-
-    return render(request, 'edit_journal.html', {'form': form})
+        form = EditGroupJournalForm(instance=journal)
 
 @login_required
 def delete_group_journal(request, journal_id):
-
+    """Allows the owner to delete a group journal."""
     journal = get_object_or_404(GroupJournal, pk=journal_id)
     group_membership = GroupMembership.objects.filter(user=request.user, group=journal.journal_group).first()
 
+    # Allows only the owner of the group to delete the journal.
     if not group_membership or not group_membership.is_owner:
-        return redirect('home') 
-    
+        return redirect('dashboard') 
     if request.method == 'POST':
         journal.delete()
-        return redirect('home') 
-
-    # Render the confirmation template for the user to confirm deletion
-    return render(request, 'delete_journal_confirm.html', {'journal': journal})
+        return redirect('dashboard') 
+    return render(request, 'dashboard')
 
 @login_required
 def view_all_group_journals(request, group_id):
-    # Retrieve the group object
+    """Used to allow members of a group to see all journals written by that group."""
     group = get_object_or_404(Group, pk=group_id)
-    
-    # Retrieve all journals belonging to the group
     group_journals = GroupJournal.objects.filter(journal_group=group)
-    
-    # Pass the group and journals to the template
     return render(request, 'group_journals.html', {'group': group, 'group_journals': group_journals})
-
+ 

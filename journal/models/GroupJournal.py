@@ -17,6 +17,7 @@ class GroupJournal(models.Model):
     ]
     journal_mood = models.CharField(choices=MOOD_OPTIONS, blank=False, max_length=7)
     journal_group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='group_journals')
+    private = models.BooleanField(blank=False)
 
     class Meta:
         app_label = 'journal'
