@@ -10,7 +10,6 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from datetime import timedelta
 
-
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
 
@@ -178,25 +177,25 @@ class CreateJournalForm(forms.ModelForm):
         # otherwise it will throw error in console
         self.fields["journal_bio"].required = False
 
+    # journal_title = forms.CharField(label="Title")
+    # journal_description = forms.CharField(label="Description")
+    # journal_bio = forms.CharField(label="Bio")
+    # journal_mood = forms.ChoiceField(choices=(
+    #     ('Happy', 'Happy'),
+    #     ('Sad', 'Sad'),
+    #     ('Angry', 'Angry'),
+    #     ('Neutral', 'Neutral'),
+    # ), required=True)
+
+
+    # journal_title = forms.CharField(label="Title")
+    # journal_description = forms.CharField(label="Description")
+    # journal_bio = forms.CharField(label="Bio")
+    # journal_mood = forms.CharField(label="Mood")
+
     class Meta:
         model = Journal
         fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood', 'private']
-
-
-class EditJournalInfoForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # it is required to set it False,
-        # otherwise it will throw error in console
-        self.fields["journal_bio"].required = False
-
-
-
-    class Meta:
-        model = Journal
-        fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood', 'private']
-
-
 
 class JournalFilterForm(forms.Form):
 
@@ -267,6 +266,15 @@ class ConfirmAccountDeleteForm(forms.Form):
     confirmation = forms.CharField(label='Type "YES" to confirm deletion', max_length=3)
 
 
+class CreateTemplateForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["bio"].required = False
+
+    class Meta:
+        model = Template
+        fields = ['title', 'description', 'bio',]
 
 
 

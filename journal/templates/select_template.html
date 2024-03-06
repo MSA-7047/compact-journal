@@ -1,0 +1,36 @@
+{% extends 'base_content.html' %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h1>Select template</h1>
+      <a href="{% url 'create_journal' %}" class="btn btn-primary">Proceed Without Template</a>
+      <a href="{% url 'create_template' %}" class="btn btn-primary">Create Custom Template</a>
+        <ul class="list-group mt-3">
+          {% for template in templates %}
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <p>
+                          <a href="{% url 'edit_template' templateID=template.id %}" class="btn btn-sm btn-secondary">
+                            Edit Template
+                          </a>
+                          <a href="{% url 'delete_template' templateID=template.id%}" class="btn btn-sm btn-outline-danger">
+                            Delete Template
+                          </a>
+                        </p>
+                        <h2>Title: {{ template.title }}</h2>
+                        <h4>{{ template.description }}</h4>
+                        <p> 
+                          {{ template.bio|safe }}<p>
+                        <a href="{% url 'create_journal_with_template' templateID=template.id %}" class="btn btn-sm btn-secondary">Select This Template</a>
+                      </div>
+                    </div>
+                </li>
+          {%endfor%}
+    </div>
+  </div>
+  <br>
+  <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+{% endblock %}

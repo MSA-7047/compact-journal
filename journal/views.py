@@ -22,6 +22,48 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
 from .models.Notification import Notification
 
+def createTemplate(currentUser):
+    Template.objects.create(
+                    title = "Default Template 1 (generic)",
+                    description = "Generic description of the events for today",
+                    bio = """Today I woke up at .........
+                    After waking up I ......
+                    In the afternoon I........
+                    When it reached evening..........
+                    Overall i felt .........
+                    """,
+                    owner = currentUser
+                )
+    Template.objects.create(
+                    title = "Default template 2 (gratefullness)",
+                    description = "A reflection on what i am grateful for today",
+                    bio = """3 things I am grateful for today include:
+                    - 
+                    - 
+                    - 
+                    Something good that happened today:
+                    Something that could have been better tofay:""",
+                    owner = currentUser
+                )
+    Template.objects.create(
+                    title = "Defualt Template 3 ()",
+                    description = "template summary 3",
+                    bio = "this is another template",
+                    owner = currentUser
+                )
+    Template.objects.create(
+                    title = "template 4 ()",
+                    description = "template summary 4",
+                    bio = "this is the first template",
+                    owner = currentUser
+                )
+    Template.objects.create(
+                    title = "template 5",
+                    description = "template summary 5",
+                    bio = "this is the first template",
+                    owner = currentUser
+                )
+
 
 @login_required
 def dashboard(request):
@@ -221,6 +263,7 @@ class SignUpView(LoginProhibitedMixin, FormView):
 
     def form_valid(self, form):
         self.object = form.save()
+        createTemplate(self.object)
         login(self.request, self.object)
         return super().form_valid(form)
 
@@ -377,29 +420,84 @@ def create_journal(request):
             #return render(request, 'dashboard.html', {'form': form, 'user': current_user, 'current_year': current_year, 'current_month': current_month, 'todays_journal': todays_journal or None})
             return redirect('/dashboard/')
         else:
-            return render(request, 'create_journal.html', {'form': form})
+            return render(request, 'create_journal.html', {'form': form, 'title': "Create Journal"})
     else:
-        return render(request, 'create_journal.html', {'form': form})
+        return render(request, 'create_journal.html', {'form': form, 'title': "Create Journal"})
+
+@login_required    
+def create_template(request):
+
+    current_user = request.user
+    form = CreateTemplateForm()
+    if (request.method == 'POST'):
+        form = CreateTemplateForm(request.POST)
+        if (form.is_valid()):
+            template = Template.objects.create(
+                title = form.cleaned_data.get("title"),
+                description = form.cleaned_data.get("description"),
+                bio = form.cleaned_data.get("bio"),
+                owner = current_user,
+            )
+            template.save()
+            return redirect('/select-template/')
+        else:
+            return render(request, 'create_template.html', {'form': form})
+    else:
+        return render(request, 'create_template.html', {'form': form, 'title': "Create Template"})
+    
+
+def select_template(request):
+    currentUser = request.user
+    templates = Template.objects.filter(owner=currentUser)
+    return render(request, 'select_template.html', {"templates": templates})
 
 @login_required
-def ChangeJournalInfo(request, journalID): 
-    journal = get_object_or_404(Journal, id=journalID)
+def DeleteTemplate(request,templateID):
+    template= get_object_or_404(Template, id=templateID)
+    template.delete()
+    return redirect('select_template')
 
+def create_journal_From_Template(request, templateID):
+    current_user = request.user
+    template = get_object_or_404(Template, id = templateID)
+    journal = Journal.objects.create(
+                journal_title = template.title,
+                journal_description = template.description,
+                journal_bio = template.bio,
+                journal_mood = "neutral",
+                journal_owner = current_user,
+                private = False
+            )
+    journal.save()
+    return redirect("edit_journal", journalID=journal.id)
+
+@login_required
+def EditTemplate(request, templateID): 
+    template = get_object_or_404(Template, id=templateID)
+    if request.method == 'POST':
+        form = CreateTemplateForm(request.POST, instance=template)
+        if form.is_valid():
+            form.save()
+            return redirect('select_template')  # Redirect to the detail view of the edited journal
+    else:
+        form = CreateTemplateForm(instance=template)
+
+    return render(request, 'create_template.html', {'form': form, 'template': template, 'title': "Update Template"})
 
 
 @login_required
-def ChangeJournalBio(request, journalID):
+def EditJournal(request, journalID): 
     journal = get_object_or_404(Journal, id=journalID)
 
     if request.method == 'POST':
-        form = EditJournalInfoForm(request.POST, instance=journal)
+        form = CreateJournalForm(request.POST, instance=journal)
         if form.is_valid():
             form.save()
             return redirect('dashboard')  # Redirect to the detail view of the edited journal
     else:
-        form = EditJournalInfoForm(instance=journal)
+        form = CreateJournalForm(instance=journal)
 
-    return render(request, 'create_journal.html', {'form': form, 'journal': journal})
+    return render(request, 'create_journal.html', {'form': form, 'journal': journal, 'title': "Update Journal"})
 
 @login_required
 def DeleteJournal(request, journalID):
@@ -500,6 +598,8 @@ def my_journals_view(request, userID):
         }
     
     return render(request, 'my_journals.html', context)          
+
+
 
 
 @login_required
