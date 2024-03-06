@@ -1,6 +1,6 @@
 from django import forms
 from journal.models import User
-from new_password_mixin import NewPasswordMixin
+from .new_password_mixin import NewPasswordMixin
 
 
 class SignUpForm(NewPasswordMixin, forms.ModelForm):

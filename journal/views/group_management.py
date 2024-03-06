@@ -2,9 +2,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
-
-from journal.forms import GroupForm
 from journal.models import GroupRequest, Group, GroupMembership, User
+from journal.forms import *
 
 
 @login_required

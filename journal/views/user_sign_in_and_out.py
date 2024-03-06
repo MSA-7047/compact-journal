@@ -6,8 +6,10 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
 from django.views.generic.edit import FormView
+from .template_management import generate_generic_templates
+from .mixins import LoginProhibitedMixin
+from journal.forms import *
 
-from mixins import LoginProhibitedMixin
 
 
 class LogInView(LoginProhibitedMixin, View):
@@ -77,6 +79,7 @@ class SignUpView(LoginProhibitedMixin, FormView):
 
     def form_valid(self, form):
         self.object = form.save()
+        generate_generic_templates(self.object)
         login(self.request, self.object)
         return super().form_valid(form)
 

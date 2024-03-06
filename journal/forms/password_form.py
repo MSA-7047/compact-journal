@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth import authenticate
-from new_password_mixin import NewPasswordMixin
+from .new_password_mixin import NewPasswordMixin
 
 
 class PasswordForm(NewPasswordMixin):

@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic.detail import DetailView
 
 from journal.models import *
+from journal.forms import *
 
 
 class JournalDetail(DetailView):
@@ -33,11 +34,11 @@ def create_journal(request):
 
     form = CreateJournalForm()
     if request.method != 'POST':
-        return render(request, 'add_journal.html', {'form': form})
+        return render(request, 'create_journal.html', {'form': form})
 
     form = CreateJournalForm(request.POST)
     if not form.is_valid():
-        return render(request, 'add_journal.html', {'form': form})
+        return render(request, 'create_journal.html', {'form': form})
 
     journal = Journal.objects.create(
         journal_title=form.cleaned_data.get("journal_title"),
@@ -51,19 +52,21 @@ def create_journal(request):
     return redirect('/dashboard/')
 
 
+
 @login_required
-def ChangeJournalInfo(request, journalID):
+def EditJournal(request, journalID): 
+
     journal = get_object_or_404(Journal, id=journalID)
 
     if request.method == 'POST':
-        form = EditJournalInfoForm(request.POST, instance=journal)
+        form = CreateJournalForm(request.POST, instance=journal)
         if form.is_valid():
             form.save()
             return redirect('dashboard')  # Redirect to the detail view of the edited journal
     else:
-        form = EditJournalInfoForm(instance=journal)
+        form = CreateJournalForm(instance=journal)
 
-    return render(request, 'change_journal_info.html', {'form': form, 'journal': journal})
+    return render(request, 'create_journal.html', {'form': form, 'journal': journal, 'title': "Update Journal"})
 
 
 @login_required
@@ -73,21 +76,6 @@ def DeleteJournal(request, journal_id):
     return redirect('dashboard')
 
 
-@login_required
-def ChangeJournalDescription(request, journal_id):
-    journal = get_object_or_404(Journal, id=journal_id)
-
-    if request.method == 'POST':
-        form = EditJournalDescriptionForm(request.POST, instance=journal)
-        if form.is_valid():
-            new_description = form.cleaned_data['journal_description']
-            journal.journal_description = new_description
-            journal.save()
-            return redirect('all_entries')
-    else:
-        form = EditJournalDescriptionForm(instance=journal)
-
-    return render(request, 'change_journal_description.html', {'form': form, 'journal': journal})
 
 
 @login_required
@@ -98,48 +86,64 @@ def all_journal_entries_view(request):
 
 
 @login_required
-def my_journals_view(request):
-    current_user = request.user
+def my_journals_view(request, userID):
+    current_user = get_object_or_404(User, id = userID)
+    isLoggedInUser = current_user == request.user
     if request.method == 'POST':
         filter_form = JournalFilterForm(current_user, request.POST)
-        if not filter_form.is_valid():
+
+        if filter_form.is_valid():
+            myJournals = filter_form.filter_tasks()
+            myJournals = myJournals.filter(journal_owner=current_user)
+            sort_form = JournalSortForm(request.POST) 
+            if sort_form.is_valid():
+                sort_order = sort_form.cleaned_data['sort_by_entry_date']
+                if sort_order == 'descending':
+                    myJournals = myJournals.order_by("entry_date")
+                    myJournals = myJournals.reverse()
+                elif sort_order == 'ascending':
+                    myJournals = myJournals.order_by("entry_date")    
+        else:
             sort_form = JournalSortForm()
+            myJournals = Journal.objects.filter(journal_owner=current_user)
+            if not isLoggedInUser:
+                myJournals = myJournals.filter(private=False)
             context = {
-                'filter_form': filter_form,
-                'sort_form': sort_form,
-                'show_alert': True,
-                'myJournals': Journal.objects.filter(journal_owner=current_user)
+            'filter_form': filter_form,
+            'sort_form': sort_form,
+            'show_alert':True,
+            'myJournals': myJournals,
+            'user': current_user,
+            'isUserCurrentlyLoggedIn': isLoggedInUser
             }
             return render(request, 'My_Journals.html', context)
-
-        my_journals = filter_form.filter_tasks()
-        my_journals = my_journals.filter(journal_owner=current_user)
-
-        sort_form = JournalSortForm(request.POST)
-        if sort_form.is_valid():
-            sort_order = sort_form.cleaned_data['sort_by_entry_date']
-            if sort_order == 'descending':
-                my_journals = my_journals.order_by("entry_date")
-                my_journals = my_journals.reverse()
-            elif sort_order == 'ascending':
-                my_journals = my_journals.order_by("entry_date")
+        
+        if not isLoggedInUser:
+            myJournals = myJournals.filter(private=False)
 
         context = {
             'filter_form': filter_form,
             'sort_form': sort_form,
-            'myJournals': my_journals
+            'myJournals': myJournals,
+            'user': current_user,
+            'isUserCurrentlyLoggedIn': isLoggedInUser
         }
-        return render(request, 'my_journals.html', context)
+        return render(request, 'my_journals.html', context) 
+    
+    myJournals = Journal.objects.filter(journal_owner=current_user)
 
-    myjournals = Journal.objects.filter(journal_owner=current_user)
+    if not isLoggedInUser:
+            myJournals = myJournals.filter(private=False)
+
     filter_form = JournalFilterForm(current_user)
     sort_form = JournalSortForm()
-
+    
     context = {
             'filter_form': filter_form,
             'sort_form': sort_form,
-            'myJournals': myjournals or False,
-            'user': current_user
+            'myJournals': myJournals or False,
+            'user': current_user,
+            'isUserCurrentlyLoggedIn': isLoggedInUser
         }
-
-    return render(request, 'my_journals.html', context)
+    
+    return render(request, 'my_journals.html', context)   

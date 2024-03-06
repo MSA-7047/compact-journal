@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
-
+from journal.views.notifications import *
 from journal.models import *
+from journal.forms import *
 
 
 def get_friend_requests_and_sent_invitations(user):
@@ -17,7 +18,7 @@ def view_friend_requests(request):
     (requests, sent_pending_invitations,
      sent_accepted_invitations, sent_rejected_invitations) = get_friend_requests_and_sent_invitations(request.user)
     form = SendFriendRequestForm(user=request.user)
-
+    create_notification(request)
     return render(
         request,
         template_name='friend_requests.html',
@@ -35,6 +36,12 @@ def view_friend_requests(request):
 def view_friends(request):
     friends = request.user.friends.all()
     return render(request, 'friends.html', {"friends": friends})
+
+@login_required
+def view_friends_profile(request, friendID):
+    friend = get_object_or_404(User, id=friendID)
+    return render(request, 'view_friends_profile.html', {"user": friend})
+
 
 
 @login_required
@@ -100,3 +107,4 @@ def remove_friend(request, user_id):
     request.user.friends.remove(friend)
     friend.friends.remove(request.user)
     return redirect('friends')
+

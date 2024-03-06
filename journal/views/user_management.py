@@ -9,8 +9,11 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
-
+from journal.forms import *
 from journal.models import *
+from journal.views.notifications import *
+from django.db import transaction
+
 
 
 class ProfileView(LoginRequiredMixin, DetailView):
@@ -23,7 +26,6 @@ class ProfileView(LoginRequiredMixin, DetailView):
         user = self.request.user
         return user
 
-
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     """Display user profile editing screen, and handle profile modifications."""
 
@@ -33,13 +35,18 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_object(self):
         """Return the object (user) to be updated."""
-        user = self.request.user
-        return user
+        return self.request.user
+
+    def form_valid(self, form):
+        """Process a valid form."""
+        create_notification(self.request)
+        messages.success(self.request, "Profile updated!")
+        return super().form_valid(form)
 
     def get_success_url(self):
         """Return redirect URL after successful update."""
-        messages.add_message(self.request, messages.SUCCESS, "Profile updated!")
         return reverse(settings.REDIRECT_URL_WHEN_LOGGED_IN)
+
 
 
 @login_required
@@ -52,7 +59,8 @@ def dashboard(request):
 
     current_year = datetime.now().year
     current_month = datetime.now().strftime("%B")
-    todays_journal = Journal.objects.filter(entry_date__date=today)
+    todays_journal = Journal.objects.filter(entry_date__date=today).filter(journal_owner=current_user)
+    notifications = Notification.objects.filter(user=request.user, is_read=False)
 
     return render(
         request,
@@ -61,10 +69,10 @@ def dashboard(request):
             'user': current_user,
             'groups': user_groups,
             'current_year': current_year, 'current_month': current_month,
-            'todays_journal': todays_journal or None
+            'todays_journal': todays_journal or None,
+            'notifications': notifications
         }
     )
-
 
 @login_required
 def delete_account(request):
