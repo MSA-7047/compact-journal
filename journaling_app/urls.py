@@ -44,10 +44,12 @@ urlpatterns = [
     path('select-template/', views.select_template, name='select_template'),
     path('create-template/', views.create_template, name='create_template'),
     path('createJournalWithTemplate/<int:templateID>/', views.create_journal_From_Template, name='create_journal_with_template'),
-    path('change_journal_info/<int:journalID>/', views.ChangeJournalInfo, name='change_journal_info'),
+    path('edit_journal/<int:journalID>/', views.EditJournal, name='edit_journal'),
     path('journal/<int:journalID>/', views.journal_detail_view, name='journal_detail'),
     path('ckeditor5/', include('django_ckeditor_5.urls')),
     path('delete_journal/<int:journalID>/', DeleteJournal, name='delete_journal'),
+    path('delete_template/<int:templateID>/', DeleteTemplate, name='delete_template'),
+    path('edit_template/<int:templateID>/', views.EditTemplate, name='edit_template'),
     
     path('friend_requests/', view_friend_requests, name='view_friend_requests'),
     path('friends/', view_friends, name='view_friends'),
