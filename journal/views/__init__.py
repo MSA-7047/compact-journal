@@ -1,3 +1,7 @@
-from friend_management import _
-from group_management import _
-from user_management import _
+from friend_management import *
+from general_management import *
+from group_management import *
+from user_journal_management import *
+from user_management import *
+from user_sign_in_and_out import *
+

@@ -1,24 +1,10 @@
-from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
-from django.views import View
-from django.views.generic.edit import FormView, UpdateView
-from django.urls import reverse, reverse_lazy
-from journal.models import GroupRequest, Group, GroupMembership
+
 from journal.forms import GroupForm
-from journal.helpers import login_prohibited
-from django.views.generic import DetailView
-import calendar
-from calendar import HTMLCalendar
-from datetime import datetime
-from django.views.generic.edit import CreateView
-from django.views.generic.detail import DetailView
-from django.contrib.messages.views import SuccessMessageMixin
+from journal.models import GroupRequest, Group, GroupMembership, User
 
 
 @login_required
@@ -112,11 +98,11 @@ def accept_group_request(request, group_request_id):
     group_request = get_object_or_404(GroupRequest, id=group_request_id, recipient=request.user, is_accepted=True)
 
     # Add the user to the group
-    group = group_request.group  # Assuming group_request has a ForeignKey to Group model
+    group_ = group_request.group  # Assuming group_request has a ForeignKey to Group model
     user = group_request.sender  # The user who sent the group request
 
     # Create GroupMembership for the user
-    GroupMembership.objects.create(user=user, group=group)
+    GroupMembership.objects.create(user=user, group=group_)
 
     group_request.status = 'accepted'
     group_request.save()
@@ -126,7 +112,7 @@ def accept_group_request(request, group_request_id):
 
 
 @login_required
-def reject_invitation(request, group_request_id):
+def reject_group_invitation(request, group_request_id):
     """Allows the user with the sent friend request to reject it"""
     group_request = get_object_or_404(GroupRequest, id=group_request_id, recipient=request.user, is_accepted=False)
     group_request.status = 'rejected'
@@ -182,33 +168,32 @@ def leave_group(request, group_id):
     return render(request, 'select_new_owner.html', {'group': group})
 
 
-
 @login_required
 def remove_player_from_group(request, group_id, player_id):
     """Allows the owner to remove a player from the group."""
 
-    group = get_object_or_404(Group, id=group_id)
+    group_ = get_object_or_404(Group, id=group_id)
     player = get_object_or_404(User, id=player_id)
 
-    if request.user != group.owner:
+    if request.user != group_.owner:
         return HttpResponseForbidden('You are not authorized to remove a player from this group.')
 
-    if player == group.owner:
+    if player == group_.owner:
         messages.error(request, "The owner cannot be removed from the group.")
         return redirect('group_detail', group_id=group.id)
 
     try:
-        membership = GroupMembership.objects.get(group=group, user=player)
+        membership = GroupMembership.objects.get(group=group_, user=player)
     except GroupMembership.DoesNotExist:
         messages.error(request, f"{player.username} is not a member of the group.")
-        return redirect('group_detail', group_id=group.id)
+        return redirect('group_detail', group_id=group_.id)
 
     membership.delete()
     messages.success(request, f"Successfully removed {player.username} from the group.")
 
-    if group.members.count() == 0:
-        group.delete()
+    if group_.members.count() == 0:
+        group_.delete()
         messages.info(request, "The group has been deleted as there are no members left.")
 
-    return redirect('group_detail', group_id=group.id)
+    return redirect('group_detail', group_id=group_.id)
 

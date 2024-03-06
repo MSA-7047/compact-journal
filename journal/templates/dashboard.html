@@ -119,9 +119,6 @@
             Edit
           </a>
           {% endfor %}
-
-
-
         </p>
         {% endif %}
         
@@ -136,7 +133,7 @@
         {% if groups %}
           <div class="btn-group-vertical container-fluid" role="group">
             {% for group in groups %}
-              <a role="button" href="#" class="btn btn-info content-large">{{ group.name }}</a>
+              <a role="button" href="{% url 'group_dashboard' group_id=group.id %}" class="btn btn-info content-large">{{ group.name }}</a>
             {% endfor %}
           </div>
         {% endif %}

@@ -22,9 +22,6 @@ from django.conf import settings
 from journal.views import *
 
 
-
-
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home, name='home'),
@@ -40,10 +37,10 @@ urlpatterns = [
     path('sign_up/', SignUpView.as_view(), name='sign_up'),
     
     path('add-journal/', views.create_journal, name='add_journal'),
-    path('change_journal_info/<int:journalID>/', views.ChangeJournalInfo, name='change_journal_info'),
-    path('journal/<int:journalID>/', views.journal_detail_view, name='journal_detail'),
+    path('change_journal_info/<int:journal_id>/', views.ChangeJournalInfo, name='change_journal_info'),
+    path('journal/<int:journal_id>/', views.journal_detail_view, name='journal_detail'),
     path('ckeditor5/', include('django_ckeditor_5.urls')),
-    path('delete_journal/<int:journalID>/', DeleteJournal, name='delete_journal'),
+    path('delete_journal/<int:journal_id>/', DeleteJournal, name='delete_journal'),
     
     path('friend_requests/', view_friend_requests, name='view_friend_requests'),
     path('friends/', view_friends, name='view_friends'),
@@ -53,15 +50,27 @@ urlpatterns = [
     path('delete_sent_request/<int:friend_request_id>/', delete_sent_request, name='delete_sent_request'),
     path('remove_friend/<int:user_id>', remove_friend, name='remove_friend'),
     
-    path('calendar/<int:year>/<str:month>/', calendar_view, name='calendar' ),
+    path('calendar/<int:year>/<str:month>/', calendar_view, name='calendar'),
     path('all_entries/', all_journal_entries_view, name='all_entries'),
     path('my_journals/', my_journals_view, name='my_journals'),
     
     path('groups/', group, name='groups'),
-    path('create_group/',create_group, name='create_group')
+    path('create_group/', create_group, name='create_group'),
+    path('groups/<int:group_id>', group_dashboard, name='group_dashboard'),
+    path('groups/<int:group_id>/edit', edit_group, name='edit_group'),
+    path('groups/<int:group_id>/leave', leave_group, name='leave_group'),
+    path('groups/<int:group_id>/delete', delete_group, name='delete_group'),
+    path(
+        'groups/<int:group_id>/remove_player/<int:player_id>',
+        remove_player_from_group,
+        name='remove_player_from_group'
+    ),
+    path(
+        'invite_to_group/', send_group_request, name='invite_group_member'
+    )
 
-]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:
-    urlpatterns+=static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
