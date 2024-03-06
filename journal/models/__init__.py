@@ -8,3 +8,4 @@ from .Journal import Journal
 from .User import User
 from .Entries import Entries
 from .Template import Template
+from .Notification import Notification

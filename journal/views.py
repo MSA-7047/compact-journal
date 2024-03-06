@@ -23,47 +23,24 @@ from django.db import transaction
 from .models.Notification import Notification
 
 def createTemplate(currentUser):
-    Template.objects.create(
-                    title = "Default Template 1 (generic)",
-                    description = "Generic description of the events for today",
-                    bio = """Today I woke up at .........
-                    After waking up I ......
-                    In the afternoon I........
-                    When it reached evening..........
-                    Overall i felt .........
-                    """,
-                    owner = currentUser
-                )
-    Template.objects.create(
-                    title = "Default template 2 (gratefullness)",
-                    description = "A reflection on what i am grateful for today",
-                    bio = """3 things I am grateful for today include:
-                    - 
-                    - 
-                    - 
-                    Something good that happened today:
-                    Something that could have been better tofay:""",
-                    owner = currentUser
-                )
-    Template.objects.create(
-                    title = "Defualt Template 3 ()",
-                    description = "template summary 3",
-                    bio = "this is another template",
-                    owner = currentUser
-                )
-    Template.objects.create(
-                    title = "template 4 ()",
-                    description = "template summary 4",
-                    bio = "this is the first template",
-                    owner = currentUser
-                )
-    Template.objects.create(
-                    title = "template 5",
-                    description = "template summary 5",
-                    bio = "this is the first template",
-                    owner = currentUser
-                )
+    html_file_paths = [
+        'journal/journal_templates/template1.html',
+        'journal/journal_templates/template2.html',
+        'journal/journal_templates/template3.html',
+        'journal/journal_templates/template4.html',
+        'journal/journal_templates/template5.html',
+    ]
 
+    for i, html_file_path in enumerate(html_file_paths, start=1):
+        with open(html_file_path, 'r') as html_file:
+            html_content = html_file.read()
+
+        Template.objects.create(
+            title=f"Default Template {i}",
+            description=f"Description for Default Template {i}",
+            bio=html_content,
+            owner=currentUser
+        )
 
 @login_required
 def dashboard(request):
