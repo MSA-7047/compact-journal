@@ -22,10 +22,15 @@
                         </div>
                         <div class="card-body">
                             <!-- ck ck-content is ckeditor5 class -->
+                            <p>Summary: {{ journal.journal_description }}</p>
                             <div class="ck ck-content">
-
+                                <hr>
                                 {{ journal.journal_bio|safe}}
+                                <hr>
                             </div>
+                        <p>Mood: {{journal.journal_mood}}</p>
+
+                        <p>Entry Date: {{ journal.entry_date }}</p>
                         </div>
                     </div>
                     <br/>

@@ -8,8 +8,8 @@
       {% else %}
       <h1> {{user.username}}'s public journals</h1>
       {%endif%}
+      {% include 'partials/filter_partial.html' with filter_form=filter_form %}
         {% if myJournals %}
-        {% include 'partials/filter_partial.html' with filter_form=filter_form %}
         <ul class="list-group mt-3">
             {% for journal in myJournals %}
                 <li class="list-group-item">
