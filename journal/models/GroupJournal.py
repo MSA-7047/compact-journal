@@ -1,5 +1,5 @@
-from AbstractJournal import AbstractJournal
-from Group import Group
+from .AbstractJournal import AbstractJournal
+from .Group import Group
 from django.db import models
 
 

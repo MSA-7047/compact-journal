@@ -70,7 +70,7 @@ urlpatterns = [
     #path('notifications/', views.notifications_panel, name='notifications_panel'),
 
     path('create_group/', create_group, name='create_group'),
-    path('groups/<int:group_id>', group_dashboard, name='group_dashboard'),
+    path('groups/<int:group_id>/', group_dashboard, name='group_dashboard'),
     path('groups/<int:group_id>/edit', edit_group, name='edit_group'),
     path('groups/<int:group_id>/leave', leave_group, name='leave_group'),
     path('groups/<int:group_id>/delete', delete_group, name='delete_group'),
