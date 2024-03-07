@@ -7,7 +7,6 @@ from django.views.generic.detail import DetailView
 from journal.models import *
 from journal.forms import *
 
-
 class JournalDetail(DetailView):
     model = Journal
     template_name = 'journal_detail.html'
@@ -19,10 +18,10 @@ class JournalDetail(DetailView):
         return obj
 
 
-def journal_detail_view(request, journal_id):
+def journal_detail_view(request, journalID):
     # Retrieve the journal object based on the journal_id
     current_user = request.user
-    journal = Journal.objects.get(id=journal_id)
+    journal = Journal.objects.get(id=journalID)
 
     # Pass the journal object to the template context
     return render(request, 'journal_detail.html', {'user': current_user, 'journal': journal})

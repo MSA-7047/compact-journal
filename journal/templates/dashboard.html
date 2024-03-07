@@ -107,9 +107,9 @@
         <p>
           {% for journal in todays_journal%}
           <h2>{{ journal.journal_title }}</h2>
-          Summary: {{ journal.journal_description }}
+          <h3>Summary: {{ journal.journal_description }}</h3>
           <br/>
-          Journal: {{ journal.journal_bio|safe }}
+          {{ journal.journal_bio|safe }}
           <br/>
           Todays Mood: {{ journal.journal_mood }}
           <br/>
@@ -133,7 +133,7 @@
         {% if groups %}
           <div class="btn-group-vertical container-fluid" role="group">
             {% for group in groups %}
-              <a role="button" href="{% url 'group_dashboard' group_id=group.id %}" class="btn btn-info content-large">{{ group.name }}</a>
+              <a role="button" href="{% url 'group_dashboard' group_id=group.group_id %}" class="btn btn-info content-large">{{ group.name }}</a>
             {% endfor %}
           </div>
         {% endif %}
