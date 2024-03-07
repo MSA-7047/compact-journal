@@ -19,7 +19,9 @@ from datetime import datetime
 from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
 from django.contrib.messages.views import SuccessMessageMixin
+
 from django.db import transaction
+from .models.Notification import Notification
 
 
 def createTemplate(currentUser):
@@ -65,14 +67,10 @@ def createTemplate(currentUser):
                 )
 
 
-@login_required
-def dashboard(request):
-    """Display the current user's dashboard."""
-    today = datetime.now().date()
 
-    current_user = request.user
-    user_groups = current_user.groups.all()
+  
 
+<<<<<<< HEAD
     current_year = datetime.now().year
     current_month = datetime.now().strftime("%B")
     todays_journal = Journal.objects.filter(entry_date__date=today, journal_owner=current_user)
@@ -623,3 +621,5 @@ def delete_account(request):
 
 
     
+=======
+>>>>>>> main

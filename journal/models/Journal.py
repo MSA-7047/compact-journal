@@ -17,7 +17,7 @@ class Journal(models.Model):
     ]
     journal_mood = models.CharField('Mood', choices=MOOD_OPTIONS, blank=False, max_length=7)
     journal_owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    private = models.BooleanField(blank=False)
+    private = models.BooleanField(blank=False, default = False)
 
     class Meta:
         app_label = 'journal'

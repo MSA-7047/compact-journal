@@ -1,0 +1,57 @@
+{% extends 'base_content.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1>{{ group.name }}</h1>
+            <div class="group-list">
+                {% if journals %}
+                    {% for journal in journals %}
+                        <div class="list-group-item">
+                            {{ journal.journal_title }}
+                            {{ journal.journal_description }}
+                            {{ journal.entry_date }}
+                            {{ journal.journal_mood }}
+                            {% if is_owner %}
+                                <a role="button" class="btn btn-info" href="">Edit Journal</a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% if not journals %}
+                    <div class="list-group-item">
+                        Your group has no journals
+                    </div>
+                {% endif %}
+            </div>
+            <a role="button" class="btn btn-info" href="">Create Journal</a>
+
+            <div class="list-group">
+                {% if members %}
+                    {% for member in members %}
+                        <div class="list-group-item">
+                            {{ member.name }}
+                            {% if is_owner %}
+                                <a
+                                        role="button"
+                                        class="btn btn-info"
+                                        href="{% url 'remove_player_from_group' group_id=group.id player_id=member.id %}"
+                                >Kick Member
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% if not members %}
+                    <div class="list-group-item">There are no members</div>
+                {% endif %}
+            </div>
+            {% if is_owner %}
+                <a role="button" class="btn btn-info" href="{% url 'invite_group_member' %}">Invite Member</a>
+                <a role="button" class="btn btn-warning" href="{% url 'delete_group' group_id=group.id %}">Delete Group</a>
+            {% endif %}
+            <a role="button" class="btn btn-warning" href="{% url 'leave_group' group_id=group.id %}">Leave Group</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
