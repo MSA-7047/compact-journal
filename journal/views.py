@@ -514,37 +514,25 @@ def create_group_journal(request):
     """View used to allow the user to create a group journal."""
     today = datetime.now().date()
 
-    current_user = request.user
-    form_class = CreateGroupJournalForm
-    model = GroupJournal
-    template_name = "create_group_journal.html"
-    success_message = "Added Succesfully"
     form = CreateGroupJournalForm()
-    if (request.method == 'POST'):
-        form = CreateGroupJournalForm(request.POST)
-        if (form.is_valid()):
-            journal_title = form.cleaned_data.get("journal_title")
-            journal_description = form.cleaned_data.get("journal_description")
-            journal_bio = form.cleaned_data.get("journal_bio")
-            journal_mood = form.cleaned_data.get("journal_mood")
-            journal_group = form.cleaned_data.get("journal_group")
-            private = form.cleaned_data.get("private")
-            journal = Journal.objects.create(
-                journal_title = journal_title,
-                journal_description = journal_description,
-                journal_bio = journal_bio,
-                journal_mood = journal_mood,
-                journal_group = journal_group,
-                private = private
-            )
-            journal.save()
-            #old render that would stick on create journal view after creating journal, thus repeating entry when reloaded
-            #return render(request, 'dashboard.html', {'form': form, 'user': current_user, 'current_year': current_year, 'current_month': current_month, 'todays_journal': todays_journal or None})
-            return redirect('dashboard')
-        else:
-            return render(request, 'create_group_journal.html', {'form': form})
-    else:
-        return render(request, 'create_group_journal.html', {'form': form})
+    if request.method == 'POST':
+        return render('request', template_name= 'add_group_journal.html', context= {'form': form})
+    
+    form = CreateGroupJournalForm(request.POST)
+    if not form.is_valid():
+        return render('request', template_name= 'add_group_journal.html', context= {'form': form})
+    
+    journal = GroupJournal.objects.create(
+        journal_title = form.cleaned_data.get('journal_title'),
+        journal_description = form.cleaned_data.get('journal_description'),
+        journal_bio = form.cleaned_data.get('journal_bio'),
+        journal_mood = form.cleaned_data.get('journal_mood'),
+        is_private = form.cleaned_data.get('is_private'),
+        journal_group = request.group,
+    )
+    journal.save()
+
+    return redirect('dashboard')
 
 @login_required
 def edit_group_journal(request, journalID): 
