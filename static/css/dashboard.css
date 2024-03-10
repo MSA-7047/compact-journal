@@ -1,246 +1,74 @@
-body {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-  }
-  
-  .container {
-    margin: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Added to center the rows */
-  }
-  
-  .row {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  
-  .card-01 {
-    background: #03D29F;
-    position: relative;
-    flex: 1;
-    max-width: 300px;
-    height: 150px;
-    margin: 10px;
-    border-radius: 5px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-  }
-  
-  .card-02 {
-    background: #50A7FF;
-    position: relative;
-    flex: 1;
-    max-width: 460px;
-    height: 200px;
-    margin: 10px;
-    border-radius: 5px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-  }
-  
-  .card-03 {
-    background: #FF7675;
-    position: relative;
-    flex: 1;
-    max-width: 940px;
-    height: 300px;
-    margin: 10px;
-    border-radius: 5px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-  }
-  
-  @media (max-width: 800px) {
-    .card-01 {
-      flex: 100%;
-      max-width: 600px;
-    }
-  
-    .card-02 {
-      flex: 100%;
-      max-width: 600px;
-    }
-  
-    .card-03 {
-      flex: 100%;
-      max-width: 600px;
-    }
-  }
-  
-  @media (max-width: 576px) {
-    .card-01 {
-      flex: 100%;
-      max-width: 500px;
-    }
-  
-    .card-02 {
-      flex: 100%;
-      max-width: 500px;
-    }
-  
-    .card-03 {
-      flex: 100%;
-      max-width: 500px;
-    }
-  }
-  
-
-/* ------------------------------------------------------ */
-.welcome-header {
-    background-color: #c8e5fc;
-    padding: 10px 0;
-    border-radius: 20px;
+.todays-journal, .your-groups, .friends-list {
+  height: 300px;
+  position: relative; /* Set position to relative */ 
 }
 
-.welcome-header h1 {
+.todays-journal .content {
+  height: calc(100% - 40px);
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.create-journal-button, .create-journal-button:focus {
+  color: #ffffff;
+  background: #26363e;
+  padding: 10px 20px;
+  margin: 50px 0px;
+  display: inline-flex;
+  border-radius: 1000px;
+  font-family: "Tilt-Warp", sans-serif;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.create-journal-button:hover, .create-journal-button:focus:hover {
+  color: #ffffff;
+  background: #93c9f7;
+  transition: 0.5s;
+}
+
+
+.content .edit-button, .content .edit-button:focus {
+  color: #ffffff;
+  background: #26363e;
+  padding: 5px 20px;
+  margin-left: 50px;
+  border-radius: 1000px;
+  font-family: "Tilt-Warp", sans-serif;
+  font-weight: 800;
+  text-decoration: none;
+  position: absolute; /* Set position to absolute */
+  top: 5px; /* Adjust top position as needed */
+  right: 5px; /* Adjust right position as needed */
+}
+
+.edit-button:hover, .edit-button:focus:hover {
+  color: #ffffff;
+  background: #93c9f7;
+  transition: 0.5s;
+}
+
+.container .row h1 {
   -webkit-text-stroke: 1px black;
   color: #ffffff;
   text-shadow:
-    3px 3px 0 #000000;
-  font-size: 35px;
-  font-weight: 700;
-}
+    3px 2px 0 #000000;
+  font-family: "Tilt-Warp", sans-serif;
+  font-size: 25px;
+  font-weight: 800;
+  word-wrap: break-word; /* Allows long words to be broken and wrapped onto the next line */
+  max-width: 100%; /* Sets maximum width of the box to 100% of its container */
+  padding-bottom: 5px;
+} 
 
-.content-small a {
-    font-size: 15px;
+@media (max-width: 768px) {
+  .container .row h1 {
+    font-size: 20px; /* Adjust font size for smaller screens */
+  }
 }
 
 /*-- ==================== Sections ==================== --*/
 section {
-    padding: 90px 0;
+    padding-top: 90px;
+    height: 100vh;
   }
   
-/*-- ==================== Header Section ==================== --*/
-.header {
-    padding: 20px 0;
-    transition: 0.5s;
-    background-color: #ffffff;
-  }
-  
-  .header.scrolled {  
-    background: #ffffff;  
-    box-shadow: 0px 5px 10px #797d84;
-    padding: 1px 0;
-    transition: 0.5s;
-  }
-  
-  .header .logo-name {
-    color: #26363e;
-    font-family: "Tilt-Warp", sans-serif;
-    font-size: 30px;
-    font-weight: 800;
-    text-decoration: none;
-  }
-  
-  /*-- ==================== Navbar Section ==================== --*/
-  /*-- ========== Large Screen Navigation ========== --*/
-  .navbar.navbar {
-    padding: 0;
-  }
-  
-  .navbar ul {
-    display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .navbar a, .navbar a:focus {
-    color: #26363e;
-    font-size: 20px;
-    font-weight: 800;
-    font-family: "Nunito", sans-serif;
-    display: flex;
-    padding: 10px 30px;
-    
-  }
-  
-  .navbar a:hover, .navbar .current, .navbar .current:focus {
-    color: #93c9f7;
-    transition: 0.5s;
-  }
-  
-  .navbar .log-out-button, .navbar .log-out-button:focus {
-    color: #ffffff;
-    background: #26363e;
-    padding: 10px 30px;
-    margin-left: 50px;
-    border-radius: 1000px;
-    text-decoration: none;
-  }
-  
-  .navbar .log-out-button:hover, .navbar .log-out-button:focus:hover {
-    color: #ffffff;
-    background: #93c9f7;
-    transition: 0.5s;
-  }
-
-
-/*-- ========== Small Screen Navigation ========== --*/
-.navbar-button {
-    color: #26363e;
-    font-size: 35px;
-    cursor: pointer;
-    display: none;
-  }
-  
-  .navbar-button.bi-x {
-    color: #ffffff;
-  }
-  
-  @media (max-width: 1200px) {
-    .navbar-button {
-      display: block;
-    }
-  
-    .navbar ul {
-      display: none;
-    }
-  }
-  
-  @media (min-width: 1200px) {
-    .navbar-button.bi-x {
-      display: block;
-    }
-  }
-  
-  .small-screen-navbar {
-    background: #797d84;
-    position: fixed;
-    inset: 0;
-  }
-  
-  .small-screen-navbar .navbar-button {
-    position: absolute;
-    font-size: 50px;
-    top: 50px;
-    right: 50px;
-  }
-  
-  .small-screen-navbar ul {
-    background-color: #ffffff;
-    display: block;
-    position: absolute;
-    inset: 100px;
-    padding: 15vh 0;
-    border-radius: 25px;
-  }
-  
-  .small-screen-navbar a, .small-screen-navbar a:focus {
-    justify-content: center;
-    font-size: 20px;
-    color: #26363e;
-  }
-  
-  .small-screen-navbar a:hover, .small-screen-navbar .current {
-    color: #93c9f7;
-  }
-  
-  .small-screen-navbar .log-out-button, .small-screen-navbar .log-out-button:focus {
-    color: #ffffff;
-    margin: 75px;
-    padding: 10px 30px;
-  }
-  
-

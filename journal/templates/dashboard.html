@@ -2,156 +2,113 @@
 <!DOCTYPE html> 
 <html lang="en">
   <head>
-    <title>Main Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
-    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
+    <title>Main Dashboard</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tilt+Warp&display=swap">
+    
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+      
+    <!-- Static CSS Files -->
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
 
   </head>
 
   <body>
-    <!-- ==================== Navbar ==================== -->
-    <div class="container">
-      <header class="header fixed-top" id="header">
+    <!-- ==================== Header + Navbar Section ==================== -->
+    <header class="header fixed-top" id="header">
         <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
-    
-          <a class="logo-name d-flex align-items-center" href="{% url 'dashboard' %}">
+
+        <a class="logo-name d-flex align-items-center" href="{% url 'dashboard' %}">
             Compact Journals
-          </a>
-          {% if user.is_authenticated %}
-          <nav class="navbar" id="navbar">
+        </a>
+        {% if user.is_authenticated %}
+        <nav class="navbar" id="navbar">
             <ul>
-              <li><a class="nav-link" href="{% url 'profile' %}">Profile</a></li>
-              <li><a class="nav-link" href="{% url 'view_friends' %}">Friends</a></li>
-              <li><a class = "nav-link" href="{% url 'groups' %}">Groups</a></li>
-              <li><a class="log-out-button" href="{% url 'log_out' %}">Log out</a></li>
+            <li><a class="nav-link scrollable current" href="#top-section">Home</a></li>
+            <li><a class="nav-link scrollable" href="#about-section">About</a></li>
+            <li><a class="nav-link scrollable" href="#features-section">Features</a></li>
+            <li><a class="log-in-button scrollable" href="{% url 'log_out' %}">Log in</a></li>
             </ul>
             <i class="navbar-button bi bi-list"></i>
-          </nav>
-          {% endif %}
-    
-        </div>
-      </header>
-    </div>
-    <!--card layout start-->
-    
-    <section class="container">
-      <div class="row">
-        <div class="card-01"></div>
-        <div class="card-01"></div>
-        <div class="card-01"></div>
-      </div>
-      <div class="row">
-        <div class="card-02"></div>
-        <div class="card-02"></div>
-      </div>
-      <div class="row">
-        <div class="card-03"></div>
-      </div>
-    </section>
-    <!--card layout end-->
-
-
-    <!--<section>
-    <div class="container">
-      <div class="row justify-content-between">
-        <div class="welcome-header col-xl-7 d-flex align-items-center px-4">
-          <h1>Welcome to your dashboard {{ user.username }}</h1>
-        </div>
-        
-        <div class="content-small col-xl-4 d-flex align-items-center justify-content-center px-4">
-          Content #1
-          <a href="{% url 'calendar' year=current_year month=current_month%}" class="btn btn-lg btn-secondary">
-            Calendar
-          </a>
-          <a href="{% url 'my_journals' userID=user.id%}" class="btn btn-lg btn-secondary">
-            View All Journals (List View)
-          </a>
-        </div>
-      </div>
-
-      <div class="content-large">
-        <h1>Today's Journal:</h1>
-
-        {% if todays_journal is None %}
-        <br/>
-        You have not created a journal today!
-        Press the button below to add your journal for the day
-          <p>
-            <a href="{% url 'create_journal'%}" class="btn btn-lg btn-secondary">
-              +
-            </a>
-        {% else %}
-        <p>
-          {% for journal in todays_journal%}
-          <h2>{{ journal.journal_title }}</h2>
-          Summary: {{ journal.journal_description }}
-          <br/>
-          Journal: {{ journal.journal_bio|safe }}
-          <br/>
-          Todays Mood: {{ journal.journal_mood }}
-          <br/>
-          Created on: {{ journal.entry_date }}
-          <br/>
-          <a href="{% url 'change_journal_info' journalID=journal.id%}" class="btn btn-lg btn-secondary">
-            Edit
-          </a>
-          {% endfor %}
-
-
-
-        </p>
+        </nav>
         {% endif %}
-        
-      </div>
 
-      <div class="content-large">
-        <h1>Your Groups:</h1>
+        </div>
+    </header>
 
-        <br>
-        {% if not groups %}
-          Get some friends
-        {% endif %}
-        {% if groups %}
-          <div class="btn-group-vertical container-fluid" role="group">
-            {% for group in groups %}
-              <a role="button" href="#" class="btn btn-info content-large">{{ group.name }}</a>
-            {% endfor %}
+    <!-- ==================== Main Dashboard Section ==================== -->
+    <section class="container d-flex flex-column">
+
+      <div class="first-row row py-4 gy-4">
+        <div class="col-xl-8 d-flex flex-column justify-content-center">
+          <div class="welcome-message p-2 border bg-light ">
+            <h1>Welcome to your dashboard {{user.username}}</h1>
           </div>
-        {% endif %}
+        </div>
+        <div class="col-xl-4">
+          <div class="user-content p-2 border bg-light">
+            <h1>User Content</h1>
+          </div>
+        </div>
       </div>
+    
+      <div class="second-row row gy-4 flex-fill pb-4">
+        <div class="col-xl-5 d-flex flex-column">
+          <div class="todays-journal p-2 border bg-light flex-grow-1">
+            <h1>Today's Journal:</h1>
+            <div class="content">
+              {% if todays_journal is None %}
+                <p>You have not created a journal today! Press the button below to add your journal for the day.</p>
+                <div class="d-flex justify-content-center">
+                  <a class="create-journal-button" href="{% url 'create_journal' %}"> Add Journal </a>
+                </div>
+              {% else %}
+                <p>
+                  {% for journal in todays_journal%}
+                    <h2>{{ journal.journal_title }}</h2>
+                    Summary: {{ journal.journal_description }}
+                    <br>
+                    Journal: {{ journal.journal_bio|safe }}
+                    <br>
+                    Todays Mood: {{ journal.journal_mood }}
+                    <br>
+                    Created on: {{ journal.entry_date }}
+                    <br>
+                    <a class="edit-button" href="{% url 'change_journal_info' journalID=journal.id%}">Edit</a>
+                  {% endfor %}
+                </p>
+              {% endif %}
+            </div>
+            
+          </div>
+        </div>
 
-      <div class="content-large">
-        <h1>Your Friends:</h1>
-          {% if user.friends.all %}
-              {% for friend in user.friends.all %}
-                  <li>{{ friend.username }}</li>
-              {% endfor %}
-          {% else %}
-              You currently have no Friends, <br>
-              View requests to add some you lonely guy
-              <br>
-          {% endif %}
 
-        </style>
-        <a href="{% url 'view_friends'%}">View Friends</a>
-        <a class="bottom" href="{% url 'view_friend_requests' %}">View Requests</a></li>
+        <div class="col-xl-4 d-flex flex-column">
+          <div class="your-groups p-2 border bg-light flex-grow-1">
+            <h1>Your Groups:</h1>
+          </div>
+        </div>
+        <div class="col-xl-3 d-flex flex-column">
+          <div class="friends-list p-2 border bg-light flex-grow-1">
+            <h1>Friends List:</h1>
+          </div>
+        </div>
       </div>
+    
+    </section>
 
-    </div>
-    </section>-->
-  
+    <script src="{% static 'js/navbar.js' %}"></script>
+
   </body>
-</html>  
 
-
+</html>
