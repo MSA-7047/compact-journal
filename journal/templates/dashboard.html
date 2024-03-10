@@ -33,10 +33,10 @@
         {% if user.is_authenticated %}
         <nav class="navbar" id="navbar">
             <ul>
-            <li><a class="nav-link scrollable current" href="#top-section">Home</a></li>
-            <li><a class="nav-link scrollable" href="#about-section">About</a></li>
-            <li><a class="nav-link scrollable" href="#features-section">Features</a></li>
-            <li><a class="log-in-button scrollable" href="{% url 'log_out' %}">Log in</a></li>
+            <li><a class="nav-link" href="{% url 'profile' %}">Profile</a></li>
+            <li><a class="nav-link" href="{% url 'view_friends' %}">Friends</a></li>
+            <li><a class="nav-link" href="{% url 'groups' %}">Groups</a></li>
+            <li><a class="log-in-button" href="{% url 'log_out' %}">Log out</a></li>
             </ul>
             <i class="navbar-button bi bi-list"></i>
         </nav>
