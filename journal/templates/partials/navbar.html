@@ -3,23 +3,34 @@
 
 <header class="header fixed-top" id="header">
   <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
-
-  <a class="logo-name d-flex align-items-center" href="{% url 'dashboard' %}">
-      Compact Journals
-  </a>
-  {% if user.is_authenticated %}
-  <nav class="navbar" id="navbar">
-      <ul>
-      <li><a class="nav-link" href="{% url 'profile' %}">Profile</a></li>
-      <li><a class="nav-link" href="{% url 'view_friends' %}">Friends</a></li>
-      <li><a class="nav-link" href="{% url 'groups' %}">Groups</a></li>
-      <li><a class="log-in-button" href="{% url 'log_out' %}">Log out</a></li>
-      </ul>
-      <i class="navbar-button bi bi-list"></i>
-  </nav>
-  {% endif %}
-
+      <a class="logo-name d-flex align-items-center" href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'home' %}{% endif %}">
+          Compact Journals
+      </a>
+      {% if user.is_authenticated %}
+      <nav class="navbar" id="navbar">
+          <ul>
+              <li><a class="nav-link" href="{% url 'profile' %}">Profile</a></li>
+              <li><a class="nav-link" href="{% url 'view_friends' %}">Friends</a></li>
+              <li><a class="nav-link" href="{% url 'groups' %}">Groups</a></li>
+              <li><a class="log-in-button" href="{% url 'log_out' %}">Log out</a></li>
+          </ul>
+          <i class="navbar-button bi bi-list"></i>
+      </nav>
+      {% else %}
+      {% if request.path != '/log_in/' and request.path != '/sign_up/' %}
+      <nav class="navbar" id="navbar">
+          <ul>
+              <li><a class="nav-link scrollable current" href="#top-section">Home</a></li>
+              <li><a class="nav-link scrollable" href="#about-section">About</a></li>
+              <li><a class="nav-link scrollable" href="#features-section">Features</a></li>
+              <li><a class="log-in-button scrollable" href="{% url 'log_in' %}">Log in</a></li>
+          </ul>
+          <i class="navbar-button bi bi-list"></i>
+      </nav>
+      {% endif %}
+      {% endif %}
   </div>
 </header>
+
 
 <script src="{% static 'js/navbar.js' %}"></script>

@@ -1,45 +1,44 @@
 /*-- ==================== Sections ==================== --*/
 section {
     padding: 60px 0;
-  }
+}
   
-  .section-header {
-    text-align: center;
-    padding-bottom: 40px;   
-  }
+.section-header {
+  text-align: center;
+  padding-bottom: 40px;   
+}
   
-  .section-header h2 {
-    color: #26363e;
-    font-size: 25px;
-    font-weight: 800;
-    margin: 0;
-    text-transform: uppercase;
-  }
-  
+.section-header h2 {
+  color: #26363e;
+  font-size: 25px;
+  font-weight: 800;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.section-header p {
+  color: #93c9f7;
+  margin: 10px 0 0 0;
+  padding: 0;
+  font-size: 45px;
+  font-weight: 800;
+  line-height: 42px;
+}
+
+@media (max-width: 768px) {
   .section-header p {
-    color: #93c9f7;
-    margin: 10px 0 0 0;
-    padding: 0;
-    font-size: 45px;
-    font-weight: 800;
-    line-height: 42px;
+    font-size: 35px;
+    line-height: 32px;
   }
-  
-  @media (max-width: 768px) {
-    .section-header p {
-      font-size: 35px;
-      line-height: 32px;
-    }
-  }
+}
 
 /*-- ==================== Top Section ==================== --*/
 .top-section {
   width: 100%;
   height: 100vh;
-  
 }
 
-.top-section h1 {
+.top-section .main-text h1 {
   -webkit-text-stroke: 2px black;
   color: #ffffff;
   text-shadow:
@@ -78,14 +77,15 @@ section {
 }
 
 .top-section .sign-up-button:hover {
-    background: #93c9f7;
-    transition: 0.5s;
+  background: #93c9f7;
+  transition: 0.5s;
 }
 
 .top-section .sign-up-button:hover i {
   transform: translateX(10px);
   transition: 0.5s;
 }
+
 .top-section .top-section-img {
   padding-top: 125px;
   text-align: center;
@@ -152,7 +152,7 @@ section {
 }
 
 .about-section img {
-    width: 75%;
+  width: 75%;
 }
 
 @media (max-width: 1200px) {
@@ -185,7 +185,7 @@ section {
 }
 
 .features-section img {
-    width: 75vw;
+  width: 75vw;
 }
 
 /*-- ==================== Footer Section ==================== --*/
@@ -218,25 +218,25 @@ section {
 
 /*-- ==================== Return Button Sectiom ==================== --*/
 .return-button {
-    font-size: 45px;
-    color: #ffffff;
-    background: #797d84;
-    width: 75px;
-    height: 75px;
-    position: fixed;
-    right: 10%;
-    bottom: 5%;
-    border-radius: 1000px;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.5s;
-  }
-  
-  .return-button:hover {
-    background: #93c9f7;
-  }
-  
-  .return-button.current {
-    visibility: visible;
-    opacity: 1;
-  }
+  font-size: 45px;
+  color: #ffffff;
+  background: #797d84;
+  width: 75px;
+  height: 75px;
+  position: fixed;
+  right: 10%;
+  bottom: 5%;
+  border-radius: 1000px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.5s;
+}
+
+.return-button:hover {
+  background: #93c9f7;
+}
+
+.return-button.current {
+  visibility: visible;
+  opacity: 1;
+}

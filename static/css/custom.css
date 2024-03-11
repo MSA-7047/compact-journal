@@ -1,3 +1,29 @@
+.container .row h1 {
+  -webkit-text-stroke: 1px black;
+  color: #ffffff;
+  text-shadow:
+    3px 2px 0 #000000;
+  font-family: "Tilt-Warp", sans-serif;
+  font-size: 25px;
+  font-weight: 800;
+  word-wrap: break-word; /* Allows long words to be broken and wrapped onto the next line */
+  max-width: 100%; /* Sets maximum width of the box to 100% of its container */
+  padding-bottom: 5px;
+} 
+
+@media (max-width: 768px) {
+  .container .row h1 {
+    font-size: 20px; /* Adjust font size for smaller screens */
+  }
+}
+
+/*-- ==================== Sections ==================== --*/
+section {
+    padding-top: 90px;
+    height: 100vh;
+  }
+/* =======================================================*/
+
 /*
  * Alerts
  */
@@ -114,24 +140,5 @@ h3.profile-title {
     cursor: pointer;
 }
 
-/*
- * Hyperlinks
- */
-.content a {
-  text-decoration: none;
-  color: #0d6efd;
-}
-.content a:hover {
-  text-decoration: underline;
-  color: #0d6efd;
-}
 
-.friends-list {
-  color: red;
-  background-color: azure; 
-}
 
-.col-5{
-  color: green;
-  background-color: azure; 
-}
