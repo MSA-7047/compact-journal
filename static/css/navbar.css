@@ -46,7 +46,7 @@
     transition: 0.5s;
   }
 
-  .navbar .log-in-button, .navbar .log-in-button:focus {
+  .navbar .navbar-button, .navbar .navbar-button:focus {
     color: #ffffff;
     background: #26363e;
     padding: 10px 30px;
@@ -55,26 +55,26 @@
     text-decoration: none;
   }
 
-  .navbar .log-in-button:hover, .navbar .log-in-button:focus:hover {
+  .navbar .navbar-button:hover, .navbar .navbar-button:focus:hover {
     color: #ffffff;
     background: #93c9f7;
     transition: 0.5s;
   }
 
   /*-- ========== Small Screen Navigation ========== --*/
-  .navbar-button {
+  .small-navbar-toggle {
     color: #26363e;
     font-size: 35px;
     cursor: pointer;
     display: none;
   }
 
-  .navbar-button.bi-x {
+  .small-navbar-toggle.bi-x {
     color: #ffffff;
   }
 
   @media (max-width: 1200px) {
-    .navbar-button {
+    .small-navbar-toggle {
         display: block;
     }
 
@@ -84,7 +84,7 @@
   }
 
   @media (min-width: 1200px) {
-    .navbar-button.bi-x {
+    .small-navbar-toggle.bi-x {
         display: block;
     }
   }
@@ -95,7 +95,7 @@
     inset: 0;
   }
 
-  .small-screen-navbar .navbar-button {
+  .small-screen-navbar .small-navbar-toggle {
     position: absolute;
     font-size: 50px;
     top: 50px;
@@ -121,7 +121,7 @@
     color: #93c9f7;
   }
 
-  .small-screen-navbar .log-in-button, .small-screen-navbar .log-in-button:focus {
+  .small-screen-navbar .navbar-button, .small-screen-navbar .navbar-button:focus {
     color: #ffffff;
     margin: 75px;
     padding: 10px 30px;

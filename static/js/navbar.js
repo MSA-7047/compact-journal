@@ -15,7 +15,7 @@ if (headerScroll) {
 }
 
 // Event listener for toggling the navbar button between lines and cross icons
-document.querySelector('.navbar-button').addEventListener('click', function (e) {
+document.querySelector('.small-navbar-toggle').addEventListener('click', function (e) {
     document.querySelector('#navbar').classList.toggle('small-screen-navbar');
     this.classList.toggle('bi-list');
     this.classList.toggle('bi-x');
@@ -75,7 +75,7 @@ document.querySelectorAll('.scrollable').forEach(item => {
             let navbar = document.querySelector('#navbar');
             if (navbar.classList.contains('small-screen-navbar')) {
                 navbar.classList.remove('small-screen-navbar');
-                let navbarToggle = document.querySelector('.navbar-button');
+                let navbarToggle = document.querySelector('.small-navbar-toggle');
                 navbarToggle.classList.toggle('bi-list');
                 navbarToggle.classList.toggle('bi-x');
             }
