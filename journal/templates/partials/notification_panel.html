@@ -1,0 +1,16 @@
+<div class="container" id="notificationPage" style="width:250px">
+  <h4>Notifications</h4>
+
+  <ul class="notification-list">
+    {% for notification in notifications %}
+      <li class="notification-item">
+        <div>
+          <p>{{ notification.message }}</p>
+        </div>
+      </li>
+    {% empty %}
+      <li class="no-notification">No new notifications.</li>
+    {% endfor %}
+  </ul>
+</div>
+

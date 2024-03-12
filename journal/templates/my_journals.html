@@ -8,8 +8,8 @@
       {% else %}
       <h1> {{user.username}}'s public journals</h1>
       {%endif%}
+      {% include 'partials/filter_partial.html' with filter_form=filter_form %}
         {% if myJournals %}
-        {% include 'partials/filter_partial.html' with filter_form=filter_form %}
         <ul class="list-group mt-3">
             {% for journal in myJournals %}
                 <li class="list-group-item">
@@ -17,9 +17,7 @@
                       <div>
                         {% if isUserCurrentlyLoggedIn %}
                           <p>
-                            <a href="{% url 'change_journal_info' journalID=journal.id%}" class="btn btn-sm btn-secondary">
-                              Edit Journal
-                            </a>
+
                             <a href="{% url 'journal_detail' journalID=journal.id %}" class="btn btn-sm btn-secondary">
                               View Journal
                             </a>

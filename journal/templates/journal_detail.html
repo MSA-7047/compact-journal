@@ -12,7 +12,7 @@
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
                 
                 <link href="{% static 'django_ckeditor_5/dist/styles.css' %}" type="text/css" media="all" rel="stylesheet">
-                <script src="{% static 'django_ckeditor_5/dist/bundle.js' %}"></script>
+                <script src="{% static 'django_ckeditor_5/src/ckeditor.js' %}"></script>
                 <body> 
                     <div class="card">
                         <div class="card-header">
@@ -22,14 +22,19 @@
                         </div>
                         <div class="card-body">
                             <!-- ck ck-content is ckeditor5 class -->
+                            <p>Summary: {{ journal.journal_description }}</p>
                             <div class="ck ck-content">
-
+                                <hr>
                                 {{ journal.journal_bio|safe}}
+                                <hr>
                             </div>
+                        <p>Mood: {{journal.journal_mood}}</p>
+
+                        <p>Entry Date: {{ journal.entry_date }}</p>
                         </div>
                     </div>
                     <br/>
-                    <a href="{% url 'my_journals'%}" class="btn btn-lg btn-secondary">
+                    <a href="{% url 'dashboard'%}" class="btn btn-lg btn-secondary">
                         Return
                     </a>
 

@@ -2,8 +2,7 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
-from .models import User, Group, GroupMembership, Journal
-from .models import *
+from .models import User, Group, GroupMembership, Journal, FriendRequest
 from django_countries.widgets import CountrySelectWidget
 from django_ckeditor_5.widgets import CKEditor5Widget
 from django.core.exceptions import ValidationError
@@ -54,6 +53,7 @@ class UserForm(forms.ModelForm):
         widgets = {
             'dob': forms.DateInput(attrs={'type': 'date'}),
         }
+
 
 class NewPasswordMixin(forms.Form):
     """Form mixing for new_password and password_confirmation fields."""
@@ -169,7 +169,6 @@ class SendFriendRequestForm(forms.Form):
             self.fields['recipient'].queryset = User.objects.exclude(id__in=[user.id for user in friends]).exclude(id=user.id)
 
 
-
 class CreateJournalForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -178,24 +177,56 @@ class CreateJournalForm(forms.ModelForm):
         # otherwise it will throw error in console
         self.fields["journal_bio"].required = False
 
+    # journal_title = forms.CharField(label="Title")
+    # journal_description = forms.CharField(label="Description")
+    # journal_bio = forms.CharField(label="Bio")
+    # journal_mood = forms.ChoiceField(choices=(
+    #     ('Happy', 'Happy'),
+    #     ('Sad', 'Sad'),
+    #     ('Angry', 'Angry'),
+    #     ('Neutral', 'Neutral'),
+    # ), required=True)
+
+
+    # journal_title = forms.CharField(label="Title")
+    # journal_description = forms.CharField(label="Description")
+    # journal_bio = forms.CharField(label="Bio")
+    # journal_mood = forms.CharField(label="Mood")
+
     class Meta:
         model = Journal
+
         fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood', 'private']
 
 
 class EditJournalInfoForm(forms.ModelForm):
+
+    # class Meta:
+    #     model = Journal
+    #     fields = ['journal_title', 'journal_description', 'journal_bio']
+
+
+
+    # def save(self, commit=True):
+    #     instance = super().save(commit=False)
+    #     instance.journal_title = self.cleaned_data['journal_title']
+    #     instance.journal_description = self.cleaned_data['journal_description']
+    #     instance.journal_bio = self.cleaned_data['journal_bio']
+    #     if commit:
+    #         instance.save()
+    #     return instance
+
+    #journal_bio = forms.CharField(widget=CKEditor5Widget(config_name='extends'), required=False)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # it is required to set it False,
         # otherwise it will throw error in console
         self.fields["journal_bio"].required = False
 
-
-
     class Meta:
         model = Journal
-        fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood', 'private']
-
+        fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood']
 
 
 class JournalFilterForm(forms.Form):
@@ -221,7 +252,7 @@ class JournalFilterForm(forms.Form):
 
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
-    
+
     def filter_tasks(self):
 
         myjournals = Journal.objects.all()
@@ -252,8 +283,9 @@ class JournalFilterForm(forms.Form):
             elif entry_date == '6m+':
                 time_threshold = timezone.now() - timedelta(weeks=26)
                 myjournals = myjournals.filter(entry_date__gte=time_threshold)
-        
+
         return myjournals
+
 
 class JournalSortForm(forms.Form):
 
@@ -262,6 +294,7 @@ class JournalSortForm(forms.Form):
         ('descending', 'Descending'),
     ]
     sort_by_entry_date = forms.ChoiceField(choices=ORDER_CHOICES)
+
 
 class ConfirmAccountDeleteForm(forms.Form):
     confirmation = forms.CharField(label='Type "YES" to confirm deletion', max_length=3)
@@ -277,6 +310,15 @@ class CreateGroupJournalForm(forms.ModelForm):
     class Meta:
         model = GroupJournal
         fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood', 'private']
+class CreateTemplateForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["bio"].required = False
+
+    class Meta:
+        model = Template
+        fields = ['title', 'description', 'bio',]
 
 class EditGroupJournalForm(forms.ModelForm):
     """Form for editing a group journal."""
@@ -289,3 +331,10 @@ class EditGroupJournalForm(forms.ModelForm):
     class Meta:
         model = GroupJournal
         fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood', 'private']
+class SendGroupRequestForm(forms.Form):
+    recipient = forms.ModelChoiceField(queryset=User.objects.all(), label='Select User')
+    def __init__(self, *args, currentUser=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if currentUser is not None:
+            self.fields['recipient'].queryset = User.objects.exclude(username=currentUser.username)
+
