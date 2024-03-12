@@ -4,7 +4,7 @@
 let headerScroll = document.querySelector('#header');
 if (headerScroll) {
     const scrolling = () => {
-        if (window.scrollY > 100) {
+        if (window.scrollY > 0) {
             headerScroll.classList.add('scrolled');
         } else {
             headerScroll.classList.remove('scrolled');

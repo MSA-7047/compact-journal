@@ -55,8 +55,21 @@
     <div class="col-xl-4 d-flex flex-column">
       <div class="your-groups p-2 border bg-light flex-grow-1">
         <h1>Your Groups:</h1>
+        <div class="content">
+          {% if not groups %}
+            Get some friends
+          {% endif %}
+          {% if groups %}
+            <div class="btn-group-vertical container-fluid" role="group">
+              {% for group in groups %}
+                <a role="button" href="{% url 'groups' %}" class="btn justify-content-center">{{ group.name }}</a>
+              {% endfor %}
+          </div>
+        {% endif %}
+        </div>
       </div>
     </div>
+
     <div class="col-xl-3 d-flex flex-column">
       <div class="friends-list p-2 border bg-light flex-grow-1">
         <h1>Friends List:</h1>
@@ -66,5 +79,4 @@
 
 </section>
 
-<script src="{% static 'js/navbar.js' %}"></script>
 {% endblock %}
