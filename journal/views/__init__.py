@@ -1,9 +1,9 @@
 from .friend_management import *
 from .general_management import *
 from .group_management import *
+from .group_journal_management import *
 from .user_journal_management import *
 from .user_management import *
 from .user_sign_in_and_out import *
 from .template_management import *
 from .notifications import *
-
