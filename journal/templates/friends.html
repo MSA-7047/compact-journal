@@ -2,6 +2,7 @@
 {% block content %}
 <section class="container">
   <div class="row">
+    <a class="btn" href="{% url 'view_friend_requests' %}">Friend Requests</a>
     <div class="col-12">
       <h1>Your Friends:</h1>
         {% if user.friends.all %}
