@@ -1,7 +1,8 @@
 {% extends 'base_content.html' %}
 {% block content %}
-<div class="container">
+<section class="container">
   <div class="row">
+    <a class="btn" href="{% url 'view_friend_requests' %}">Friend Requests</a>
     <div class="col-12">
       <h1>Your Friends:</h1>
         {% if user.friends.all %}
@@ -33,5 +34,5 @@
       <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
     </div>
   </div>
-</div>
+</section>
 {% endblock %}

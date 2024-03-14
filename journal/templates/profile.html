@@ -1,21 +1,21 @@
 {% extends 'base_content.html' %}
 {% block content %}
-<div class="container">
+<section class="container">
   <div class="row">
-      <h1>Edit profile</h1>
-      <div class="mb-3">
-        <img src="{{ user.gravatar }}" alt="Current profile picture" class="profile-picture">
-        <p class="text-muted">
-          <small>Visit <a href="https://gravatar.com" target="_blank">Gravatar</a> to change profile picture</small>
-        </p>
-      </div>
-      <form action="{% url 'profile' %}" method="post">
+    <h1>Edit profile</h1>
+    <div class="mb-3">
+      <img src="{{ user.gravatar }}" alt="Current profile picture" class="profile-picture">
+      <p class="text-muted">
+        <small>Visit <a href="https://gravatar.com" target="_blank">Gravatar</a> to change profile picture</small>
+      </p>
+    </div>
+    <form action="{% url 'profile' %}" method="post">
 
-        {% csrf_token %}
-        {% include 'partials/bootstrap_form.html' with form=form %}
-        <input type="submit" value="Update">
-      </form>
-      <a href="{% url 'delete_account' %}">Delete Account</a>
+      {% csrf_token %}
+      {% include 'partials/bootstrap_form.html' with form=form %}
+      <input type="submit" value="Update">
+    </form>
+    <a href="{% url 'delete_account' %}">Delete Account</a>
   </div>
-</div>
+</section>
 {% endblock %}

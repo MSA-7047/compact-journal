@@ -1,13 +1,16 @@
 {% extends 'base_content.html' %}
 {% block content %}
-<div class="container">
-      <h1>Delete account</h1>
-      <p> Are you sure you would like to delete your account?</p>
-      <form method="post" action="{% url 'delete_account' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Delete Account" class="btn btn-md btn-primary ">
-      </form>
-      <a href="{% url 'dashboard' %}">Back to dashboard</a>
-</div>
+<section class="container">
+  <div class="row">
+    <h1>Delete account</h1>
+    <p> Are you sure you would like to delete your account?</p>
+    <form method="post" action="{% url 'delete_account' %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="Delete Account" class="btn btn-md btn-primary ">
+    </form>
+    <a href="{% url 'dashboard' %}">Back to dashboard</a>
+
+  </div>
+</section>
 {% endblock %}
