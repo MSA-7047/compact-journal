@@ -36,19 +36,6 @@ urlpatterns = [
     path('view_friends_profile/<int:friendID>', view_friends_profile, name='view_friends_profile'),
     path('delete_account/', views.delete_account, name='delete_account'),
     path('sign_up/', SignUpView.as_view(), name='sign_up'),
-<<<<<<< HEAD
-    
-    path('create-journal/', views.create_journal, name='create_journal'),
-    path('select-template/', views.select_template, name='select_template'),
-    path('create-template/', views.create_template, name='create_template'),
-    path('createJournalWithTemplate/<int:templateID>/', views.create_journal_From_Template, name='create_journal_with_template'),
-    path('edit_journal/<int:journalID>/', views.EditJournal, name='edit_journal'),
-    path('journal/<int:journalID>/', views.journal_detail_view, name='journal_detail'),
-    path('ckeditor5/', include('django_ckeditor_5.urls')),
-    path('delete_journal/<int:journalID>/', DeleteJournal, name='delete_journal'),
-    path('delete_template/<int:templateID>/', DeleteTemplate, name='delete_template'),
-    path('edit_template/<int:templateID>/', views.EditTemplate, name='edit_template'),
-=======
 
     path('create-journal/', create_journal, name='create_journal'),
     path('select-template/', select_template, name='select_template'),
@@ -61,7 +48,6 @@ urlpatterns = [
     path('delete_template/<int:templateID>/', DeleteTemplate, name='delete_template'),
     path('edit_template/<int:templateID>/', EditTemplate, name='edit_template'),
 
->>>>>>> main
     
     path('friend_requests/', view_friend_requests, name='view_friend_requests'),
     path('friends/', view_friends, name='view_friends'),

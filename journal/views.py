@@ -70,7 +70,6 @@ def createTemplate(currentUser):
 
   
 
-<<<<<<< HEAD
     current_year = datetime.now().year
     current_month = datetime.now().strftime("%B")
     todays_journal = Journal.objects.filter(entry_date__date=today, journal_owner=current_user)
@@ -621,5 +620,3 @@ def delete_account(request):
 
 
     
-=======
->>>>>>> main
