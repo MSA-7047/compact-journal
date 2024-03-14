@@ -42,7 +42,7 @@ class JournalFilterForm(forms.Form):
 
         myjournals = Journal.objects.all()
         #label = self.cleaned_data.get('label')
-        title_contains = self.cleaned_data.get('title_contains')
+        title_contains = self.cleaned_data.get('title_search')
         entry_date = self.cleaned_data.get('entry_date')
         mood = self.cleaned_data.get('mood')
 

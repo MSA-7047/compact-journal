@@ -118,6 +118,8 @@
           <a href="{% url 'edit_journal' journalID=journal.id%}" class="btn btn-lg btn-secondary">
             Edit
           </a>
+          Last edited at : {{ journal.last_edited}}
+          <br/>
           {% endfor %}
         </p>
         {% endif %}

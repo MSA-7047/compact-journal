@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
-from journal.models import GroupRequest, Group, GroupMembership, User
+from journal.models import GroupRequest, Group, GroupMembership, User, GroupJournal
 from journal.forms import *
 
 
@@ -15,13 +15,14 @@ def group(request) -> HttpResponse:
 
 
 @login_required
-def group_dashboard(request, given_group_id) -> HttpResponse:
+def group_dashboard(request, group_id) -> HttpResponse:
     """Displays the journals & members of a given group"""
     current_user = request.user
-    given_group = get_object_or_404(Group, pk=given_group_id)
-    all_members_in_group = ...
-    group_journals = ...
-    is_owner = ...
+    given_group = get_object_or_404(Group, pk=group_id)
+    all_members_in_group = User.objects.filter(groupmembership__group=given_group)
+    group_journals = GroupJournal.objects.filter(owner=given_group)
+    user_membership = GroupMembership.objects.get(user=current_user, group=given_group)
+    is_owner = user_membership.is_owner
     return render(
         request,
         'group_dashboard.html',
