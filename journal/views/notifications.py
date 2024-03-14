@@ -23,7 +23,7 @@ def mark_notification_as_read(request, notification_id):
         notification.is_read = False
     else:
         notification.is_read = True
-    time = notification.timeCreated.strftime("%Y-%m-%d %H:%M:%S")
+    time = notification.time_created.strftime("%Y-%m-%d %H:%M:%S")
     messages.success(request, f"Notification for the {notification.notification_type} created at {time} was marked as read.")
     notification.save()
 
