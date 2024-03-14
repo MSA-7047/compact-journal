@@ -65,7 +65,7 @@
           {% if groups %}
             <div class="btn-group-vertical container-fluid" role="group">
               {% for group in groups %}
-                <a role="button" href="{% url 'groups' %}" class="btn justify-content-center">{{ group.name }}</a>
+                <a role="button" href="{% url 'group_dashboard' group_id=group.group_id %}" class="btn justify-content-center">{{ group.name }}</a>
               {% endfor %}
           </div>
         {% endif %}
@@ -76,11 +76,26 @@
     <div class="col-xl-3 d-flex flex-column">
       <div class="friends-list p-2 border bg-light flex-grow-1">
         <h1>Friends List:</h1>
+        {% if user.friends.all %}
+          {% for friend in user.friends.all %}
+            <li>{{ friend.username }}</li>
+          {% endfor %}
+        {% else %}
+          You currently have no Friends, <br>
+          View requests to add some you lonely guy
+          <br>
+        {% endif %}
       </div>
     </div>
   </div>
 
+  <a href="{% url 'my_journals' userID=user.id %}" class="btn">
+    See Your Journals (List View)
+  </a>
+
 </section>
+
+
 
 {% endblock %}
 
