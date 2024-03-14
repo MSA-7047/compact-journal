@@ -28,7 +28,7 @@
           {% if todays_journal is None %}
             <p>You have not created a journal today! Press the button below to add your journal for the day.</p>
             <div class="d-flex justify-content-center">
-              <a class="create-journal-button" href="{% url 'create_journal' %}"> Add Journal </a>
+              <a href="{% url 'select_template' %}" class="btn"> Select Template </a>
             </div>
           {% else %}
             <p>
@@ -42,7 +42,10 @@
                 <br>
                 Created on: {{ journal.entry_date }}
                 <br>
-                <a class="edit-button" href="{% url 'change_journal_info' journalID=journal.id%}">Edit</a>
+                <a href="{% url 'edit_journal' journalID=journal.id%}" class="edit-button">Edit</a>
+                <br>
+                Last edited at : {{ journal.last_edited}}
+                <br>
               {% endfor %}
             </p>
           {% endif %}
@@ -80,3 +83,4 @@
 </section>
 
 {% endblock %}
+
