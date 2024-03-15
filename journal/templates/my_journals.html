@@ -21,7 +21,7 @@
                             <a href="{% url 'journal_detail' journalID=journal.id %}" class="btn btn-sm btn-secondary">
                               View Journal
                             </a>
-                            <a href="{% url 'delete_journal' journalID=journal.id%}" class="btn btn-sm btn-outline-danger">
+                            <a href="{% url 'delete_journal' journal_id=journal.id%}" class="btn btn-sm btn-outline-danger">
                               Delete Journal Entry
                             </a>
                           </p>
@@ -49,6 +49,7 @@
           <p> {{user.username}} has no public journals available<p>
           {%endif%}
         {% endif %}
+        <a href="{% url 'view_PDF_list' myJournals=journal_param  %}" class="btn btn-primary mt-3">Export These Journals As A PDF</a>
         <a href="{% url 'dashboard' %}" class="btn btn-primary mt-3">Back to dashboard</a>
     </div>
   </div>
