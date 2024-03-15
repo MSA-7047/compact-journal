@@ -9,7 +9,6 @@ from journal.forms import *
 @login_required    
 def create_group_journal(request):
     """View used to allow the user to create a group journal."""
-    today = datetime.now().date()
 
     form = CreateGroupJournalForm()
     if request.method == 'POST':
