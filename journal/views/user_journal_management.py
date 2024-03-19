@@ -112,6 +112,7 @@ def my_journals_view(request, userID):
             'sort_form': sort_form,
             'show_alert':True,
             'myJournals': myJournals,
+            'journal_param': my_journals_to_journal_param(myJournals),
             'user': current_user,
             'isUserCurrentlyLoggedIn': isLoggedInUser
             }
@@ -124,6 +125,7 @@ def my_journals_view(request, userID):
             'filter_form': filter_form,
             'sort_form': sort_form,
             'myJournals': myJournals,
+            'journal_param': my_journals_to_journal_param(myJournals),
             'user': current_user,
             'isUserCurrentlyLoggedIn': isLoggedInUser
         }
@@ -142,7 +144,16 @@ def my_journals_view(request, userID):
             'sort_form': sort_form,
             'myJournals': myJournals or False,
             'user': current_user,
+            'journal_param': my_journals_to_journal_param(myJournals),
             'isUserCurrentlyLoggedIn': isLoggedInUser
         }
     
     return render(request, 'my_journals.html', context)   
+
+
+def my_journals_to_journal_param(myJournals):
+    journals = []
+    for journal in myJournals:
+        journals.append(f"{journal.id}")
+    journal_param = ','.join(journals)
+    return journal_param
