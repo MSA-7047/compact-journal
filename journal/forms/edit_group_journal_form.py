@@ -1,8 +1,8 @@
 from django import forms
 from journal.models import GroupJournal
 
-class CreateGroupJournalForm(forms.ModelForm):
-    """Form for creating a group journal."""
+class EditGroupJournalForm(forms.ModelForm):
+    """Form for editing a group journal."""
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # it is required to set it False,

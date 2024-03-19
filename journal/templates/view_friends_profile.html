@@ -2,8 +2,6 @@
 {% block content %}
 <section class="container">
   <div class="row">
-    <a class="btn" href="{% url 'profile' %}">Edit Profile</a>
-    <a class="btn" href="{% url 'password' %}">Change Password</a>
     <div class="col-12">
       <h1>{{ user.first_name }}'s Profile</h1>
         <br>
@@ -19,7 +17,7 @@
         <p>Nationality: <img src="https://flagsapi.com/{{ user.nationality }}/flat/32.png" alt="{{ user.nationality }}"></p>    
         <p>Join Date: {{ user.date_joined }}</p>
         <br>
-        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back</a>
+        <a href="{% url 'view_friends' %}" class="btn btn-secondary">Back</a>
     </div>
   </div>
 </section>

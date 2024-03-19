@@ -21,7 +21,7 @@ def group_dashboard(request, group_id) -> HttpResponse:
     given_group = get_object_or_404(Group, pk=group_id)
     all_members_in_group = User.objects.filter(groupmembership__group=given_group)
     group_journals = GroupJournal.objects.filter(owner=given_group)
-    user_membership = GroupMembership.objects.get(user=current_user)
+    user_membership = GroupMembership.objects.get(user=current_user, group=given_group)
     is_owner = user_membership.is_owner
     return render(
         request,

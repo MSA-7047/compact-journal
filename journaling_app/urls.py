@@ -44,7 +44,7 @@ urlpatterns = [
     path('edit_journal/<int:journalID>/', EditJournal, name='edit_journal'),
     path('journal/<int:journalID>/', journal_detail_view, name='journal_detail'),
     path('ckeditor5/', include('django_ckeditor_5.urls')),
-    path('delete_journal/<int:journalID>/', DeleteJournal, name='delete_journal'),
+    path('delete_journal/<int:journal_id>/', DeleteJournal, name='delete_journal'),
     path('delete_template/<int:templateID>/', DeleteTemplate, name='delete_template'),
     path('edit_template/<int:templateID>/', EditTemplate, name='edit_template'),
 
@@ -81,7 +81,12 @@ urlpatterns = [
     ),
     path(
         'invite_to_group/', send_group_request, name='invite_group_member'
-    )
+    ),
+
+    path('view_journal_as_PDF/<int:journal_id>/', view_PDF, name='view_PDF'),
+    path('view_journals_as_PDF/<str:myJournals>', view_PDF_list, name='view_PDF_list'),
+
+
 
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
