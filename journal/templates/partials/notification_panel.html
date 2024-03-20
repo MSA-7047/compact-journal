@@ -1,11 +1,19 @@
 <div class="container" id="notificationPage" style="width:250px">
   <h4>Notifications</h4>
 
+  <a class="btn btn-primary" id="mark" href="{% url 'mark_all_notification_as_read' %}">Clear All Notifications</a>
+
   <ul class="notification-list">
     {% for notification in notifications %}
       <li class="notification-item">
         <div>
           <p>{{ notification.message }}</p>
+          <p> Type: {{notification.notification_type}} </p>
+          {% if notification.id %}
+                    <a class="btn btn-primary" id="mark" href="{% url 'mark_notification_as_read' notification.id %}">Mark As Read</a>
+                {% else %}
+                    <span>Notification ID not available</span>
+                {% endif %}
         </div>
       </li>
     {% empty %}

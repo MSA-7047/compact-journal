@@ -23,6 +23,21 @@
         </ul>
       {% endif %}
       {% endif %}
+
+      <li class="nav-item dropdown">
+
+        <a class="nav-link dropdown-toggle no-caret" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="icon ion-md-notifications-outline"></i>
+          {% if notifications.count %}
+            <span class="badge badge-warning" id="notificationBadge">{{ notifications.count }}</span>
+          {% endif %}
+        </a>
+        
+        <ul class="dropdown-menu" aria-labelledby="notificationDropdown">
+          {% include 'partials/notification_panel.html' %}
+        </ul>
+        
+      </li>
       
       <i class="small-navbar-toggle bi bi-list"></i>
     </nav>
