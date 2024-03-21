@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
 from journal.models import Notification
 
+
+
 @login_required
 def create_notification(request, text, type):
     current_user = request.user
@@ -13,7 +15,8 @@ def create_notification(request, text, type):
         message=text,
         notification_type = type
     )
-    
+    messages.add_message(request, 35, text)
+
 @login_required
 def mark_notification_as_read(request, notification_id):
     notification = get_object_or_404(Notification, id=notification_id, user=request.user)

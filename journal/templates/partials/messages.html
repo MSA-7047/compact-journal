@@ -1,4 +1,74 @@
 {% if messages %}
+  <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+    {% for message in messages %}
+      <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" style="z-index: 1051;">
+        <div class="toast-header 
+          {% if message.level_tag == 'success' %}
+            bg-success text-light
+          {% elif message.level_tag == 'warning' %}
+            bg-warning text-dark
+          {% elif message.level_tag == 'error' %}
+            bg-danger text-light
+          {% elif message.level == 35 %}
+            bg-primary text-light
+          {% else %}
+            bg-dark text-light
+          {% endif %}">
+          <i class="{% if message.level_tag == 'success' %}
+                       bi bi-check-lg
+                     {% elif message.level_tag == 'warning' %}
+                       bi bi-exclamation-triangle
+                     {% elif message.level_tag == 'error' %}
+                       error-icon-class
+                      {% elif message.level == 35 %}
+                       bi bi-bell-fill
+                     {% else %}
+                       bi bi-info-circle
+                     {% endif %} rounded me-2"></i>
+          <strong class="me-auto">
+            {% if message.level_tag == 'success' %}
+              Success
+            {% elif message.level_tag == 'warning' %}
+              Warning
+            {% elif message.level_tag == 'error' %}
+              Error
+            {% elif message.level == 35 %}
+              New Notification
+            {% else %}
+              Info
+            {% endif %}
+          </strong>
+          <small class="text-muted">{{ message.timestamp }}</small>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+          {{ message }}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Initialize all toasts
+    var toasts = document.querySelectorAll('.toast');
+    var toastList = Array.prototype.map.call(toasts, function (toastEl) {
+      return new bootstrap.Toast(toastEl);
+    });
+
+    // Show toasts when they are in the DOM
+    toastList.forEach(function (toast) {
+      toast.show();
+    });
+  });
+</script>
+
+
+
+<!-- 
+{% if messages %}
   <div class="container">
     <div class="row">
       <div class="col-12">
@@ -10,4 +80,4 @@
       </div>
     </div>
   </div>
-{% endif %}
+{% endif %} -->

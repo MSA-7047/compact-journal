@@ -13,7 +13,7 @@
 
         <div>
           <p>{{notification.message}}<br>
-              {{notification.timeCreated}}</p>
+              <h6>{{notification.time_created}}</h6></p>
           {% if notification.id %}
               <a class="btn btn-markasread" id="mark" href="{% url 'mark_notification_as_read' notification.id %}">Mark As Read</a>
           {% else %}
@@ -51,50 +51,36 @@
   overflow-wrap:break-word
   }
 
-  .notfication{
+  .notification{
   list-style: none;
   padding: 0;
   margin: 0;
   position: relative;
   }
-  .notfication li{
+  .notification li{
     margin-top: 10px;
   }
-  .notfication li div{
-    margin-left: 50px;
-    margin-top: -20px;
-    border: 1px solid #065143;
-    padding: 10px;
-    background-color: white;
+  .notification p{
+    margin-bottom: 3px;
   }
-  .notfication li i{
-    width: 30px;
-    height: 30px;
+  .notification li div{
+    margin-left: 50px;
+    margin-top: -60px;
+    padding: 10px;
+    padding-bottom: 0px;
+  }
+  .notification li i{
+    width: 50px;
+    height: 50px;
     display: block;
     text-align: center;
+    font-size: 25px;
     line-height: 30px;
-    border: 1px solid #ddd;
-    border-radius: 50%;
-    background-color: #E5E9AB;
+
   }
-  .notfication li i:after{
-    content: '';
-    width: 40px;
-    height: 1px;
-    position: absolute;
-    background-color: lavenderblush;
-    margin-top: 15px;
-    z-index: -1;
-  }
-  .notfication:after{
-    content: '';
-    width: 1px;
-    height: 100%;
-    background-color: #065143;
-    position: absolute;
-    top: 4px;
-    left: 15px;
-    z-index: -1;
+  
+  h6 {
+    font-size: 12px;
   }
 
 </style>
