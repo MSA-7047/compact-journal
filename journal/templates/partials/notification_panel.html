@@ -1,24 +1,100 @@
 <div class="container" id="notificationPage" style="width:250px">
   <h4>Notifications</h4>
 
-  <a class="btn btn-primary" id="mark" href="{% url 'mark_all_notification_as_read' %}">Clear All Notifications</a>
+  <a class="btn btn-notif" id="mark" href="{% url 'mark_all_notification_as_read' %}">Clear All Notifications</a>
 
-  <ul class="notification-list">
+  <ul class="notification">
+
     {% for notification in notifications %}
-      <li class="notification-item">
+
+      <li>
+        
+        <i class="bi bi-info-circle"></i>
+
         <div>
-          <p>{{ notification.message }}</p>
-          <p> Type: {{notification.notification_type}} </p>
+          <p>{{notification.message}}<br>
+              {{notification.timeCreated}}</p>
           {% if notification.id %}
-                    <a class="btn btn-primary" id="mark" href="{% url 'mark_notification_as_read' notification.id %}">Mark As Read</a>
-                {% else %}
-                    <span>Notification ID not available</span>
-                {% endif %}
+              <a class="btn btn-markasread" id="mark" href="{% url 'mark_notification_as_read' notification.id %}">Mark As Read</a>
+          {% else %}
+              <span>Notification ID not available</span>
+          {% endif %}
         </div>
-      </li>
-    {% empty %}
-      <li class="no-notification">No new notifications.</li>
-    {% endfor %}
+
+          {% empty %}
+
+      <li>No new notifications.</li>
+
+        {% endfor %}
+    </li>
   </ul>
 </div>
 
+<style>
+  .btn-notif, .btn-notif:focus {
+    margin: 0px;
+    padding: 6px;
+    font-size: 12px;
+    text-align: center;
+  }
+  .btn-markasread, .btn-markasread:focus {
+    margin: 0px;
+    padding: 7px;
+    font-size: 12px;
+    align-items: center;
+  }
+
+  #notificationPage {
+  max-height: 450px;
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden;
+  overflow-wrap:break-word
+  }
+
+  .notfication{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  }
+  .notfication li{
+    margin-top: 10px;
+  }
+  .notfication li div{
+    margin-left: 50px;
+    margin-top: -20px;
+    border: 1px solid #065143;
+    padding: 10px;
+    background-color: white;
+  }
+  .notfication li i{
+    width: 30px;
+    height: 30px;
+    display: block;
+    text-align: center;
+    line-height: 30px;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    background-color: #E5E9AB;
+  }
+  .notfication li i:after{
+    content: '';
+    width: 40px;
+    height: 1px;
+    position: absolute;
+    background-color: lavenderblush;
+    margin-top: 15px;
+    z-index: -1;
+  }
+  .notfication:after{
+    content: '';
+    width: 1px;
+    height: 100%;
+    background-color: #065143;
+    position: absolute;
+    top: 4px;
+    left: 15px;
+    z-index: -1;
+  }
+
+</style>
