@@ -1,5 +1,5 @@
 from django.test import TestCase
-from journal.models import Journal, User
+from journal.models import Entry, User
 from journal.forms import EditJournalDescriptionForm
 
 
@@ -8,7 +8,7 @@ class EditJournalDescriptionFormTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='testuser', password='testpassword')
 
-        self.journal = Journal.objects.create(
+        self.journal = Entry.objects.create(
             journal_title= 'My 21st birthday',
             journal_description= 'x' * 1000,
             journal_bio= 'x' * 10000,
@@ -27,7 +27,7 @@ class EditJournalDescriptionFormTestCase(TestCase):
         self.assertIn('This field is required.', form.errors['new_description'])
 
 
-        unchanged_journal = Journal.objects.get(id=self.journal.id)
+        unchanged_journal = Entry.objects.get(id=self.journal.id)
         self.assertEqual(unchanged_journal.journal_description, 'x' * 1000)
     
     def test_edit_journal_description_is_not_too_long(self):
@@ -46,5 +46,5 @@ class EditJournalDescriptionFormTestCase(TestCase):
         self.assertIn('Ensure this value has at most 1000 characters (it has {})'.format(len(long_description)), form.errors['new_description'])
 
         # Ensure the journal title remains unchanged
-        unchanged_journal = Journal.objects.get(id=self.journal.id)
+        unchanged_journal = Entry.objects.get(id=self.journal.id)
         self.assertEqual(unchanged_journal.journal_description, 'x' * 1000)

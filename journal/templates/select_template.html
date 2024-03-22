@@ -23,7 +23,7 @@
                         <h4>{{ template.description }}</h4>
                         <p> 
                           {{ template.bio|safe }}<p>
-                        <a href="{% url 'create_journal_with_template' templateID=template.id %}" class="btn btn-sm btn-secondary">Select This Template</a>
+                        <a href="{% url 'create_journal_with_template' template_id=template.id journal_id=journal.id%}" class="btn btn-sm btn-secondary">Select This Template</a>
                       </div>
                     </div>
                 </li>

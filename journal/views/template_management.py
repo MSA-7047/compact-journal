@@ -48,10 +48,11 @@ def create_template(request):
         return render(request, 'create_template.html', {'form': form, 'title': "Create Template"})
     
 
-def select_template(request):
+def select_template(request, journal_id):
     currentUser = request.user
+    journal = Journal.objects.get(id = journal_id)
     templates = Template.objects.filter(owner=currentUser)
-    return render(request, 'select_template.html', {"templates": templates})
+    return render(request, 'select_template.html', {"templates": templates, "journal":journal})
 
 @login_required
 def DeleteTemplate(request,templateID):
@@ -59,19 +60,21 @@ def DeleteTemplate(request,templateID):
     template.delete()
     return redirect('select_template')
 
-def create_journal_From_Template(request, templateID):
+def create_journal_From_Template(request, template_id, journal_id):
     current_user = request.user
-    template = get_object_or_404(Template, id = templateID)
-    journal = Journal.objects.create(
-                journal_title = template.title,
-                journal_description = template.description,
-                journal_bio = template.bio,
-                journal_mood = "neutral",
-                journal_owner = current_user,
+    template = get_object_or_404(Template, id = template_id)
+    journal = Journal.objects.get(id=journal_id)
+    entry = Entry.objects.create(
+                title = template.title,
+                summary = template.description,
+                content = template.bio,
+                mood = "neutral",
+                owner = current_user,
+                journal = journal,
                 private = False
             )
-    journal.save()
-    return redirect("edit_journal", journalID=journal.id)
+    entry.save()
+    return redirect("edit_entry", entry_id=entry.id)
 
 @login_required
 def EditTemplate(request, templateID): 

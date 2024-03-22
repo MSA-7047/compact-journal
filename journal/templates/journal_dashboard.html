@@ -1,0 +1,106 @@
+{% extends 'base_content.html' %}
+{% load static %}
+{% block content %}
+<!-- Static CSS Files -->
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+<!-- ==================== Main Dashboard Section ==================== -->
+<section class="container d-flex flex-column">
+
+  <div class="first-row row py-4 px-4 gy-4">
+    <div class="col-xl-8 d-flex flex-column justify-content-center">
+      <div class="welcome-message p-2 border bg-light ">
+        <h1>Journal Dashboard: {{journal.title}}</h1>
+      </div>
+    </div>
+    <div class="col-xl-4">
+      <div class="user-content p-2 border bg-light">
+        <h1>User Content</h1>
+      </div>
+    </div>
+  </div>
+
+  <div class="second-row row px-4 gy-4 pb-4 flex-fill">
+    <div class="col-xl-5 d-flex flex-column">
+      <div class="todays-journal p-2 border bg-light flex-grow-1">
+        <h1>Today's Journal:</h1>
+        <div class="content">
+          {% if todays_entry %}
+            {% for entry in todays_entry %}
+              <h2>{{ entry.title }}</h2>
+              Summary: {{ entry.summary }}
+              <br>
+              Journal: {{ entry.content|safe }}
+              <br>
+              Todays Mood: {{ entry.mood }}
+              <br>
+              Created on: {{ entry.entry_date }}
+              <br>
+              <a href="{% url 'edit_entry' entry_id=entry.id%}" class="edit-button">Edit</a>
+              <a href="{% url 'delete_entry' entry_id=entry.id%}" >delete</a>
+              <br>
+              Last edited at : {{ entry.last_edited}}
+              <br>
+            {% endfor %}
+          {% else %}
+            <p>You have not created an entry today! Press the button below to add your entry for the day.</p>
+            <div class="d-flex justify-content-center">
+              <a href="{% url 'select_template' journal_id=journal.id %}" class="btn"> Select Template </a>
+            </div>
+          {% endif %}
+        </div>
+        
+      </div>
+    </div>
+
+
+
+    <div class="col-xl-4 d-flex flex-column">
+      <div class="your-groups p-2 border bg-light flex-grow-1">
+        <h1>All Journal Entries</h1>
+      <h1> {{user.username}}'s public journals</h1>
+      {% include 'partials/filter_partial.html' with filter_form=filter_form %}
+        {% if journal_entries %}
+        <ul class="list-group mt-3">
+            {% for entry in journal_entries %}
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                          <p>
+                            <a href="{% url 'view_entry' entry_id=entry.id %}" class="btn btn-sm btn-secondary">
+                              View Journal
+                            </a>
+                            <a href="{% url 'delete_entry' entry_id=entry.id%}" class="btn btn-sm btn-outline-danger">
+                              Delete Journal Entry
+                            </a>
+                          </p>
+                        <h5>Title: {{ entry.title }}</h5>
+                        <p>Summary: {{ entry.description }}</p>
+                          <h4>Journal Entry:</h4>
+                        <p><hr/>
+                          {{entry.content|safe}}
+                          <hr/>
+                        </p>
+
+                        <p>Mood: {{entry.mood}}</p>
+                        </p>
+
+                        <p>Entry Date: {{ entry.entry_date }}</p>
+                        </div>
+                    </div>
+                </li>
+                {%endfor%}
+        {% else %}
+        <p>no journals</p>
+        {% endif %}
+        </div>
+      </div>
+    </div>
+
+
+</section>
+
+
+
+{% endblock %}
+

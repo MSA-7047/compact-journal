@@ -4,7 +4,7 @@ from django.db import models
 from libgravatar import Gravatar
 from django_countries.fields import CountryField
 from .Group import Group
-from .Journal import Journal
+from .Entry import Journal
 from .FriendRequest import FriendRequest
 
 

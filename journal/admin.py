@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import Journal
+from .models import Entry
 
-admin.site.register(Journal)
+admin.site.register(Entry)
 # Register your models here.
 #@admin.register(Journal)
 #class JournalAdmin(admin.ModelAdmin):

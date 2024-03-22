@@ -38,15 +38,23 @@ urlpatterns = [
     path('sign_up/', SignUpView.as_view(), name='sign_up'),
 
     path('create-journal/', create_journal, name='create_journal'),
-    path('select-template/', select_template, name='select_template'),
+    path('journal_dashboard/<int:journal_id>/', journal_dashboard, name='journal_dashboard'),
+    path('delete_journal/<int:journal_id>/', delete_journal, name='delete_journal'),
+    path('edit_journal/<int:journal_id>/', edit_journal, name='edit_journal'),
+
+    path('create-entry/<int:journal_id>', create_entry, name='create_entry'),
+    path('delete_entry/<int:entry_id>/', delete_entry, name='delete_entry'),
+    path('edit_entryl/<int:entry_id>/', edit_entry, name='edit_entry'),
+    path('view_entry/<int:entry_id>/', journal_detail_view, name='view_entry'),
+
+    path('select-template/<int:journal_id>', select_template, name='select_template'),
     path('create-template/', create_template, name='create_template'),
-    path('createJournalWithTemplate/<int:templateID>/', views.create_journal_From_Template, name='create_journal_with_template'),
-    path('edit_journal/<int:journalID>/', EditJournal, name='edit_journal'),
-    path('journal/<int:journalID>/', journal_detail_view, name='journal_detail'),
-    path('ckeditor5/', include('django_ckeditor_5.urls')),
-    path('delete_journal/<int:journal_id>/', DeleteJournal, name='delete_journal'),
+    path('createJournalWithTemplate/<int:template_id>/<int:journal_id>', views.create_journal_From_Template, name='create_journal_with_template'),
     path('delete_template/<int:templateID>/', DeleteTemplate, name='delete_template'),
     path('edit_template/<int:templateID>/', EditTemplate, name='edit_template'),
+
+    path('ckeditor5/', include('django_ckeditor_5.urls')),
+
 
     
     path('friend_requests/', view_friend_requests, name='view_friend_requests'),
@@ -58,7 +66,6 @@ urlpatterns = [
     path('remove_friend/<int:user_id>', remove_friend, name='remove_friend'),
     
     path('calendar/<int:year>/<str:month>/', calendar_view, name='calendar'),
-    path('all_entries/', all_journal_entries_view, name='all_entries'),
     path('my_journals/<int:userID>/', my_journals_view, name='my_journals'),
     path('view_friends_journals/<int:userID>/', my_journals_view, name='view_friends_journals'),
     

@@ -18,7 +18,7 @@
                         {% if isUserCurrentlyLoggedIn %}
                           <p>
 
-                            <a href="{% url 'journal_detail' journalID=journal.id %}" class="btn btn-sm btn-secondary">
+                            <a href="{% url 'view_entry' entry_id=journal.id %}" class="btn btn-sm btn-secondary">
                               View Journal
                             </a>
                             <a href="{% url 'delete_journal' journal_id=journal.id%}" class="btn btn-sm btn-outline-danger">
@@ -26,15 +26,17 @@
                             </a>
                           </p>
                         {% endif %}
-                        <h5>Title: {{ journal.journal_title }}</h5>
-                        <p>Summary: {{ journal.journal_description }}</p>
+                        <h5>Title: {{ journal.title }}</h5>
+                        <p>Summary: {{ journal.description }}</p>
                           <h4>Journal Entry:</h4>
                         <p><hr/>
-                          {{journal.journal_bio|safe}}
+                          {{journal.content|safe}}
                           <hr/>
                         </p>
 
-                        <p>Mood: {{journal.journal_mood}}</p>
+                        <p>Mood: {{journal.mood}}</p>
+                        <p>{{journal.journal.title}}
+                        </p>
 
                         <p>Entry Date: {{ journal.entry_date }}</p>
                         </div>

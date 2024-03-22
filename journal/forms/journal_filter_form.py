@@ -1,7 +1,7 @@
 from datetime import timedelta, datetime
 from django import forms
 from django.utils import timezone
-from journal.models import Journal
+from journal.models import Entry
 
 
 class JournalFilterForm(forms.Form):
@@ -40,7 +40,7 @@ class JournalFilterForm(forms.Form):
 
     def filter_tasks(self):
 
-        myjournals = Journal.objects.all()
+        myjournals = Entry.objects.all()
         #label = self.cleaned_data.get('label')
         title_contains = self.cleaned_data.get('title_search')
         entry_date = self.cleaned_data.get('entry_date')
