@@ -45,7 +45,7 @@ urlpatterns = [
     path('create-entry/<int:journal_id>', create_entry, name='create_entry'),
     path('delete_entry/<int:entry_id>/', delete_entry, name='delete_entry'),
     path('edit_entryl/<int:entry_id>/', edit_entry, name='edit_entry'),
-    path('view_entry/<int:entry_id>/', journal_detail_view, name='view_entry'),
+    path('view_entry/<int:entry_id>/', view_entry, name='view_entry'),
 
     path('select-template/<int:journal_id>', select_template, name='select_template'),
     path('create-template/', create_template, name='create_template'),
@@ -90,7 +90,7 @@ urlpatterns = [
         'invite_to_group/', send_group_request, name='invite_group_member'
     ),
 
-    path('view_journal_as_PDF/<int:journal_id>/', view_PDF, name='view_PDF'),
+    path('view_journal_as_PDF/<int:entry_id>/', view_PDF, name='view_PDF'),
     path('view_journals_as_PDF/<str:myJournals>', view_PDF_list, name='view_PDF_list'),
 
 

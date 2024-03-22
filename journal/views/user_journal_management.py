@@ -85,29 +85,19 @@ def journal_dashboard(request, journal_id):
     print(todays_entry)
     return render(request, 'journal_dashboard.html', {'user': current_user,'journal': journalobject, 'journal_entries': journal_entries, "todays_entry": todays_entry})
 
-class JournalDetail(DetailView):
-    model = Entry
-    template_name = 'journal_detail.html'
+def view_entry(request, entry_id):
 
-    def get_object(self, queryset=None):
-        journal_id = self.kwargs.get('journal_id')
-        queryset = self.get_queryset().filter(id=journal_id)
-        obj = queryset.first()
-        return obj
-
-
-def journal_detail_view(request, journalID):
-
-    # Retrieve the journal object based on the journal_id
     current_user = request.user
+
     try:
-        journal = Entry.objects.get(id=journalID)
+        entry = Entry.objects.get(id=entry_id)
     except ObjectDoesNotExist:
         return render(request, 'permission_denied.html',)
-    if journal.owner != current_user:
+    
+    if entry.owner != current_user:
         return render(request, 'permission_denied.html', {'reason': "You do not own this journal"} )
-    # Pass the journal object to the template context
-    return render(request, 'journal_detail.html', {'user': current_user, 'journal': journal})
+    
+    return render(request, 'entry_detail.html', {'user': current_user, 'entry': entry})
 
 
 @login_required

@@ -71,21 +71,21 @@
     <div class="container">
         <div class="card">
             <div class="card-header">
-                <h1 class="title">{{ journal.journal_title }}</h1>
+                <h1 class="title">{{ entry.title }}</h1>
             </div>
             <div class="card-body">
                 <div class="mood-date">
-                    <p><strong>Mood:</strong> {{journal.journal_mood}}</p>
-                    <p><strong>Entry Date:</strong> {{ journal.entry_date }}</p>
+                    <p><strong>Mood:</strong> {{entry.mood}}</p>
+                    <p><strong>Entry Date:</strong> {{ entry.entry_date }}</p>
                 </div>
                 <div class="summary">
-                    <p><strong>Summary:</strong> {{ journal.journal_description }}</p>
+                    <p><strong>Summary:</strong> {{ entry.summary }}</p>
                 </div>
                 <div class="journey-entry">
                     <p><strong>Journey Entry:</strong></p>
                     <hr>
                     <div class="ck ck-content">
-                        {{ journal.journal_bio|safe }}
+                        {{ entry.content|safe }}
                     </div>
                     <hr>
                 </div>

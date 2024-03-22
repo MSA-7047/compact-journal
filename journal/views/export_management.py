@@ -8,17 +8,17 @@ from django.shortcuts import get_object_or_404, render
 from django.conf import settings
 from journal.models import Entry
 
-def view_PDF(request, journal_id):
+def view_PDF(request, entry_id):
     current_user = request.user
     try:
-        journal = Entry.objects.get(id=journal_id)
+        entry = Entry.objects.get(id=entry_id)
     except ObjectDoesNotExist:
         return render(request, 'permission_denied.html',)
-    if journal.journal_owner != current_user:
+    if entry.owner != current_user:
         return render(request, 'permission_denied.html', {'reason': "You do not own this journal"} )
     template = get_template('journalPDF.html')
-    html = template.render({"journal": journal})  # Pass context data if needed
-    title = journal.journal_title
+    html = template.render({"entry": entry})  # Pass context data if needed
+    title = entry.title
     # Create a PDF document
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename={title}'

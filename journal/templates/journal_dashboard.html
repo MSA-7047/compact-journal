@@ -55,11 +55,9 @@
 
 
 
-    <div class="col-xl-4 d-flex flex-column">
+    <div class="col-xl-7 d-flex flex-column">
       <div class="your-groups p-2 border bg-light flex-grow-1">
-        <h1>All Journal Entries</h1>
-      <h1> {{user.username}}'s public journals</h1>
-      {% include 'partials/filter_partial.html' with filter_form=filter_form %}
+      <h1>All Journal Entries</h1>
         {% if journal_entries %}
         <ul class="list-group mt-3">
             {% for entry in journal_entries %}
