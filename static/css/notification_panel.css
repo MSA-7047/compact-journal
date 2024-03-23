@@ -1,0 +1,76 @@
+/*-- ==================== Red Notification Pill ==================== --*/
+.badge {
+    font-size: 10px;
+}
+
+/*-- ==================== Container ==================== --*/
+.notification-container {
+    width: 250px;
+    max-height: 450px;
+    overflow-y: auto;
+    overflow-wrap: break-word;
+}
+
+/*-- ==================== Dropdown ==================== --*/
+.dropdown-toggle {
+    padding: 0px;
+}
+.dropdown-toggle i {
+    font-size: 25px;
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+/*-- ==================== Buttons ==================== --*/
+.btn-notif, .btn-notif:focus, 
+.btn-markasread, .btn-markasread:focus {
+    margin: 0px;
+    padding: 2px 6px;
+    font-size: 12px;
+}
+
+/*-- ==================== Notifications ==================== --*/
+.header-container {
+    padding: 10px;
+}
+
+.notifications-list {
+    padding: 0px 15px;
+    list-style-type: none;
+}
+
+.notification {
+    position: relative;
+    padding: 5px;
+    border-bottom: 1px solid #dddddd;
+}
+
+.notification:last-child {
+    border-bottom: none;
+}
+
+.notification i {
+    position: absolute;
+    font-size: 25px;
+    
+}
+
+.notification-message {
+    margin-left: 45px;
+}
+
+.notification-message p {
+    margin-bottom: 0px;
+}
+
+/*-- ==================== Notification Time ==================== --*/
+h6 {
+    font-size: 12px;
+    margin: 5px 0px;
+}
+
+@media (max-width: 1200px) {
+
+}

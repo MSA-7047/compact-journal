@@ -1,86 +1,40 @@
-<div class="container" id="notificationPage" style="width:250px">
-  <h4>Notifications</h4>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/notification_panel.css' %}">
 
-  <a class="btn btn-notif" id="mark" href="{% url 'mark_all_notification_as_read' %}">Clear All Notifications</a>
+<div class="dropdown-center">
+  <div class="bell-icon nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
+    <i class="bi bi-bell-fill"></i>
+    {% if notifications.count %}
+      <span class="badge rounded-pill text-bg-danger position-absolute">{{ notifications.count }}</span>
+    {% endif %}
+  </div>
 
-  <ul class="notification">
 
-    {% for notification in notifications %}
+  <div class="notification-container dropdown-menu">
+    <div class="header-container d-flex flex-column justify-content-center align-items-center">
+      <h4>Notifications</h4>
+      <a class="btn btn-notif" href="{% url 'mark_all_notification_as_read' %}">Clear All Notifications</a>
+    </div>
 
-      <li>
-        
-        <i class="bi bi-info-circle"></i>
+    <ul class="notifications-list d-flex flex-column align-items-center">
+      {% for notification in notifications %}
+        <li class="notification">
+          <i class="bi bi-info-circle"></i>
 
-        <div>
-          <p>{{notification.message}}<br>
-              <h6>{{notification.time_created}}</h6></p>
-          {% if notification.id %}
-              <a class="btn btn-markasread" id="mark" href="{% url 'mark_notification_as_read' notification.id %}">Mark As Read</a>
-          {% else %}
+          <div class="notification-message">
+            <p>{{notification.message}}</p>
+            <h6>{{notification.time_created}}</h6>
+            
+            {% if notification.id %}
+              <a class="btn btn-markasread" href="{% url 'mark_notification_as_read' notification.id %}">Mark As Read</a>
+            {% else %}
               <span>Notification ID not available</span>
-          {% endif %}
-        </div>
-
-          {% empty %}
-
-      <li>No new notifications.</li>
-
-        {% endfor %}
-    </li>
-  </ul>
+            {% endif %}
+          </div>
+        </li>
+      {% empty %}
+        <li>No new notifications.</li>
+      {% endfor %}
+    </ul>
+  </div>
 </div>
-
-<style>
-  .btn-notif, .btn-notif:focus {
-    margin: 0px;
-    padding: 6px;
-    font-size: 12px;
-    text-align: center;
-  }
-  .btn-markasread, .btn-markasread:focus {
-    margin: 0px;
-    padding: 7px;
-    font-size: 12px;
-    align-items: center;
-  }
-
-  #notificationPage {
-  max-height: 450px;
-  overflow-y: auto; /* Enable vertical scrolling */
-  overflow-x: hidden;
-  overflow-wrap:break-word
-  }
-
-  .notification{
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  position: relative;
-  }
-  .notification li{
-    margin-top: 10px;
-  }
-  .notification p{
-    margin-bottom: 3px;
-  }
-  .notification li div{
-    margin-left: 50px;
-    margin-top: -60px;
-    padding: 10px;
-    padding-bottom: 0px;
-  }
-  .notification li i{
-    width: 50px;
-    height: 50px;
-    display: block;
-    text-align: center;
-    font-size: 25px;
-    line-height: 30px;
-
-  }
-  
-  h6 {
-    font-size: 12px;
-  }
-
-</style>
