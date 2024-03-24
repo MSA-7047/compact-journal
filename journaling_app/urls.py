@@ -58,7 +58,7 @@ urlpatterns = [
     path('remove_friend/<int:user_id>', remove_friend, name='remove_friend'),
     
     path('calendar/<int:year>/<str:month>/', calendar_view, name='calendar'),
-    path('all_entries/', all_journal_entries_view, name='all_entries'),
+    #path('all_entries/', all_journal_entries_view, name='all_entries'),
     path('my_journals/<int:userID>/', my_journals_view, name='my_journals'),
     path('view_friends_journals/<int:userID>/', my_journals_view, name='view_friends_journals'),
     
