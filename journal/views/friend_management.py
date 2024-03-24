@@ -18,7 +18,11 @@ def view_friend_requests(request):
     (requests, sent_pending_invitations,
      sent_accepted_invitations, sent_rejected_invitations) = get_friend_requests_and_sent_invitations(request.user)
     form = SendFriendRequestForm(user=request.user)
-    create_notification(request)
+
+    """Notification Creation"""
+    notif_message = "This is a testing notification message. It can be changed whenever I want it to."
+    create_notification(request, notif_message, "info")
+
     return render(
         request,
         template_name='friend_requests.html',

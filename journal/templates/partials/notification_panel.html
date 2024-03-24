@@ -1,16 +1,40 @@
-<div class="container" id="notificationPage" style="width:250px">
-  <h4>Notifications</h4>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/notification_panel.css' %}">
 
-  <ul class="notification-list">
-    {% for notification in notifications %}
-      <li class="notification-item">
-        <div>
-          <p>{{ notification.message }}</p>
-        </div>
-      </li>
-    {% empty %}
-      <li class="no-notification">No new notifications.</li>
-    {% endfor %}
-  </ul>
+<div class="dropdown-center">
+  <div class="bell-icon nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
+    <i class="bi bi-bell-fill"></i>
+    {% if notifications.count %}
+      <span class="badge rounded-pill text-bg-danger position-absolute">{{ notifications.count }}</span>
+    {% endif %}
+  </div>
+
+
+  <div class="notification-container dropdown-menu">
+    <div class="header-container d-flex flex-column justify-content-center align-items-center">
+      <h4>Notifications</h4>
+      <a class="btn btn-notif" href="{% url 'mark_all_notification_as_read' %}">Clear All Notifications</a>
+    </div>
+
+    <ul class="notifications-list d-flex flex-column align-items-center">
+      {% for notification in notifications %}
+        <li class="notification">
+          <i class="bi bi-info-circle"></i>
+
+          <div class="notification-message">
+            <p>{{notification.message}}</p>
+            <h6>{{notification.time_created}}</h6>
+            
+            {% if notification.id %}
+              <a class="btn btn-markasread" href="{% url 'mark_notification_as_read' notification.id %}">Mark As Read</a>
+            {% else %}
+              <span>Notification ID not available</span>
+            {% endif %}
+          </div>
+        </li>
+      {% empty %}
+        <li>No new notifications.</li>
+      {% endfor %}
+    </ul>
+  </div>
 </div>
-

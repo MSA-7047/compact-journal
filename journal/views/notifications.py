@@ -4,18 +4,19 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
 from journal.models import Notification
 
+
+
 @login_required
-def create_notification(request):
+def create_notification(request, text, type):
     current_user = request.user
 
     Notification.objects.create(
         user=current_user,
-        message="This is a test notification message."
+        message=text,
+        notification_type = type
     )
+    messages.add_message(request, 35, text)
 
-    print("I am testing the notifications system, object creation. If this message shows, it works :)")
-    messages.success(request, "Notification created!")
-    
 @login_required
 def mark_notification_as_read(request, notification_id):
     notification = get_object_or_404(Notification, id=notification_id, user=request.user)
@@ -24,7 +25,7 @@ def mark_notification_as_read(request, notification_id):
     else:
         notification.is_read = True
     time = notification.time_created.strftime("%Y-%m-%d %H:%M:%S")
-    messages.success(request, f"Notification for the {notification.notification_type} created at {time} was marked as read.")
+    messages.success(request, f"Notification created at {time} was marked as read.")
     notification.save()
 
     return redirect(notification.get_absolute_url())

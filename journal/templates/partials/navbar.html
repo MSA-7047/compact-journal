@@ -1,145 +1,27 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
 
-<header class="header fixed-top" id="header">
+<header class="header fixed-top z-1" id="header">
   <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
-    <a class="logo-name d-flex align-items-center" href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'home' %}{% endif %}">Compact Journals</a>
+      <a class="logo-name d-flex align-items-center" href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'home' %}{% endif %}">
+          Compact Journals
+      </a>
 
-    <nav class="navbar" id="navbar">
       {% if user.is_authenticated %}
-        <ul>
-          <li><a class="nav-link" href="{% url 'view_profile' %}">Profile</a></li>
-          <li><a class="nav-link" href="{% url 'view_friends' %}">Friends</a></li>
-          <li><a class="nav-link" href="{% url 'groups' %}">Groups</a></li>
-          <li><a class="navbar-button" href="{% url 'log_out' %}">Log out</a></li>
-        </ul>
-      {% else %}
-      {% if request.path != '/log_in/' and request.path != '/sign_up/' %}
-        <ul>
-          <li><a class="nav-link scrollable current" href="#top-section">Home</a></li>
-          <li><a class="nav-link scrollable" href="#about-section">About</a></li>
-          <li><a class="nav-link scrollable" href="#features-section">Features</a></li>
-          <li><a class="navbar-button scrollable" href="{% url 'log_in' %}">Log in</a></li>
-        </ul>
+        {% include 'partials/notification_panel.html' %}
       {% endif %}
-      {% endif %}
-      
-      <i class="small-navbar-toggle bi bi-list"></i>
-    </nav>
 
+      <nav class="navbar" id="navbar">
+          <ul>
+              {% if user.is_authenticated %}
+                  {% include 'partials/authenticated_links.html' %}
+              {% else %}
+                  {% include 'partials/unauthenticated_links.html' %}
+              {% endif %}
+          </ul>
+          <i class="small-navbar-toggle bi bi-list"></i>
+      </nav>
   </div>
 </header>
 
-
 <script src="{% static 'js/navbar.js' %}"></script>
-
-<!-- {% load static %}
-
-<head>
-  <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
-  
-</head>
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
-  <div class="container">
-    <a class="navbar-brand" href="{% url 'dashboard' %}">
-      Compact Journals
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    {% if user.is_authenticated %}
-      
-
-      <li class="nav-item dropdown">
-
-        <a class="nav-link dropdown-toggle no-caret" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="icon ion-md-notifications-outline"></i>
-          {% if notifications.count %}
-            <span class="badge badge-warning" id="notificationBadge">{{ notifications.count }}</span>
-          {% endif %}
-        </a>
-        
-        <ul class="dropdown-menu" aria-labelledby="notificationDropdown">
-          {% include 'partials/notification_panel.html' %}
-        </ul>
-        
-      </li>
-
-    {% endif %}
-
-
-  </div>
-  
-</nav>
-
-<style>
-
-.container h6{
-  margin-right: 100px;
-  margin-top: 0px;
-  padding: 10px;
-  text-align: left;
-  line-height: 30px;
-  background-color: white;
-  position: relative;
-  color: #BFC484;
-
-}
-.navbar .dropdown-toggle::after {
-    display: none;
-}
-.navbar .dropdown-toggle .icon {
-    color: white;
-}
-.notfication li{
-  margin-top: 10px;
-}
-.notfication li div{
-  margin-left: 50px;
-  margin-top: -20px;
-  border: 1px solid #065143;
-  padding: 10px;
-  background-color: white;
-}
-.notfication li i{
-  width: 30px;
-  height: 30px;
-  display: block;
-  text-align: center;
-  line-height: 30px;
-  border: 1px solid #ddd;
-  border-radius: 50%;
-  background-color: #E5E9AB;
-}
-.notfication li i:after{
-  content: '';
-  width: 40px;
-  height: 1px;
-  position: absolute;
-  background-color: lavenderblush;
-  margin-top: 15px;
-  z-index: -1;
-}
-.notfication:after{
-  content: '';
-  width: 1px;
-  height: 100%;
-  background-color: #065143;
-  position: absolute;
-  top: 4px;
-  left: 15px;
-  z-index: -1;
-}
-
-#notificationBadge {
-  position: absolute;
-  top: -5px; 
-  right: -5px; 
-  padding: 5px 7px;
-  border-radius: 60%;
-  background-color: red;
-  color: white;
-  font-size: 10px;
-}
-</style> -->
