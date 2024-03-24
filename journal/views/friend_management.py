@@ -106,5 +106,5 @@ def remove_friend(request, user_id):
     friend = get_object_or_404(User, id=user_id)
     request.user.friends.remove(friend)
     friend.friends.remove(request.user)
-    return redirect('friends')
+    return redirect('view_friends')
 

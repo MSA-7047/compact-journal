@@ -50,16 +50,32 @@ class User(AbstractUser):
         return self.gravatar(size=60)
 
     def send_friend_request(self, user):
-        invitation, _ = FriendRequest.objects.get_or_create(user=user, sender=self)
+        invitation, _ = FriendRequest.objects.get_or_create(recipient=user, sender=self)
         return invitation
 
+    # def accept_request(self, user):
+    #     request = self.invitations.filter(recipient=self, sender=user, status='Pending')
+    #     if not request:
+    #         return False
+    #     self.friends.add(user)
+    #     request.status = 'Accepted'
+    #     request.save()
+    #     return True
+    
     def accept_request(self, user):
-        request = self.invitations.filter(recipient=self, sender=user, status='Pending')
+    # Retrieve the friend request
+        request = self.invitations.filter(recipient=self, sender=user, status='Pending').first()
+
         if not request:
             return False
+
+        # Add the sender to the user's friends list
         self.friends.add(user)
+
+        # Update the status of the friend request
         request.status = 'Accepted'
         request.save()
+
         return True
 
     def reject_request(self, user):
