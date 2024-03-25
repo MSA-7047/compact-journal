@@ -31,7 +31,7 @@ textarea#id_journal_description {
   color: #ffffff;
   background: #26363e;
   padding: 10px 20px;
-  margin: 25px 0px;
+  margin: 5px 0px 20px;
   display: inline-flex;
   border-radius: 1000px;
   font-family: "Tilt-Warp", sans-serif;
@@ -46,9 +46,8 @@ textarea#id_journal_description {
 }
 /*-- ==================== Sections ==================== --*/
 section {
-    padding-top: 90px;
-    height: 100vh;
-  }
+  padding-top: 95px;
+}
 /* =======================================================*/
 
 /*
