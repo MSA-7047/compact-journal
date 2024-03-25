@@ -101,15 +101,18 @@
     top: 50px;
     right: 50px;
   }
-
+  
   .small-screen-navbar ul {
     background-color: #ffffff;
     display: block;
     position: absolute;
     inset: 100px;
-    padding: 15vh 0;
+    height: calc(90vh - 200px); /* Adjust the height as needed */
+    padding: 5vh;
     border-radius: 25px;
+    overflow-y: auto; /* Make the UL scrollable */
   }
+  
 
   .small-screen-navbar a, .small-screen-navbar a:focus {
     justify-content: center;
