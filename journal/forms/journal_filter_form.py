@@ -6,22 +6,28 @@ from journal.models import Journal
 
 class JournalFilterForm(forms.Form):
 
-    entry_date = forms.ChoiceField(choices=(
-        ('', '---------'),
-        ('24h', 'Within 24 Hours'),
-        ('3d', 'Within 3 Days'),
-        ('1w', 'Within 1 Week'),
-        ('1m', 'Within 1 Month'),
-        ('6m+', '6+ Months')
-    ), required=False)
+    entry_date = forms.ChoiceField(
+        choices=(
+            ('', '---------'),
+            ('24h', 'Within 24 Hours'),
+            ('3d', 'Within 3 Days'),
+            ('1w', 'Within 1 Week'),
+            ('1m', 'Within 1 Month'),
+            ('6m+', '6+ Months')
+        ), 
+        required=False
+    )
 
-    mood = forms.ChoiceField(choices=(
-        ('', '---------'),
-        ('Happy', 'Happy'),
-        ('Sad', 'Sad'),
-        ('Angry', 'Angry'),
-        ('Neutral', 'Neutral'),
-    ), required=False)
+    mood = forms.ChoiceField(
+        choices=(
+            ('', '---------'),
+            ('Happy', 'Happy'),
+            ('Sad', 'Sad'),
+            ('Angry', 'Angry'),
+            ('Neutral', 'Neutral'),
+        ), 
+        required=False
+    )
 
     title_search = forms.CharField(required=False)
 
@@ -49,10 +55,16 @@ class JournalFilterForm(forms.Form):
         #if label:
            # tasks = tasks.filter(label=label)
         if title_contains:
-            myjournals = myjournals.filter(journal_title__icontains=title_contains)
+            myjournals = myjournals.filter(
+                journal_title__icontains=title_contains
+            )
+
         if mood:
             myjournals = myjournals.filter(journal_mood = mood)
+
         if entry_date:
-            myjournals = myjournals.filter(entry_date__gte=JournalFilterForm.get_time_range(entry_date))
+            myjournals = myjournals.filter(
+                entry_date__gte=JournalFilterForm.get_time_range(entry_date)
+            )
 
         return myjournals

@@ -6,7 +6,10 @@ class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
 
     username = forms.CharField(label="Username")
-    password = forms.CharField(label="Password", widget=forms.PasswordInput())
+    password = forms.CharField(
+        label="Password", 
+        widget=forms.PasswordInput()
+    )
 
     def get_user(self):
         """Returns authenticated user if possible."""
