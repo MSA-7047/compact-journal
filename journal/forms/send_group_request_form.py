@@ -7,4 +7,4 @@ class SendGroupRequestForm(forms.Form):
     def __init__(self, *args, currentUser=None, **kwargs):
         super().__init__(*args, **kwargs)
         if currentUser is not None:
-            self.fields['recipient'].queryset = User.objects.exclude(username=currentUser.username)
+            self.fields['recipient'].queryset = currentUser.friends.all()

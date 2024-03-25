@@ -6,8 +6,8 @@ from journal.models import Group
 class GroupJournal(models.Model):
     """Model to represent the Journals the Group will be writing on."""
     journal_title = models.CharField(max_length=50, blank=False)
-    journal_description = models.TextField(max_length=1_000)
-    journal_bio = models.TextField(max_length=10_000)
+    journal_description = models.TextField(max_length=1000, blank=False)
+    journal_bio = models.TextField(max_length=10000, blank=False)
     entry_date = models.DateTimeField(auto_now_add=True)
     MOOD_OPTIONS = [
         ("Sad", "Sad"),

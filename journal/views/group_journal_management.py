@@ -33,7 +33,7 @@ def create_group_journal(request):
 @login_required
 def edit_group_journal(request, journalID): 
     """Allows the user to edit a group journal."""
-    journal = get_object_or_404(Journal, id=journalID)
+    journal = get_object_or_404(GroupJournal, id=journalID)
     if request.method == 'POST':
         form = EditGroupJournalForm(request.POST, instance=journal)
         if form.is_valid():

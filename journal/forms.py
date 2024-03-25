@@ -333,6 +333,7 @@ class EditGroupJournalForm(forms.ModelForm):
     class Meta:
         model = GroupJournal
         fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood', 'private']
+        
 class SendGroupRequestForm(forms.Form):
     recipient = forms.ModelChoiceField(queryset=User.objects.all(), label='Select User')
     def __init__(self, *args, currentUser=None, **kwargs):

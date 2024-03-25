@@ -60,22 +60,24 @@ def group(request) -> HttpResponse:
 @login_required
 def edit_group(request, group_id):
     """Allows owner of the group to edit the group."""
-    group = get_object_or_404(Group, pk=group_id)
+    group_ = get_object_or_404(Group, pk=group_id)
+    membership = get_object_or_404(GroupMembership, group=group_, user=request.user)
 
-    if request.user != group.owner:
+    if not membership.is_owner:
         # User is not the owner, return forbidden response
         return HttpResponseForbidden('You are not authorized to edit this group')
 
-    if request.method != 'POST':
-        form = GroupForm(instance=group)
-        return render(request, 'edit_group.html', {'form': form})
+    if request.method == 'POST':
+        form = GroupForm(request.POST, instance=group_)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'message': 'Group edited successfully'})
+        return JsonResponse({'errors': form.errors}, status=400)
 
-    form = GroupForm(request.POST, instance=group)
-    if form.is_valid():
-        form.save()
-        return JsonResponse({'message': 'Group edited successfully'})
+    # For GET requests
+    form = GroupForm(instance=group_)
+    return render(request, 'edit_group.html', {'form': form})
 
-    return JsonResponse({'errors': form.errors}, status=400)
 
 
 @login_required
@@ -86,7 +88,7 @@ def send_group_request(request):
         if form.is_valid():
             recipient = form.cleaned_data['recipient']
             GroupRequest.objects.create(sender=request.user, recipient=recipient)
-            return redirect('home')
+            return redirect('group')
     else:
         form = SendGroupRequestForm(currentUser=request.user)
     return render(request, 'send_group_request.html', {'form': form})
@@ -124,16 +126,17 @@ def reject_group_invitation(request, group_request_id):
 @login_required
 def delete_group(request, group_id):
     """Allows the owner to delete the group"""
-    group = get_object_or_404(Group, pk=group_id)
+    group_ = get_object_or_404(Group, pk=group_id)
+    membership = get_object_or_404(GroupMembership, group=group_, user=request.user)
 
-    if request.user == group.owner:
+    if membership.is_owner:
         # Only allow deletion via POST method to prevent accidental deletions
         if request.method == 'POST':
             group.delete()
             return redirect('home')
         else:
             # Handle GET requests (e.g., show a confirmation page)
-            return render(request, 'confirm_group_deletion.html', {'group': group})
+            return render(request, 'confirm_group_deletion.html', {'group': group_})
     else:
         return HttpResponseForbidden('You are not authorized to delete this group.')
 
@@ -141,21 +144,14 @@ def delete_group(request, group_id):
 @login_required
 def leave_group(request, group_id):
     """Allows users to leave a group"""
-    group = get_object_or_404(Group, pk=group_id)
+    group_ = get_object_or_404(Group, pk=group_id)
     user = request.user
+    membership = get_object_or_404(GroupMembership, group=group_, user=request.user)
 
-    if user != group.owner:
+    if not membership.is_owner:
         group_membership = GroupMembership.objects.get(group=group, user=user)
         group_membership.delete()
 
-        if group.members.count() == 0:
-            group.delete()
-
-        return redirect('home')
-
-    if group.members.count() == 1:
-        # The owner is the only member, delete the group
-        group.delete()
         return redirect('home')
 
     # The owner must select a new owner before leaving
@@ -165,7 +161,7 @@ def leave_group(request, group_id):
         group.owner = new_owner
         group.save()
 
-    return render(request, 'select_new_owner.html', {'group': group})
+    return render(request, 'select_new_owner.html', {'group': group_})
 
 
 @login_required
@@ -175,10 +171,13 @@ def remove_player_from_group(request, group_id, player_id):
     group_ = get_object_or_404(Group, id=group_id)
     player = get_object_or_404(User, id=player_id)
 
-    if request.user != group_.owner:
+    membership = get_object_or_404(GroupMembership, group=group_, user=request.user)
+    player_membership = get_object_or_404(GroupMembership, group=group_, user=player)
+
+    if not membership.is_owner:
         return HttpResponseForbidden('You are not authorized to remove a player from this group.')
 
-    if player == group_.owner:
+    if  player_membership.is_owner:
         messages.error(request, "The owner cannot be removed from the group.")
         return redirect('group_detail', group_id=group.id)
 
