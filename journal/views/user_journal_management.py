@@ -26,7 +26,6 @@ def create_journal(request):
         owner=request.user
     )
     journal.save()
-    print("success")
 
     return redirect('/dashboard/')
 
@@ -79,7 +78,7 @@ def journal_dashboard(request, journal_id):
     if journalobject.owner != current_user:
         return render(request, 'permission_denied.html')
     
-    journal_entries = Entry.objects.filter(journal = journalobject)
+    journal_entries = journalobject.entries.all()
     print(journal_entries)
     todays_entry = journal_entries.filter(entry_date__date = today)
     print(todays_entry)
@@ -97,7 +96,7 @@ def view_entry(request, entry_id):
     if entry.owner != current_user:
         return render(request, 'permission_denied.html', {'reason': "You do not own this journal"} )
     
-    return render(request, 'entry_detail.html', {'user': current_user, 'entry': entry})
+    return render(request, 'view_entry.html', {'user': current_user, 'entry': entry})
 
 
 @login_required
@@ -106,9 +105,9 @@ def create_entry(request, journal_id):
     current_user = request.user
 
     try:
-        journal = Entry.objects.get(id=journal_id)
+        journal = Journal.objects.get(id=journal_id)
     except ObjectDoesNotExist:
-        return render(request, 'permission_denied.html',)
+        return render(request, 'permission_denied.html',{'reason':"journal not exist"})
     
     if journal.owner != current_user:
         return render(request, 'permission_denied.html', {'reason': "You do not own this journal"} )
@@ -135,7 +134,7 @@ def create_entry(request, journal_id):
     )
     entry.save()
 
-    return redirect('/dashboard/')
+    return redirect(f'/journal_dashboard/{journal.id}')
 
 @login_required
 def edit_entry(request, entry_id): 
@@ -154,7 +153,7 @@ def edit_entry(request, entry_id):
         form = CreateEntryForm(request.POST, instance=entry)
         if form.is_valid():
             form.save()
-            return redirect('dashboard')  # Redirect to the detail view of the edited journal
+            return redirect(f'/journal_dashboard/{entry.journal.id}')
     else:
         form = CreateEntryForm(instance=entry)
 
@@ -171,81 +170,73 @@ def delete_entry(request, entry_id):
     
     if entry.owner != current_user:
         return render(request, 'permission_denied.html')
+    
+    journal = entry.journal
     entry.delete()
-    return redirect('dashboard')
+    return redirect(f'/journal_dashboard/{journal.id}')
 
 
 
 @login_required
-def my_journals_view(request, userID):
-    current_user = get_object_or_404(User, id = userID)
-    isLoggedInUser = current_user == request.user
+def view_journal_entries(request, user_id, journal_id):
+    current_user = get_object_or_404(User, id = user_id)
+    current_journal = Journal.objects.get(id = journal_id)
+    #isLoggedInUser = current_user == request.user
     if request.method == 'POST':
         filter_form = JournalFilterForm(current_user, request.POST)
-
         if filter_form.is_valid():
-            myJournals = filter_form.filter_tasks()
-            myJournals = myJournals.filter(journal_owner=current_user)
+            journal_entries = filter_form.filter_entries(current_journal)
             sort_form = JournalSortForm(request.POST) 
             if sort_form.is_valid():
                 sort_order = sort_form.cleaned_data['sort_by_entry_date']
                 if sort_order == 'descending':
-                    myJournals = myJournals.order_by("entry_date")
-                    myJournals = myJournals.reverse()
+                    journal_entries = journal_entries.order_by("entry_date")
+                    journal_entries = journal_entries.reverse()
                 elif sort_order == 'ascending':
-                    myJournals = myJournals.order_by("entry_date")    
+                    journal_entries = journal_entries.order_by("entry_date")    
         else:
             sort_form = JournalSortForm()
-            myJournals = Entry.objects.filter(journal_owner=current_user)
-            if not isLoggedInUser:
-                myJournals = myJournals.filter(private=False)
+            journal_entries = Entry.objects.filter(journal=current_journal)
             context = {
             'filter_form': filter_form,
             'sort_form': sort_form,
-            'show_alert':True,
-            'myJournals': myJournals,
-            'journal_param': my_journals_to_journal_param(myJournals),
+            'journal_entries': journal_entries,
+            'journal_param': my_journals_to_journal_param(journal_entries),
             'user': current_user,
-            'isUserCurrentlyLoggedIn': isLoggedInUser
+            'journal': current_journal
             }
-            return render(request, 'My_Journals.html', context)
-        
-        if not isLoggedInUser:
-            myJournals = myJournals.filter(private=False)
+            return render(request, 'view_all_journal_entries.html', context)
 
         context = {
             'filter_form': filter_form,
             'sort_form': sort_form,
-            'myJournals': myJournals,
-            'journal_param': my_journals_to_journal_param(myJournals),
+            'journal_entries': journal_entries,
+            'journal_param': my_journals_to_journal_param(journal_entries),
             'user': current_user,
-            'isUserCurrentlyLoggedIn': isLoggedInUser
+            'journal': current_journal
         }
-        return render(request, 'my_journals.html', context) 
-    
-    myJournals = Entry.objects.filter(owner=current_user)
+        return render(request, 'view_all_journal_entries.html', context) 
 
-    if not isLoggedInUser:
-            myJournals = myJournals.filter(private=False)
-
+    journal_entries = Entry.objects.filter(journal=current_journal)
     filter_form = JournalFilterForm(current_user)
     sort_form = JournalSortForm()
     
     context = {
             'filter_form': filter_form,
             'sort_form': sort_form,
-            'myJournals': myJournals or False,
+            'journal_entries': journal_entries or False,
             'user': current_user,
-            'journal_param': my_journals_to_journal_param(myJournals),
-            'isUserCurrentlyLoggedIn': isLoggedInUser
+            'journal_param': my_journals_to_journal_param(journal_entries),
+            'journal': current_journal
         }
     
-    return render(request, 'my_journals.html', context)   
+    return render(request, 'view_all_journal_entries.html', context)   
 
 
-def my_journals_to_journal_param(myJournals):
+def my_journals_to_journal_param(journal_entries):
     journals = []
-    for journal in myJournals:
+    for journal in journal_entries:
         journals.append(f"{journal.id}")
     journal_param = ','.join(journals)
     return journal_param
+

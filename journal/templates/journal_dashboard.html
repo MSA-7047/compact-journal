@@ -15,7 +15,12 @@
     </div>
     <div class="col-xl-4">
       <div class="user-content p-2 border bg-light">
-        <h1>User Content</h1>
+        <a href="{% url 'edit_journal' journal_id=journal.id %}" class="btn btn-sm btn-secondary">
+          Edit Journal
+        </a>
+        <a href="{% url 'delete_journal' journal_id=journal.id%}" class="btn btn-sm btn-outline-danger">
+          Delete Journal Entry
+        </a>
       </div>
     </div>
   </div>
@@ -57,39 +62,29 @@
 
     <div class="col-xl-7 d-flex flex-column">
       <div class="your-groups p-2 border bg-light flex-grow-1">
+      <div class="d-flex justify-content-center">
       <h1>All Journal Entries</h1>
+      </div>
+      <div class="d-flex justify-content-center">
+      <a class="btn" href="{% url 'journal_entries' user_id=user.id journal_id=journal.id %}">View all entries </a>
+      </div>
         {% if journal_entries %}
         <ul class="list-group mt-3">
             {% for entry in journal_entries %}
                 <li class="list-group-item">
                     <div class="d-flex justify-content-between align-items-center">
                       <div>
-                          <p>
-                            <a href="{% url 'view_entry' entry_id=entry.id %}" class="btn btn-sm btn-secondary">
-                              View Journal
-                            </a>
-                            <a href="{% url 'delete_entry' entry_id=entry.id%}" class="btn btn-sm btn-outline-danger">
-                              Delete Journal Entry
-                            </a>
-                          </p>
-                        <h5>Title: {{ entry.title }}</h5>
-                        <p>Summary: {{ entry.description }}</p>
-                          <h4>Journal Entry:</h4>
-                        <p><hr/>
-                          {{entry.content|safe}}
-                          <hr/>
-                        </p>
-
-                        <p>Mood: {{entry.mood}}</p>
-                        </p>
-
-                        <p>Entry Date: {{ entry.entry_date }}</p>
+                        <h2><a href="{% url 'view_entry' entry_id=entry.id %}">{{ entry.title }}</a></h2>
+                        <p>Summary: {{ entry.summary }}</p>
+                        <p><b>Entry Date: {{ entry.entry_date }}</b></p>
                         </div>
                     </div>
                 </li>
                 {%endfor%}
         {% else %}
-        <p>no journals</p>
+        <div class="d-flex justify-content-center">
+        <p>You have no entries for this journal. <br>
+          Feel free to create your first entry using the "select template" button on the left</p></div>
         {% endif %}
         </div>
       </div>

@@ -38,9 +38,9 @@ class JournalFilterForm(forms.Form):
             '6m+': timedelta(weeks=26),
         }[interval]
 
-    def filter_tasks(self):
+    def filter_entries(self, journal):
 
-        myjournals = Entry.objects.all()
+        myjournals = Entry.objects.filter(journal=journal)
         #label = self.cleaned_data.get('label')
         title_contains = self.cleaned_data.get('title_search')
         entry_date = self.cleaned_data.get('entry_date')
@@ -49,7 +49,7 @@ class JournalFilterForm(forms.Form):
         #if label:
            # tasks = tasks.filter(label=label)
         if title_contains:
-            myjournals = myjournals.filter(journal_title__icontains=title_contains)
+            journal_entires = myjournals.filter(journal_title__icontains=title_contains)
         if mood:
             myjournals = myjournals.filter(journal_mood = mood)
         if entry_date:

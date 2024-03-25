@@ -16,8 +16,7 @@
                     <div class="card">
                         <div class="card-header">
                         <br/>
-                        Title:
-                        {{ entry.title }}
+                        <h1>{{ entry.title }}</h1>
                         </div>
                         <div class="card-body">
                             <!-- ck ck-content is ckeditor5 class -->
@@ -33,7 +32,7 @@
                         </div>
                     </div>
                     <br/>
-                    <a href="{% url 'dashboard'%}" class="btn btn-lg btn-secondary">
+                    <a href="{% url 'journal_dashboard' journal_id=entry.journal.id%}" class="btn btn-lg btn-secondary">
                         Return
                     </a>
                     <a href="{% url 'view_PDF' entry_id=entry.id%}" class="btn btn-lg btn-secondary">

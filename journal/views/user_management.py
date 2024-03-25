@@ -59,7 +59,7 @@ def dashboard(request):
 
     current_year = datetime.now().year
     current_month = datetime.now().strftime("%B")
-    my_journals = Journal.objects.filter(owner=current_user)
+    my_journals = current_user.journals.all()
     print(my_journals)
     notifications = Notification.objects.filter(user=request.user, is_read=False)
 

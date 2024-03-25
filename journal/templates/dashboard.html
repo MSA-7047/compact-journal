@@ -27,26 +27,21 @@
           <div class="content">
             {% if my_journals is None %}
               <p>You have no Journals! Press below to create your first journal</p>
-                <div class="d-flex justify-content-center">
-                  <a href="{% url 'create_journal' %}" class="btn"> Create Journal </a>
-                </div>
             {% else %}
                 {% for journal in my_journals%}
                         <hr>
                         <h2>{{ journal.title }}</h2>
                         <p>{{ journal.summary }}</p>
-                        <a href="{% url 'edit_journal' journal_id=journal.id %}" class="btn btn-sm btn-secondary">
-                        Edit Journal
-                        </a>
-                        <a href="{% url 'delete_journal' journal_id=journal.id%}" class="btn btn-sm btn-outline-danger">
-                        Delete Journal Entry
-                        </a>
+                        <p>Created on: {{journal.entry_date}}</p>
                         <a href="{% url 'journal_dashboard' journal_id=journal.id%}" class="btn btn-sm btn-outline-danger">
                           view
                         </a>
                         <hr>
                 {% endfor %}
             {% endif %}
+            <div class="d-flex justify-content-center">
+              <a href="{% url 'create_journal' %}" class="btn"> Create Journal </a>
+            </div>
         </div>
       </div>
     </div>

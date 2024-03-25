@@ -27,7 +27,7 @@ def generate_generic_templates(currentUser):
 
 
 @login_required    
-def create_template(request):
+def create_template(request, journal_id):
 
     current_user = request.user
     form = CreateTemplateForm()
@@ -41,9 +41,10 @@ def create_template(request):
                 owner = current_user,
             )
             template.save()
-            return redirect('/select-template/')
+            return redirect(f'/select-template/{journal_id}')
         else:
-            return render(request, 'create_template.html', {'form': form})
+            print("errors")
+            return render(request, 'create_template.html', {'form': form, 'title': "Create Template"})
     else:
         return render(request, 'create_template.html', {'form': form, 'title': "Create Template"})
     
@@ -55,10 +56,10 @@ def select_template(request, journal_id):
     return render(request, 'select_template.html', {"templates": templates, "journal":journal})
 
 @login_required
-def DeleteTemplate(request,templateID):
-    template= get_object_or_404(Template, id=templateID)
+def DeleteTemplate(request,template_id,journal_id):
+    template= get_object_or_404(Template, id=template_id)
     template.delete()
-    return redirect('select_template')
+    return redirect(f'/select-template/{journal_id}')
 
 def create_journal_From_Template(request, template_id, journal_id):
     current_user = request.user
@@ -77,13 +78,13 @@ def create_journal_From_Template(request, template_id, journal_id):
     return redirect("edit_entry", entry_id=entry.id)
 
 @login_required
-def EditTemplate(request, templateID): 
-    template = get_object_or_404(Template, id=templateID)
+def EditTemplate(request, template_id, journal_id): 
+    template = get_object_or_404(Template, id=template_id)
     if request.method == 'POST':
         form = CreateTemplateForm(request.POST, instance=template)
         if form.is_valid():
             form.save()
-            return redirect('select_template')  # Redirect to the detail view of the edited journal
+            return redirect(f'/select-template/{journal_id}')  # Redirect to the detail view of the edited journal
     else:
         form = CreateTemplateForm(instance=template)
 

@@ -48,10 +48,10 @@ urlpatterns = [
     path('view_entry/<int:entry_id>/', view_entry, name='view_entry'),
 
     path('select-template/<int:journal_id>', select_template, name='select_template'),
-    path('create-template/', create_template, name='create_template'),
-    path('createJournalWithTemplate/<int:template_id>/<int:journal_id>', views.create_journal_From_Template, name='create_journal_with_template'),
-    path('delete_template/<int:templateID>/', DeleteTemplate, name='delete_template'),
-    path('edit_template/<int:templateID>/', EditTemplate, name='edit_template'),
+    path('create-template/<int:journal_id>', create_template, name='create_template'),
+    path('createJournalWithTemplate/<int:template_id>/<int:journal_id>/', views.create_journal_From_Template, name='create_journal_with_template'),
+    path('delete_template/<int:template_id>/<int:journal_id>/', DeleteTemplate, name='delete_template'),
+    path('edit_template/<int:template_id>/<int:journal_id>/', EditTemplate, name='edit_template'),
 
     path('ckeditor5/', include('django_ckeditor_5.urls')),
 
@@ -66,8 +66,8 @@ urlpatterns = [
     path('remove_friend/<int:user_id>', remove_friend, name='remove_friend'),
     
     path('calendar/<int:year>/<str:month>/', calendar_view, name='calendar'),
-    path('my_journals/<int:userID>/', my_journals_view, name='my_journals'),
-    path('view_friends_journals/<int:userID>/', my_journals_view, name='view_friends_journals'),
+    path('view_journal_entries/<int:user_id>/<int:journal_id>/', view_journal_entries, name='journal_entries'),
+    #path('view_friends_journals/<int:userID>/', my_journals_view, name='view_friends_journals'),
     
     path('groups/', group, name='groups'),
 

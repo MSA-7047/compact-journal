@@ -22,7 +22,6 @@
       {% if user.is_authenticated %}
         <ul>
           <li><a class="nav-link" href="{% url 'view_profile' %}">Profile</a></li>
-          <li><a class="nav-link" href="{% url 'my_journals' userID=user.id %}">Journals</a></li>
           <li><a class="nav-link" href="{% url 'view_friends' %}">Friends</a></li>
           <li><a class="nav-link" href="{% url 'groups' %}">Groups</a></li>
           <li><a class="navbar-button" href="{% url 'log_out' %}">Log out</a></li>
