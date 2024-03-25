@@ -22,23 +22,7 @@
           <i class="small-navbar-toggle bi bi-list"></i>
       </nav>
     <nav class="navbar" id="navbar">
-      {% if user.is_authenticated %}
-        <ul>
-          <li><a class="nav-link" href="{% url 'view_profile' %}">Profile</a></li>
-          <li><a class="nav-link" href="{% url 'view_friends' %}">Friends</a></li>
-          <li><a class="nav-link" href="{% url 'groups' %}">Groups</a></li>
-          <li><a class="navbar-button" href="{% url 'log_out' %}">Log out</a></li>
-        </ul>
-      {% else %}
-      {% if request.path != '/log_in/' and request.path != '/sign_up/' %}
-        <ul>
-          <li><a class="nav-link scrollable current" href="#top-section">Home</a></li>
-          <li><a class="nav-link scrollable" href="#about-section">About</a></li>
-          <li><a class="nav-link scrollable" href="#features-section">Features</a></li>
-          <li><a class="navbar-button scrollable" href="{% url 'log_in' %}">Log in</a></li>
-        </ul>
-      {% endif %}
-      {% endif %}
+
 
       <i class="small-navbar-toggle bi bi-list"></i>
     </nav>
