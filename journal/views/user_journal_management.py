@@ -7,15 +7,15 @@ from django.views.generic.detail import DetailView
 from journal.models import *
 from journal.forms import *
 
-class JournalDetail(DetailView):
-    model = Journal
-    template_name = 'journal_detail.html'
+# class JournalDetail(DetailView):
+#     model = Journal
+#     template_name = 'journal_detail.html'
 
-    def get_object(self, queryset=None):
-        journal_id = self.kwargs.get('journal_id')
-        queryset = self.get_queryset().filter(id=journal_id)
-        obj = queryset.first()
-        return obj
+#     def get_object(self, queryset=None):
+#         journal_id = self.kwargs.get('journal_id')
+#         queryset = self.get_queryset().filter(id=journal_id)
+#         obj = queryset.first()
+#         return obj
 
 
 def journal_detail_view(request, journalID):
@@ -77,11 +77,11 @@ def DeleteJournal(request, journal_id):
 
 
 
-@login_required
-def all_journal_entries_view(request):
-    current_user = request.user
-    journal_existence = Journal.objects.filter(journal_title__isnull=False)
-    return render(request, 'all_entries.html', { 'user': current_user,  'journal_existence': journal_existence or False})
+# @login_required
+# def all_journal_entries_view(request):
+#     current_user = request.user
+#     journal_existence = Journal.objects.filter(journal_title__isnull=False)
+#     return render(request, 'all_entries.html', { 'user': current_user,  'journal_existence': journal_existence or False})
 
 
 @login_required

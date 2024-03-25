@@ -1,13 +1,39 @@
+{% load static %}
+
 {% if messages %}
-  <div class="container">
-    <div class="row">
-      <div class="col-12">
-        {% for message in messages %}
-          <div class="alert alert-{{ message.level_tag }}" role="alert">
-            {{ message }}
-          </div>
-        {% endfor %}
-      </div>
+<div class="position-fixed top-0 end-0 p-3 z-3">
+  {% for message in messages %}
+  <div class="toast z-3" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+    <div class="toast-header text-light bg-{% if message.tags %}{{ message.tags }}{% else %}primary{% endif %}">
+      <i class="me-2 {% if message.tags %}text-white{% endif %}">
+        {% if message.tags == 'success' %}
+        <i class="bi bi-check-circle"></i>
+        {% elif message.tags == 'warning' %}
+        <i class="bi bi-exclamation-triangle"></i>
+        {% elif message.tags == 'error' %}
+        <i class="bi bi-x-circle"></i>
+        {% else %}
+        <i class="bi bi-info-circle"></i>
+        {% endif %}
+      </i>
+      <strong class="me-auto">
+        {% if message.tags == 'success' %}
+        Success
+        {% elif message.tags == 'warning' %}
+        Warning
+        {% elif message.tags == 'error' %}
+        Error
+        {% else %}
+        Info
+        {% endif %}
+      </strong>
+      <small class="text-muted">{{ message.timestamp }}</small>
+      <button class="btn-close btn-close-white" type="button" data-bs-dismiss="toast" aria-label="Close"></button>
     </div>
+    <div class="toast-body">{{ message }}</div>
   </div>
+  {% endfor %}
+</div>
 {% endif %}
+
+<script src="{% static 'js/messages.js' %}"></script>
