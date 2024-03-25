@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'journal',
     'django_countries',
     'django_ckeditor_5',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [

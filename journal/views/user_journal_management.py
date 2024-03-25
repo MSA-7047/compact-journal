@@ -157,3 +157,24 @@ def my_journals_to_journal_param(myJournals):
         journals.append(f"{journal.id}")
     journal_param = ','.join(journals)
     return journal_param
+
+from django.http import JsonResponse, Http404
+from django.utils.translation import gettext as _
+
+# Attempt to import the necessary functionalities from the package
+# Note: This is hypothetical and depends on the actual package structure
+from django_ckeditor_5.forms import UploadFileForm
+from django_ckeditor_5.views import image_verify, handle_uploaded_file, NoImageException
+
+def custom_upload_file(request):
+    if request.method == "POST":
+        form = UploadFileForm(request.POST, request.FILES)
+        try:
+            image_verify(request.FILES["upload"])
+        except NoImageException as ex:
+            return JsonResponse({"error": {"message": f"{ex}"}})
+        if form.is_valid():
+            url = handle_uploaded_file(request.FILES["upload"])
+            return JsonResponse({"url": url})
+    else:
+        raise Http404(_("Page not found."))
