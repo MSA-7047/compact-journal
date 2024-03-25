@@ -30,7 +30,7 @@ def create_journal(request):
     return redirect('/dashboard/')
 
 def create_first_journal(current_user):
-    journal = Journal.objects.create(
+    Journal.objects.create(
         title="Welcome To Compact Journals",
         summary="""This is your first Compact Journal.
          With each compact journal you can create a daily entry to keep track of ur activites and productivity as well as ur mood
