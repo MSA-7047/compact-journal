@@ -6,8 +6,6 @@ class CreateJournalForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # it is required to set it False,
-        # otherwise it will throw error in console
         self.fields["journal_bio"].required = False
 
     class Meta:

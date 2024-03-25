@@ -4,7 +4,10 @@ from journal.models import User, FriendRequest
 
 class SendFriendRequestForm(forms.Form):
 
-    recipient = forms.ModelChoiceField(queryset=User.objects.all(), label='Select User')
+    recipient = forms.ModelChoiceField(
+        queryset=User.objects.all(), 
+        label='Select User'
+    )
 
     class Meta:
         model = FriendRequest
@@ -14,4 +17,6 @@ class SendFriendRequestForm(forms.Form):
         friends = user.friends.all()
         super().__init__(*args, **kwargs)
         if friends is not None:
-            self.fields['recipient'].queryset = User.objects.exclude(id__in=[user.id for user in friends]).exclude(id=user.id)
+            self.fields['recipient'].queryset = User.objects.exclude(
+                id__in=[user.id for user in friends]).exclude(id=user.id
+                                                              )
