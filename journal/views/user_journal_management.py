@@ -61,7 +61,7 @@ def edit_journal(request, journal_id):
     else:
         form = CreateJournalForm(instance=journal)
 
-    return render(request, 'create_journal.html', {'form': form, 'journal': journal, 'title': "Update Journal"})
+    return render(request, 'create_journal.html', {'form': form, 'journal': journal, 'title': "Update Journal", "update": True})
 
 
 @login_required

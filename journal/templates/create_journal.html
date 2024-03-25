@@ -45,6 +45,11 @@
 
 
         </form>
+        {% if update %}
+        <a href="{% url 'delete_journal' journal_id=journal.id%}" class="btn btn-sm btn-outline-danger">
+            Delete Journal 
+        </a>
+        {% endif %}
     </div>
 </section>
 

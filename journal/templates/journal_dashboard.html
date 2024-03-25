@@ -8,20 +8,16 @@
 <section class="container d-flex flex-column">
 
   <div class="first-row row py-4 px-4 gy-4">
-    <div class="col-xl-8 d-flex flex-column justify-content-center">
+    <div class="col-xl-12 d-flex flex-column justify-content-center">
       <div class="welcome-message p-2 border bg-light ">
-        <h1>Journal Dashboard: {{journal.title}}</h1>
-        <p>{{journal.summary}}</p>
-      </div>
-    </div>
-    <div class="col-xl-4">
-      <div class="user-content p-2 border bg-light">
-        <a href="{% url 'edit_journal' journal_id=journal.id %}" class="btn btn-sm btn-secondary">
-          Edit Journal
-        </a>
-        <a href="{% url 'delete_journal' journal_id=journal.id%}" class="btn btn-sm btn-outline-danger">
-          Delete Journal 
-        </a>
+        <div class="d-flex justify-content-center">
+        <h1>Journal Dashboard: {{journal.title}}
+          <a href="{% url 'edit_journal' journal_id=journal.id %}" >
+            Edit 
+          </a></h1>
+        </div>
+        
+          <p>{{journal.summary}}</p>
       </div>
     </div>
   </div>
@@ -29,7 +25,7 @@
   <div class="second-row row px-4 gy-4 pb-4 flex-fill">
     <div class="col-xl-5 d-flex flex-column">
       <div class="todays-journal p-2 border bg-light flex-grow-1">
-        <h1>Today's Journal:</h1>
+        <h1>Today's Entry:</h1>
         <div class="content">
           {% if todays_entry %}
             {% for entry in todays_entry %}
