@@ -6,12 +6,13 @@ from .Journal import Journal
 
 class Entry(models.Model):
     """Model to represent the Journals the User will be writing on."""
-    title = models.CharField('Title', max_length=50, blank=False)
-    summary = models.TextField('Summary', max_length=1000)
+    title = models.CharField('Title', max_length=30, blank=False)
+    summary = models.TextField('Summary', max_length=150)
     content = CKEditor5Field('Entry Content', config_name='extends', max_length=10000)
     entry_date = models.DateTimeField(auto_now_add=True)
     last_edited = models.TimeField(auto_now=True)
     MOOD_OPTIONS = [
+        ("Sad", "Sad"),
         ("Happy", "Happy"),
         ("Angry", "Angry"),
         ("Neutral", "Neutral")

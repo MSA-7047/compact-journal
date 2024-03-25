@@ -4,11 +4,10 @@
   <div class="row">
     <div class="col-12">
       {% if isUserCurrentlyLoggedIn %}
-      <h1>All Journal Entries</h1>
+      <h1>My Journals</h1>
       {% else %}
       <h1> {{user.username}}'s public journals</h1>
       {%endif%}
-      {% include 'partials/filter_partial.html' with filter_form=filter_form %}
         {% if myJournals %}
         <ul class="list-group mt-3">
             {% for journal in myJournals %}
@@ -17,17 +16,16 @@
                       <div>
                         {% if isUserCurrentlyLoggedIn %}
                           <p>
-
                             <a href="{% url 'view_entry' entry_id=journal.id %}" class="btn btn-sm btn-secondary">
-                              View Journal
+                              View Journal (dashboard)
                             </a>
                             <a href="{% url 'delete_journal' journal_id=journal.id%}" class="btn btn-sm btn-outline-danger">
-                              Delete Journal Entry
+                              Delete Journal 
                             </a>
                           </p>
                         {% endif %}
                         <h5>Title: {{ journal.title }}</h5>
-                        <p>Summary: {{ journal.description }}</p>
+                        <p>Summary: {{ journal.summary }}</p>
                           <h4>Journal Entry:</h4>
                         <p><hr/>
                           {{journal.content|safe}}
@@ -46,12 +44,11 @@
         {% else %}
         <br/>
           {% if isUserCurrentlyLoggedIn %}
-          <p>No journals to view</p>
+          <p>You have no journals</p>
           {% else %}
           <p> {{user.username}} has no public journals available<p>
           {%endif%}
         {% endif %}
-        <a href="{% url 'view_PDF_list' myJournals=journal_param  %}" class="btn btn-primary mt-3">Export These Journals As A PDF</a>
         <a href="{% url 'dashboard' %}" class="btn btn-primary mt-3">Back to dashboard</a>
     </div>
   </div>

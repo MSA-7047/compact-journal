@@ -11,6 +11,7 @@
     <div class="col-xl-8 d-flex flex-column justify-content-center">
       <div class="welcome-message p-2 border bg-light ">
         <h1>Journal Dashboard: {{journal.title}}</h1>
+        <p>{{journal.summary}}</p>
       </div>
     </div>
     <div class="col-xl-4">
@@ -19,7 +20,7 @@
           Edit Journal
         </a>
         <a href="{% url 'delete_journal' journal_id=journal.id%}" class="btn btn-sm btn-outline-danger">
-          Delete Journal Entry
+          Delete Journal 
         </a>
       </div>
     </div>
@@ -42,7 +43,6 @@
               Created on: {{ entry.entry_date }}
               <br>
               <a href="{% url 'edit_entry' entry_id=entry.id%}" class="edit-button">Edit</a>
-              <a href="{% url 'delete_entry' entry_id=entry.id%}" >delete</a>
               <br>
               Last edited at : {{ entry.last_edited}}
               <br>

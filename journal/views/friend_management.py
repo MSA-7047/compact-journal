@@ -44,7 +44,7 @@ def view_friends(request):
 @login_required
 def view_friends_profile(request, friendID):
     friend = get_object_or_404(User, id=friendID)
-    return render(request, 'view_profile.html', {"user": friend})
+    return render(request, 'view_profile.html', {"user": friend, 'my_profile': False})
 
 
 

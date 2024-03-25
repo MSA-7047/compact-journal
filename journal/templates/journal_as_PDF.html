@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My Journals</title>
+    <title>{{entry.title}}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -76,25 +76,25 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="title">My Journals</h1>
-        {% for journal in myJournals %}
+        <h1 class="title">{{journal.title}} entries</h1>
+        {% for entry in journal_entries %}
         <hr>
         <div class="card">
             <div class="card-header">
-                <h2 class="title">{{ journal.journal_title }}</h2>
+                <h2 class="title">{{ entry.title }}</h2>
             </div>
             <div class="card-body">
                 <div class="mood-date">
-                    <p><strong>Mood:</strong> {{ journal.journal_mood }}</p>
-                    <p><strong>Entry Date:</strong> {{ journal.entry_date }}</p>
+                    <p><strong>Mood:</strong> {{ entry.mood }}</p>
+                    <p><strong>Entry Date:</strong> {{ entry.entry_date }}</p>
                 </div>
                 <div class="summary">
-                    <p><strong>Summary:</strong> {{ journal.journal_description }}</p>
+                    <p><strong>Summary:</strong> {{ entry.summary }}</p>
                 </div>
                 <div class="journey-entry">
                     <p><strong>Journey Entry:</strong></p>
                     <div class="ck ck-content">
-                        {{ journal.journal_bio|safe }}
+                        {{ entry.content|safe }}
                     </div>
                 </div>
             </div>

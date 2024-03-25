@@ -29,6 +29,18 @@ def create_journal(request):
 
     return redirect('/dashboard/')
 
+def create_first_journal(current_user):
+    journal = Journal.objects.create(
+        title="Welcome To Compact Journals",
+        summary="""This is your first Compact Journal.
+         With each compact journal you can create a daily entry to keep track of ur activites and productivity as well as ur mood
+         You can create as many journals as you want to keep track of all the different aspects of your life
+         Journals can be edited from the journal dashboard (press view button to access) as well as deleted
+         The journal dashboard is where youy can create your daily entry and keep track of all your previous ones
+        """,
+        owner=current_user
+    )
+
 @login_required
 def edit_journal(request, journal_id): 
     current_user = request.user
@@ -62,6 +74,7 @@ def delete_journal(request, journal_id):
     
     if journal.owner != current_user:
         return render(request, 'permission_denied.html')
+    
     journal.delete()
     return redirect('dashboard')
 
@@ -79,10 +92,13 @@ def journal_dashboard(request, journal_id):
         return render(request, 'permission_denied.html')
     
     journal_entries = journalobject.entries.all()
-    print(journal_entries)
     todays_entry = journal_entries.filter(entry_date__date = today)
-    print(todays_entry)
-    return render(request, 'journal_dashboard.html', {'user': current_user,'journal': journalobject, 'journal_entries': journal_entries, "todays_entry": todays_entry})
+    return render(request, 'journal_dashboard.html',
+                {'user': current_user,
+                'journal': journalobject,
+                'journal_entries': journal_entries,
+                "todays_entry": todays_entry}
+                )
 
 def view_entry(request, entry_id):
 

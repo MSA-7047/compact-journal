@@ -65,7 +65,7 @@ urlpatterns = [
     path('delete_sent_request/<int:friend_request_id>/', delete_sent_request, name='delete_sent_request'),
     path('remove_friend/<int:user_id>', remove_friend, name='remove_friend'),
     
-    path('calendar/<int:year>/<str:month>/', calendar_view, name='calendar'),
+
     path('view_journal_entries/<int:user_id>/<int:journal_id>/', view_journal_entries, name='journal_entries'),
     #path('view_friends_journals/<int:userID>/', my_journals_view, name='view_friends_journals'),
     
@@ -90,8 +90,8 @@ urlpatterns = [
         'invite_to_group/', send_group_request, name='invite_group_member'
     ),
 
-    path('view_journal_as_PDF/<int:entry_id>/', view_PDF, name='view_PDF'),
-    path('view_journals_as_PDF/<str:myJournals>', view_PDF_list, name='view_PDF_list'),
+    path('export_entry_as_PDF/<int:entry_id>/', export_single_entry_as_PDF, name='export_entry'),
+    path('export_journal_as_PDF/<str:journal_entries>', export_journal_as_PDF, name='export_journal'),
 
 
 

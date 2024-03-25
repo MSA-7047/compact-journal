@@ -20,10 +20,12 @@
                             Delete Template
                           </a>
                         </p>
-                        <h2>Title: {{ template.title }}</h2>
-                        <h4>{{ template.description }}</h4>
+                        <h2>{{ template.title }}</h2>
+                        <h5>summary: {{ template.description }}</h5>
+                        <hr>
                         <p> 
                           {{ template.bio|safe }}<p>
+                        <hr>
                         <a href="{% url 'create_journal_with_template' template_id=template.id journal_id=journal.id%}" class="btn btn-sm btn-secondary">Select This Template</a>
                       </div>
                     </div>

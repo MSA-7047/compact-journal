@@ -35,8 +35,11 @@
                     <a href="{% url 'journal_dashboard' journal_id=entry.journal.id%}" class="btn btn-lg btn-secondary">
                         Return
                     </a>
-                    <a href="{% url 'view_PDF' entry_id=entry.id%}" class="btn btn-lg btn-secondary">
+                    <a href="{% url 'export_entry' entry_id=entry.id%}" class="btn btn-lg btn-secondary">
                         export
+                    </a>
+                    <a href="{% url 'delete_entry' entry_id=entry.id%}" class="btn btn-lg btn-secondary">
+                        delete
                     </a>
 
                     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

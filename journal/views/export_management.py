@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, render
 from django.conf import settings
 from journal.models import Entry
 
-def view_PDF(request, entry_id):
+def export_single_entry_as_PDF(request, entry_id):
     current_user = request.user
     try:
         entry = Entry.objects.get(id=entry_id)
@@ -16,14 +16,12 @@ def view_PDF(request, entry_id):
         return render(request, 'permission_denied.html',)
     if entry.owner != current_user:
         return render(request, 'permission_denied.html', {'reason': "You do not own this journal"} )
-    template = get_template('journalPDF.html')
+    
+    template = get_template('entry_as_PDF.html')
     html = template.render({"entry": entry})  # Pass context data if needed
     title = entry.title
-    # Create a PDF document
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename={title}'
-
-    # Generate PDF from HTML content
     pisa_status = pisa.CreatePDF(html, dest=response)
 
     if pisa_status.err:
@@ -31,29 +29,18 @@ def view_PDF(request, entry_id):
 
     return response
 
-def view_PDF_list(request, myJournals):
-    # Split the string into a list
-    journals = myJournals.split(',')
-    myJournals = []
+def export_journal_as_PDF(request, journal_entries):
+    journals = journal_entries.split(',')
+    journal_entries = []
     for journal in journals:
-        myJournals.append(get_object_or_404(Entry, id=int(journal)))
-    template = get_template('myJournalsPDF.html')
-    html = template.render({"myJournals": myJournals})  # Pass context data if needed
-    # Create a PDF document
+        journal_entries.append(get_object_or_404(Entry, id=int(journal)))
+    journal = journal_entries[0].journal
+    template = get_template('journal_as_PDF.html')
+    html = template.render({"journal_entries": journal_entries, "journal": journal}) 
+    title = journal.title  + " entries"
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename=title'
-    # Generate PDF from HTML content
+    response['Content-Disposition'] = f'attachment; filename={title}'
     pisa_status = pisa.CreatePDF(html, dest=response)
-
     if pisa_status.err:
         return HttpResponse('Error generating PDF: %s' % pisa_status.err)
-
     return response
-
-    for y in x:
-        print(y.journal_title)  # Just for demonstration
-    
-    # Further processing of the journals as needed
-    
-    return HttpResponse('PDF generation view')
-

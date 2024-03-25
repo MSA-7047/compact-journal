@@ -13,16 +13,30 @@ def generate_generic_templates(currentUser):
         'journal/journal_templates/template4.html',
         'journal/journal_templates/template5.html',
     ]
+    template_titles = [
+        'General Wellbeing Template',
+        'Study Plan Template',
+        'Gym Tracking Template',
+        'Another Template',
+        'Last Template',
+    ]
+    template_summaries = [
+        'This template is a general entry to track your wellbeing today',
+        'Use this template to keep track of your daily study plans and revision goals',
+        'Use this template to keep track of workouts and progress in the gym',
+        'to be decided',
+        'to be decided',
+    ]
 
     for i, html_file_path in enumerate(html_file_paths, start=1):
         with open(html_file_path, 'r') as html_file:
             html_content = html_file.read()
 
         Template.objects.create(
-            title=f"Default Template {i}",
-            description=f"Description for Default Template {i}",
-            bio=html_content,
-            owner=currentUser
+            title= template_titles[i - 1],
+            description = template_summaries[i - 1],
+            bio = html_content,
+            owner = currentUser
         )
 
 
