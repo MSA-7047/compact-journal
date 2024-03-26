@@ -85,3 +85,4 @@ def EditTemplate(request, templateID):
         form = CreateTemplateForm(instance=template)
 
     return render(request, 'create_template.html', {'form': form, 'template': template, 'title': "Update Template"})
+
