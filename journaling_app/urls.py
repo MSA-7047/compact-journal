@@ -26,6 +26,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home, name='home'),
     path('dashboard/', dashboard, name='dashboard'),
+    path('ckeditor5/image_upload/', custom_upload_file, name='custom_ck_editor_5_upload_file'),
+
     
     path('log_in/', LogInView.as_view(), name='log_in'),
     path('log_out/', log_out, name='log_out'),
@@ -89,7 +91,8 @@ urlpatterns = [
 
 
 
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
