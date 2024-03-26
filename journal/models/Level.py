@@ -20,11 +20,20 @@ class Level(models.Model):
         level = 1
         points_needed = 200
         increment = 50
+        points_to_next_level = points_needed - total_points
 
         while total_points >= points_needed:
             level += 1
             increment *= 1.5  
-            points_needed += int(increment)
+            points_needed += round(increment / 50) * 50
+            points_to_next_level = points_needed - total_points
+
+            #print("points to next level:",points_to_next_level)
             print("points needed to level",level,"is",points_needed)
 
-        return level
+
+        return {
+            'current_level': level,
+            'points_to_next_level': points_to_next_level,
+            'points_needed': points_needed
+        }
