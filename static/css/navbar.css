@@ -19,6 +19,11 @@
     text-decoration: none;
   }
 
+  .header .logo-name:focus:hover, header .logo-name:hover {
+    color: #93c9f7;
+    transition: 0.5s;
+  }
+
   /*-- ==================== Navbar Section ==================== --*/
   /*-- ========== Large Screen Navigation ========== --*/
   .navbar {
