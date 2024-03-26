@@ -28,7 +28,6 @@ urlpatterns = [
     path('dashboard/', dashboard, name='dashboard'),
     path('ckeditor5/image_upload/', custom_upload_file, name='custom_ck_editor_5_upload_file'),
 
-    
     path('log_in/', LogInView.as_view(), name='log_in'),
     path('log_out/', log_out, name='log_out'),
     
@@ -40,15 +39,23 @@ urlpatterns = [
     path('sign_up/', SignUpView.as_view(), name='sign_up'),
 
     path('create-journal/', create_journal, name='create_journal'),
-    path('select-template/', select_template, name='select_template'),
-    path('create-template/', create_template, name='create_template'),
-    path('createJournalWithTemplate/<int:templateID>/', views.create_journal_From_Template, name='create_journal_with_template'),
-    path('edit_journal/<int:journalID>/', EditJournal, name='edit_journal'),
-    path('journal/<int:journalID>/', journal_detail_view, name='journal_detail'),
+    path('journal_dashboard/<int:journal_id>/', journal_dashboard, name='journal_dashboard'),
+    path('delete_journal/<int:journal_id>/', delete_journal, name='delete_journal'),
+    path('edit_journal/<int:journal_id>/', edit_journal, name='edit_journal'),
+
+    path('create-entry/<int:journal_id>', create_entry, name='create_entry'),
+    path('delete_entry/<int:entry_id>/', delete_entry, name='delete_entry'),
+    path('edit_entryl/<int:entry_id>/', edit_entry, name='edit_entry'),
+    path('view_entry/<int:entry_id>/', view_entry, name='view_entry'),
+
+    path('select-template/<int:journal_id>', select_template, name='select_template'),
+    path('create-template/<int:journal_id>', create_template, name='create_template'),
+    path('createJournalWithTemplate/<int:template_id>/<int:journal_id>/', views.create_journal_From_Template, name='create_journal_with_template'),
+    path('delete_template/<int:template_id>/<int:journal_id>/', DeleteTemplate, name='delete_template'),
+    path('edit_template/<int:template_id>/<int:journal_id>/', EditTemplate, name='edit_template'),
+
     path('ckeditor5/', include('django_ckeditor_5.urls')),
-    path('delete_journal/<int:journal_id>/', DeleteJournal, name='delete_journal'),
-    path('delete_template/<int:templateID>/', DeleteTemplate, name='delete_template'),
-    path('edit_template/<int:templateID>/', EditTemplate, name='edit_template'),
+
 
     
     path('friend_requests/', view_friend_requests, name='view_friend_requests'),
@@ -59,10 +66,9 @@ urlpatterns = [
     path('delete_sent_request/<int:friend_request_id>/', delete_sent_request, name='delete_sent_request'),
     path('remove_friend/<int:user_id>', remove_friend, name='remove_friend'),
     
-    path('calendar/<int:year>/<str:month>/', calendar_view, name='calendar'),
-    #path('all_entries/', all_journal_entries_view, name='all_entries'),
-    path('my_journals/<int:userID>/', my_journals_view, name='my_journals'),
-    path('view_friends_journals/<int:userID>/', my_journals_view, name='view_friends_journals'),
+
+    path('view_journal_entries/<int:user_id>/<int:journal_id>/', view_journal_entries, name='journal_entries'),
+    #path('view_friends_journals/<int:userID>/', my_journals_view, name='view_friends_journals'),
     
     path('groups/', group, name='groups'),
 
@@ -85,8 +91,8 @@ urlpatterns = [
         'invite_to_group/', send_group_request, name='invite_group_member'
     ),
 
-    path('view_journal_as_PDF/<int:journal_id>/', view_PDF, name='view_PDF'),
-    path('view_journals_as_PDF/<str:myJournals>', view_PDF_list, name='view_PDF_list'),
+    path('export_entry_as_PDF/<int:entry_id>/', export_single_entry_as_PDF, name='export_entry'),
+    path('export_journal_as_PDF/<str:journal_entries>', export_journal_as_PDF, name='export_journal'),
 
 
 

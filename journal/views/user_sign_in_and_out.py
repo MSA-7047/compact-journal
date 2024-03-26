@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic.edit import FormView
 from .template_management import generate_generic_templates
+from .user_journal_management import create_first_journal
 from .mixins import LoginProhibitedMixin
 from journal.forms import *
 
@@ -80,6 +81,7 @@ class SignUpView(LoginProhibitedMixin, FormView):
     def form_valid(self, form):
         self.object = form.save()
         generate_generic_templates(self.object)
+        create_first_journal(self.object)
         login(self.request, self.object)
         return super().form_valid(form)
 

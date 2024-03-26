@@ -1,11 +1,11 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from journal.models import User, Journal
+from journal.models import Entry, User
 
 class JournalTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create(username="@test_user", password='Password123', email="test@hotmail.com")
-        self.journal = Journal.objects.create(journal_title='Test Journal',
+        self.journal = Entry.objects.create(journal_title='Test Journal',
             journal_description='This is a test journal description.',
             journal_bio='This is a test journal bio.',
             journal_mood='Happy',
@@ -19,7 +19,7 @@ class JournalTestCase(TestCase):
     def test_journal_fields(self):
 
         # Retrieve the instance from the database
-        retrieved_journal = Journal.objects.get(pk=self.journal.pk)
+        retrieved_journal = Entry.objects.get(pk=self.journal.pk)
 
         # Check if the fields are saved correctly
         self.assertEqual(retrieved_journal.journal_title, 'Test Journal')
@@ -51,7 +51,7 @@ class JournalTestCase(TestCase):
             
     def test_valid_journal_description(self):
         # Create a Journal instance with a valid description
-        valid_description_journal = Journal(
+        valid_description_journal = Entry(
             journal_title='Valid Description Journal',
             journal_description='This is a valid description.',
             journal_bio='This is a valid bio.',
@@ -67,7 +67,7 @@ class JournalTestCase(TestCase):
     def test_invalid_journal_description_max_length(self):
         # Try to create a Journal instance with a description exceeding max length
         with self.assertRaises(ValueError):
-            invalid_description_journal = Journal(
+            invalid_description_journal = Entry(
                 journal_title='Invalid Description Journal',
                 journal_description='D' * 1001,  # Exceeds max length
                 journal_bio='This is a valid bio.',
@@ -80,7 +80,7 @@ class JournalTestCase(TestCase):
     def test_invalid_journal_description_empty(self):
         # Try to create a Journal instance with an empty description
         with self.assertRaises(ValueError):
-            empty_description_journal = Journal(
+            empty_description_journal = Entry(
                 journal_title='Empty Description Journal',
                 journal_description='',
                 journal_bio='This is a valid bio.',
@@ -91,7 +91,7 @@ class JournalTestCase(TestCase):
             empty_description_journal.full_clean()  # This should raise a ValueError
     def test_valid_journal_bio(self):
         # Create a Journal instance with a valid bio
-        valid_bio_journal = Journal(
+        valid_bio_journal = Entry(
             journal_title='Valid Bio Journal',
             journal_description='This is a valid description.',
             journal_bio='This is a valid bio.',
@@ -107,7 +107,7 @@ class JournalTestCase(TestCase):
     def test_invalid_journal_bio_max_length(self):
         # Try to create a Journal instance with a bio exceeding max length
         with self.assertRaises(ValueError):
-            invalid_bio_journal = Journal(
+            invalid_bio_journal = Entry(
                 journal_title='Invalid Bio Journal',
                 journal_description='This is a valid description.',
                 journal_bio='B' * 10001,  # Exceeds max length
@@ -120,7 +120,7 @@ class JournalTestCase(TestCase):
     def test_invalid_journal_bio_empty(self):
         # Try to create a Journal instance with an empty bio
         with self.assertRaises(ValueError):
-            empty_bio_journal = Journal(
+            empty_bio_journal = Entry(
                 journal_title='Empty Bio Journal',
                 journal_description='This is a valid description.',
                 journal_bio='',
