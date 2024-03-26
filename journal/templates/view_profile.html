@@ -2,10 +2,12 @@
 {% block content %}
 <section class="container">
   <div class="row">
+    {% if my_profile %}
     <a class="btn" href="{% url 'profile' %}">Edit Profile</a>
     <a class="btn" href="{% url 'password' %}">Change Password</a>
+    {% endif %}
     <div class="col-12">
-      <h1>{{ user.first_name }}'s Profile</h1>
+      <h1>{{ user.username }}'s Profile</h1>
         <br>
         <a href="{{ user.gravatar_profile_url }}">
           <img src="{{ user.gravatar }}" alt="profile-picture">

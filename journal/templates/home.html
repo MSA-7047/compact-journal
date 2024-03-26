@@ -2,23 +2,23 @@
 {% load static %}
 {% block content %}
 <!-- Static CSS File -->
-<link rel="stylesheet" href="{% static 'css/home.css'%}">
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
 
 <!-- ==================== Top Section ==================== -->
-<section class="top-section d-flex align-items-center" id="top-section">
+<section class="top-section h-100 d-flex align-items-center" id="top-section">
   <div class="container">
 
     <div class="row">
 
-      <div class="top-section-image col-lg-6" data-aos="fade-in" data-aos-delay="100">
+      <div class="top-section-image col-md-6" data-aos="fade-in" data-aos-delay="100">
         <img class="img-fluid" src="{% static 'img/blog-post-bro.png' %}" alt="">
       </div>
 
-      <div class="main-text col-lg-6 d-flex flex-column justify-content-center" data-aos="fade-in" data-aos-delay="300">
-        <h1>Compact.</h1>
-        <h2>Track your progress.</h2>
+      <div class="main-text col-md-6 d-flex flex-column justify-content-center" data-aos="fade-in" data-aos-delay="300">
+        <h2>Compact.</h2>
+        <h3>Track your progress.</h3>
       
-        <div class="sign-up-button-area text-lg-start text-center justify-content-center" data-aos="fade-in" data-aos-delay="600">
+        <div class="sign-up-button-area text-md-start text-center justify-content-center" data-aos="fade-in" data-aos-delay="600">
           <a class="sign-up-button d-inline-flex" href="{% url 'sign_up' %}">
             <span>Sign up</span>
             <i class="bi bi-arrow-right"></i>
@@ -29,7 +29,6 @@
 
     </div>
   </div>
-
 </section>
 
 <!-- ==================== About Section ==================== -->
@@ -43,7 +42,7 @@
 
     <div class="row">
 
-      <div class="answer col-lg-6 d-flex flex-column justify-content-center" data-aos="fade-in" data-aos-delay="700">
+      <div class="answer col-lg-6 text-center d-flex flex-column justify-content-center" data-aos="fade-in" data-aos-delay="700">
         <h2 class="big-answer-text">Compact Journals is a web-based journalling application created using the Python Django framework.</h2>
         <p>
           This web application was built by 8 students from King's College London as part of their 
@@ -52,7 +51,7 @@
         </p>
       </div>
 
-      <div class="col-xl-6 d-flex align-items-center justify-content-center" data-aos="zoom-in-left" data-aos-delay="400">
+      <div class="col-lg-6 d-flex align-items-center justify-content-center" data-aos="zoom-in-left" data-aos-delay="400">
         <img class="img-fluid" src="{% static 'img/programming-bro.png' %}" alt="">
       </div>
 
@@ -135,7 +134,7 @@
 </section>
 
 <!-- ==================== Footer Section ==================== -->
-<footer class="footer" id="footer">
+<footer class="footer py-4" id="footer">
   <div class="container">
     <div class="row gy-4">
 

@@ -44,6 +44,23 @@ textarea#id_journal_description {
   background: #93c9f7;
   transition: 0.5s;
 }
+
+.btn-delete, .btn-delete:focus {
+  background: #dc3545;
+}
+
+.btn-delete:hover, .btn-delete:focus:hover {
+  background: #b12a38;
+  transition: 0.5s;
+}
+
+.back-button {
+  position: absolute;
+  top: 0;
+  padding: 10px;
+  text-align: left;
+}
+
 /*-- ==================== Sections ==================== --*/
 section {
   padding-top: 95px;

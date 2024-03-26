@@ -32,43 +32,47 @@
                         <h1>{{ form.summary.label }}:</h1>
                         {{ form.summary }}
                     </div>
-                    
+                    <div class="form-group row d-flex justify-content-center">
+                        <div class="col-6">
+                            <h1>{{ form.mood.label }}:</h1>
+                            {{ form.mood }}
+                        </div>
+                        <div class="col-6">
+                            <h1>{{ form.private.label }}:</h1>
+                            {{ form.private }}
+                        </div>
+                    </div>
                 </div>
+
+                <div class="col-lg-8">
+                    <div class="form-group">
+                        <h1>{{ form.content.label }}:</h1>
+                        {{ form.content}}
+                    </div>
+                </div>
+
                 {% csrf_token %}
                 {{ form.media}}
                 <div class="row justify-content-center text-center">
                     <div class="col-lg-12">
-                        <input type="submit" class="btn" value="Create Journal" />
+                        <input type="submit" class="btn" value="Update Journal" />
                     </div>
                 </div>
             </div>
 
 
         </form>
-        {% if update %}
-        <a href="{% url 'delete_journal' journal_id=journal.id%}" class="btn btn-sm btn-outline-danger">
-            Delete Journal 
-        </a>
-        {% endif %}
     </div>
 </section>
+
+
+
+
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
     integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
     crossorigin="anonymous"></script>
-
-<script>
-    ClassicEditor
-        .create(document.querySelector('#editor'), {
-            ckfinder: {
-                uploadUrl: '/ckeditor/upload/'  // Your custom endpoint
-            }
-        })
-        .catch(error => {
-            console.error(error);
-        });
-</script>
-
 
 {%endblock%}

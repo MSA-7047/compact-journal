@@ -80,7 +80,8 @@ def dashboard(request):
 
     current_year = datetime.now().year
     current_month = datetime.now().strftime("%B")
-    todays_journal = Journal.objects.filter(entry_date__date=today).filter(journal_owner=current_user)
+    my_journals = current_user.journals.all()
+    print(my_journals)
     notifications = Notification.objects.filter(user=request.user, is_read=False)
 
     return render(
@@ -90,7 +91,7 @@ def dashboard(request):
             'user': current_user,
             'groups': user_groups,
             'current_year': current_year, 'current_month': current_month,
-            'todays_journal': todays_journal or None,
+            'my_journals': my_journals or None,
             'notifications': notifications
         }
     )

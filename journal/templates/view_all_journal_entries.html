@@ -1,0 +1,48 @@
+{% extends 'base_content.html' %}
+{% block content %}
+<section class="container">
+  <div class="row">
+    <div class="col-12">
+      <h1>All entries in {{journal.title}}</h1>
+      {% include 'partials/filter_partial.html' with filter_form=filter_form journal=journal %}
+        {% if journal_entries %}
+        <ul class="list-group mt-3">
+            {% for entry in journal_entries %}
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                          <p>
+                            <a href="{% url 'view_entry' entry_id=entry.id %}" class="btn btn-sm btn-secondary">
+                              View Entry
+                            </a>
+                            <a href="{% url 'delete_entry' entry_id=entry.id%}" class="btn btn-sm btn-outline-danger">
+                              Delete Journal Entry
+                            </a>
+                          </p>
+                        <h5>Title: {{ entry.title }}</h5>
+                        <p>Summary: {{ entry.summary }}</p>
+                          <h4>Journal Entry:</h4>
+                        <p><hr/>
+                          {{entry.content|safe}}
+                          <hr/>
+                        </p>
+
+                        <p>Mood: {{entry.mood}}</p>
+                        </p>
+
+                        <p>Entry Date: {{ entry.entry_date }}</p>
+                        </div>
+                    </div>
+                </li>
+                {%endfor%}
+        {% else %}
+          <p>No entries available </p>
+        {% endif %}
+        {% if journal_param %}
+        <a href="{% url 'export_journal' journal_entries=journal_param  %}" class="btn btn-primary mt-3">Export entries as PDF</a>
+        {% endif %}
+        <a href="{% url 'journal_dashboard' journal_id=journal.id%}" class="btn btn-primary mt-3">Back to dashboard</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
