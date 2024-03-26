@@ -21,7 +21,7 @@ class ProfileView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         user = self.request.user
-        total_points = calculate_user_points(user)
+        recent_points = Points.objects.filter(user=user).order_by('-id')[:5]
         
         level_data = points_to_next_level(user)
 
@@ -29,6 +29,7 @@ class ProfileView(LoginRequiredMixin, DetailView):
         context['total_points'] = calculate_user_points(user)
         context['points_to_next_level'] = level_data['points_to_next_level']
         context['points_needed'] = level_data['points_needed']  # Add this if you want to display it
+        context['recent_points'] = recent_points
         return context
 
 
@@ -43,7 +44,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     """Display user profile editing screen, and handle profile modifications."""
 
     model = UserForm
-    template_name = "profile.html"
+    template_name = "edit_profile.html"
     form_class = UserForm
 
     def get_object(self):

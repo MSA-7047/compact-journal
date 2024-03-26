@@ -9,7 +9,7 @@
         <small>Visit <a href="https://gravatar.com" target="_blank">Gravatar</a> to change profile picture</small>
       </p>
     </div>
-    <form action="{% url 'profile' %}" method="post">
+    <form action="{% url 'edit_profile' %}" method="post">
 
       {% csrf_token %}
       {% include 'partials/bootstrap_form.html' with form=form %}

@@ -29,6 +29,17 @@
         <p>Points to Next Level: {{ points_to_next_level }}</p>
         <p>Points Needed: {{ points_needed }}</p>
 
+        <!-- points list goes here -->
+        <h2>Recent Points Information</h2>
+          <div style="height: 200px; overflow-y: scroll;">
+            <ul>
+              {% for point in recent_points %}
+                <li>{{ point.description }} - {{ point.points }} points</li>
+              {% endfor %}
+            </ul>
+          </div>
+
+
         <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back</a>
     </div>
   </div>
