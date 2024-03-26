@@ -28,7 +28,6 @@ urlpatterns = [
     path('dashboard/', dashboard, name='dashboard'),
     path('ckeditor5/image_upload/', custom_upload_file, name='custom_ck_editor_5_upload_file'),
 
-    
     path('log_in/', LogInView.as_view(), name='log_in'),
     path('log_out/', log_out, name='log_out'),
     

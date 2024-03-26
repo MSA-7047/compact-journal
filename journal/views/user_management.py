@@ -39,7 +39,22 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         """Process a valid form."""
-        create_notification(self.request)
+
+        """Notification Creation"""
+        notif_message = "Profile update message. It can be changed whenever I want it to."
+        create_notification(self.request, notif_message, "info")
+        
+        user = self.request.user
+
+        Points.objects.create(user=user, points=600, description="test")
+
+
+        total_points = calculate_user_points(user)
+        user_level = self.request.user.level.level         
+        print(f"User Level: {user_level}")
+
+        print(f"Total Points: {total_points}")
+
         messages.success(self.request, "Profile updated!")
         return super().form_valid(form)
 
@@ -92,3 +107,21 @@ def delete_account(request):
         form = ConfirmAccountDeleteForm()
 
     return render(request, 'delete_account.html', {'form': form})
+
+from django.db.models import Sum
+from journal.models import Points
+
+def calculate_user_points(user):
+    """
+    Calculate the total points for a given user.
+
+    Parameters:
+    - user: The User instance for whom to calculate points.
+
+    Returns:
+    - The total points as an integer.
+    """
+    total_points = Points.objects.filter(user=user).aggregate(total=Sum('points'))['total']
+    return total_points if total_points is not None else 0
+
+
