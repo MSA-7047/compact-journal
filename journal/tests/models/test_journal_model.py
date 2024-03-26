@@ -48,7 +48,8 @@ class JournalTestCase(TestCase):
         with self.assertRaises(ValueError):
             empty_title_journal = self.journal.journal_title = ''
             empty_title_journal.full_clean()  # This should raise a ValueError
-     def test_valid_journal_description(self):
+            
+    def test_valid_journal_description(self):
         # Create a Journal instance with a valid description
         valid_description_journal = Entry(
             journal_title='Valid Description Journal',
