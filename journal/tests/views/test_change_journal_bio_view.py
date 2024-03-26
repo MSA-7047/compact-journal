@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from journal.models import Journal, User
+from journal.models import Entry, User
 
 
 
@@ -10,7 +10,7 @@ class ChangeJournalBioViewTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create_user(username='testuser', password='testpassword')
-        self.journal = Journal.objects.create(
+        self.journal = Entry.objects.create(
 
             journal_title = 'My 21st birthday',
             journal_description= 'x' * 1000,
@@ -31,7 +31,7 @@ class ChangeJournalBioViewTest(TestCase):
         data = {'new_bio': 'New Bio'}
         response = self.client.post('/change-journal-bio/{}/'.format(self.journal.id), data)
         self.assertEqual(response.status_code, 302)  # Assuming you redirect on success
-        updated_journal = Journal.objects.get(id=self.journal.id)
+        updated_journal = Entry.objects.get(id=self.journal.id)
         self.assertEqual(updated_journal.journal_bio, 'New Bio')
 
     def test_change_journal_bio_view_invalid_post(self):
@@ -40,7 +40,7 @@ class ChangeJournalBioViewTest(TestCase):
         data = {'new_bio': ''}
         response = self.client.post('/change-journal-bio/{}/'.format(self.journal.id), data)
         self.assertEqual(response.status_code, 200)
-        unchanged_journal = Journal.objects.get(id=self.journal.id)
+        unchanged_journal = Entry.objects.get(id=self.journal.id)
         self.assertEqual(unchanged_journal.journal_bio, 'x' * 10000)
 
     def test_change_journal_bio_view_nonexistent_journal(self):

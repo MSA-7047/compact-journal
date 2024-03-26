@@ -16,9 +16,6 @@
                         <a href="{% url 'view_friends_profile' friendID=friend.id %}" class="btn btn-sm btn-secondary">
                           View Profile
                         </a>
-                        <a href="{% url 'my_journals' userID=friend.id %}" class="btn btn-sm btn-secondary">
-                          View Friends Journals
-                        </a>
                         <a href="{% url 'remove_friend' user_id=friend.id %}" class="btn btn-sm btn-outline-danger">
                           Remove friend
                         </a>
