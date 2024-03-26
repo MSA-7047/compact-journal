@@ -19,6 +19,19 @@ from django.db import transaction
 class ProfileView(LoginRequiredMixin, DetailView):
     """Display user profile screen"""
 
+    def get_context_data(self, **kwargs):
+        user = self.request.user
+        total_points = calculate_user_points(user)
+        
+        level_data = points_to_next_level(user)
+
+        context = super().get_context_data(**kwargs)
+        context['total_points'] = calculate_user_points(user)
+        context['points_to_next_level'] = level_data['points_to_next_level']
+        context['points_needed'] = level_data['points_needed']  # Add this if you want to display it
+        return context
+
+
     template_name = "view_profile.html"
 
     def get_object(self):
@@ -47,13 +60,6 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
         user = self.request.user
 
         Points.objects.create(user=user, points=600, description="test")
-
-
-        total_points = calculate_user_points(user)
-        user_level = self.request.user.level.level         
-        print(f"User Level: {user_level}")
-
-        print(f"Total Points: {total_points}")
 
         messages.success(self.request, "Profile updated!")
         return super().form_valid(form)
@@ -114,14 +120,13 @@ from journal.models import Points
 def calculate_user_points(user):
     """
     Calculate the total points for a given user.
-
-    Parameters:
-    - user: The User instance for whom to calculate points.
-
-    Returns:
-    - The total points as an integer.
     """
     total_points = Points.objects.filter(user=user).aggregate(total=Sum('points'))['total']
     return total_points if total_points is not None else 0
 
+def points_to_next_level(user):
+    total_points = calculate_user_points(user)
+    user_level, _ = Level.objects.get_or_create(user=user)
+    level_data = user_level.calculate_level(total_points)
+    return level_data
 

@@ -19,6 +19,14 @@
         <p>Nationality: <img src="https://flagsapi.com/{{ user.nationality }}/flat/32.png" alt="{{ user.nationality }}"></p>    
         <p>Join Date: {{ user.date_joined }}</p>
         <br>
+
+        <!-- level stuff goes here -->
+        <h2>Level Information</h2>
+        <p>Current Level: {{ user.level.current_level }}</p>
+        <p>Current Points: {{ total_points }}</p>
+        <p>Points to Next Level: {{ points_to_next_level }}</p>
+        <p>Points Needed: {{ points_needed }}</p>
+
         <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back</a>
     </div>
   </div>
