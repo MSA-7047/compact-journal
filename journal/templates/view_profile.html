@@ -35,7 +35,7 @@
     <div class="col-xl-12">
       
       <div class="p-2 border bg-light">
-        {% if user.username == user_username %}
+        {% if my_profile  %}
           <div class="manage-profile-button small-buttons position-relative">
             <a class="btn" href="{% url 'edit_profile' %}">Manage Profile</a>
           </div>
