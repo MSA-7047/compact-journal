@@ -48,6 +48,7 @@
 
 from django.test import TestCase, Client
 from django.urls import reverse
+from journal.models import Entry
 from django.contrib.auth.models import User
 from datetime import datetime
 from journal.models import Journal

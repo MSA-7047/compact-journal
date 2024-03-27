@@ -43,8 +43,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'journal',
     'django_countries',
-    'django_ckeditor_5',
-    'django_extensions'
+    'django_ckeditor_5'
 ]
 
 MIDDLEWARE = [

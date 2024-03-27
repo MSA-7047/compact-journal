@@ -16,15 +16,10 @@ from django.db import transaction
 
 
 
-class ProfileView(LoginRequiredMixin, DetailView):
-    """Display user profile screen"""
-
-    template_name = "view_profile.html"
-
-    def get_object(self):
-        """Return the object (user) to be updated."""
-        user = self.request.user
-        return user
+@login_required
+def view_profile(request):
+    user = request.user
+    return render(request, 'view_profile.html', {"user": user, 'my_profile': True})
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     """Display user profile editing screen, and handle profile modifications."""
@@ -39,7 +34,22 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         """Process a valid form."""
-        create_notification(self.request)
+
+        """Notification Creation"""
+        notif_message = "Profile update message. It can be changed whenever I want it to."
+        create_notification(self.request, notif_message, "info")
+        
+        user = self.request.user
+
+        Points.objects.create(user=user, points=600, description="test")
+
+
+        total_points = calculate_user_points(user)
+        user_level = self.request.user.level.level         
+        print(f"User Level: {user_level}")
+
+        print(f"Total Points: {total_points}")
+
         messages.success(self.request, "Profile updated!")
         return super().form_valid(form)
 
@@ -59,7 +69,8 @@ def dashboard(request):
 
     current_year = datetime.now().year
     current_month = datetime.now().strftime("%B")
-    todays_journal = Journal.objects.filter(entry_date__date=today).filter(journal_owner=current_user)
+    my_journals = current_user.journals.all()
+    print(my_journals)
     notifications = Notification.objects.filter(user=request.user, is_read=False)
 
     return render(
@@ -69,7 +80,7 @@ def dashboard(request):
             'user': current_user,
             'groups': user_groups,
             'current_year': current_year, 'current_month': current_month,
-            'todays_journal': todays_journal or None,
+            'my_journals': my_journals or None,
             'notifications': notifications
         }
     )
@@ -78,7 +89,7 @@ def dashboard(request):
 def delete_account(request):
     if request.method == 'POST':
         form = ConfirmAccountDeleteForm(request.POST)
-        if form.is_valid() and form.cleaned_data['confirmation'].upper() == "YES":
+        if form.is_valid():
             to_del = request.user
 
             with transaction.atomic():
@@ -92,3 +103,21 @@ def delete_account(request):
         form = ConfirmAccountDeleteForm()
 
     return render(request, 'delete_account.html', {'form': form})
+
+from django.db.models import Sum
+from journal.models import Points
+
+def calculate_user_points(user):
+    """
+    Calculate the total points for a given user.
+
+    Parameters:
+    - user: The User instance for whom to calculate points.
+
+    Returns:
+    - The total points as an integer.
+    """
+    total_points = Points.objects.filter(user=user).aggregate(total=Sum('points'))['total']
+    return total_points if total_points is not None else 0
+
+

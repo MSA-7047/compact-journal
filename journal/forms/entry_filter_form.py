@@ -1,10 +1,10 @@
 from datetime import timedelta, datetime
 from django import forms
 from django.utils import timezone
-from journal.models import Journal
+from journal.models import Entry
 
 
-class JournalFilterForm(forms.Form):
+class EntryFilterForm(forms.Form):
 
     entry_date = forms.ChoiceField(
         choices=(
@@ -44,27 +44,21 @@ class JournalFilterForm(forms.Form):
             '6m+': timedelta(weeks=26),
         }[interval]
 
-    def filter_tasks(self):
-
-        myjournals = Journal.objects.all()
-        #label = self.cleaned_data.get('label')
+    def filter_entries(self, journal):
+        
+        myjournals = Entry.objects.filter(journal=journal)
         title_contains = self.cleaned_data.get('title_search')
         entry_date = self.cleaned_data.get('entry_date')
         mood = self.cleaned_data.get('mood')
 
-        #if label:
-           # tasks = tasks.filter(label=label)
         if title_contains:
-            myjournals = myjournals.filter(
-                journal_title__icontains=title_contains
-            )
-
+            myjournals = myjournals.filter(title__icontains=title_contains)
         if mood:
-            myjournals = myjournals.filter(journal_mood = mood)
+            myjournals = myjournals.filter(mood = mood)
 
         if entry_date:
             myjournals = myjournals.filter(
-                entry_date__gte=JournalFilterForm.get_time_range(entry_date)
+                entry_date__gte=EntryFilterForm.get_time_range(entry_date)
             )
 
         return myjournals

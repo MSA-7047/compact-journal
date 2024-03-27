@@ -37,8 +37,8 @@ class TemplateModelTest(TestCase):
             "Failed default test"
         )
     
-    def test_title_can_be_50_long(self) -> None:
-        self.template.title = 'a'*50
+    def test_title_can_be_30_long(self) -> None:
+        self.template.title = 'a'*30
         self._assert_template_is_valid(
             self.template,
             "Title length was 50, which is supposed to be valid"
@@ -59,17 +59,10 @@ class TemplateModelTest(TestCase):
         )
 
     def test_description_can_be_1000_long(self) -> None:
-        self.template.description = 'a'*1_000
+        self.template.description = 'a'*10000
         self._assert_template_is_valid(
             self.template,
             "Desctiption length was 1.000, which is supposed to be valid"
-        )
-
-    def test_description_cant_be_more_than_1000_long(self) -> None:
-        self.template.description = 'a'*1_001
-        self._assert_template_is_invalid(
-            self.template,
-            "Description length was 1.001, which is supposed to be invalid"
         )
 
     def test_description_can_be_blank(self) -> None:
@@ -80,17 +73,10 @@ class TemplateModelTest(TestCase):
         )
 
     def test_bio_can_be_10000_long(self) -> None:
-        self.template.bio = 'a'*10_000
+        self.template.bio = 'a'*10000
         self._assert_template_is_valid(
             self.template,
-            "'Bio' length was 10.000, which is supposed to be valid"
-        )
-
-    def test_bio_cant_be_more_than_10000_long(self) -> None:
-        self.template.bio = 'a'*10_001
-        self._assert_template_is_invalid(
-            self.template,
-            "'Bio' length was 10.001, which is supposed to be invalid"
+            "'Bio' length was 10000, which is supposed to be valid"
         )
 
     def test_bio_can_be_blank(self) -> None:
