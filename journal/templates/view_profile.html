@@ -1,28 +1,98 @@
 {% extends 'base_content.html' %}
 {% block content %}
-<section class="container">
-  <div class="row">
-    {% if my_profile %}
-    <a class="btn" href="{% url 'profile' %}">Edit Profile</a>
-    <a class="btn" href="{% url 'password' %}">Change Password</a>
-    {% endif %}
-    <div class="col-12">
-      <h1>{{ user.username }}'s Profile</h1>
-        <br>
-        <a href="{{ user.gravatar_profile_url }}">
-          <img src="{{ user.gravatar }}" alt="profile-picture">
-      </a>
+<!-- <div class="col-12 row border bg-light justify-content-center align-items-center rounded position-relative">
+  <div class="back-button small-buttons position-relative">
+    <a class="btn" href="{% url 'edit_profile' %}">Manage Profile</a>
+  </div>
+</div> -->
+<style>
+  .username {
+    -webkit-text-stroke: 1px black;
+    color: #ffffff;
+    text-shadow:
+      3px 2px 0 #000000;
+    font-family: "Tilt-Warp", sans-serif;
+    font-size: 60px;
+    font-weight: 800;
+    word-wrap: break-word; /* Allows long words to be broken and wrapped onto the next line */
+    max-width: 100%; /* Sets maximum width of the box to 100% of its container */
+    padding: 5px 0px;
+    width: fit-content;
+  }
+
+  @media (max-width: 768px) {
+  .username {
+    font-size: 30px; /* Adjust font size for smaller screens */
+  }
+}
+
+  
+</style>
+
+
+<section class="container d-flex flex-column h-100">
+  <div class="first-row row pb-4 px-4 gy-4">
+    <div class="col-xl-12">
+      
+      <div class="p-2 border bg-light">
+        {% if user.username == user_username %}
+          <div class="manage-profile-button small-buttons position-relative">
+            <a class="btn" href="{% url 'edit_profile' %}">Manage Profile</a>
+          </div>
+        {% endif %}
+
+        <div class="d-flex align-items-center justify-content-center">
+          <img class="px-2 rounded-circle me-3" src="{{ user.gravatar }}" alt="Current profile picture">
+          <p class="username px-2">{{ user.username }}</p>
+          <img class="px-4" src="https://flagsapi.com/{{ user.nationality }}/flat/64.png" alt="{{ user.nationality }}">
+        </div>
+        
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="second-row row px-4 gy-4 pb-4 flex-fill">
+    <div class="col-xl-6 d-flex flex-column">
+      <div class="p-2 border bg-light flex-grow-1">
+        
+        <h1>My Profile</h1>
         <p>Name: {{ user.full_name }}</p>
-        <p>Username: {{ user.username }}</p>
         <p>Email: {{ user.email }}</p>
         <p>Date of Birth: {{ user.dob }}</p>
         <p>Bio: {{ user.bio }}</p>
         <p>Location: {{ user.location }}</p>
-        <p>Nationality: <img src="https://flagsapi.com/{{ user.nationality }}/flat/32.png" alt="{{ user.nationality }}"></p>    
         <p>Join Date: {{ user.date_joined }}</p>
-        <br>
-        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back</a>
+
+
+      </div>
     </div>
+
+
+    <div class="col-xl-6 d-flex flex-column">
+      <div class="your-groups p-2 border bg-light flex-grow-1">
+        <h1>Level Information</h1>
+        <p>Current Level: {{ user.level.current_level }}</p>
+        <p>Current Points: {{ total_points }}</p>
+        <p>Points to Next Level: {{ points_to_next_level }}</p>
+        <p>Points Needed: {{ points_needed }}</p>
+
+        <!-- points list goes here -->
+        <h1>Recent Points Information</h1>
+        <div style="height: 100px; overflow-y: scroll;">
+          <ul>
+            {% for point in recent_points %}
+              <li>{{ point.description }} - {{ point.points }} points</li>
+            {% endfor %}
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
   </div>
+
 </section>
+
 {% endblock %}
