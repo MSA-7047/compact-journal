@@ -1,21 +1,35 @@
 {% extends 'base_content.html' %}
 {% block content %}
 <section class="container">
-  <div class="row">
-    <h1>Edit profile</h1>
-    <div class="mb-3">
-      <img src="{{ user.gravatar }}" alt="Current profile picture" class="profile-picture">
-      <p class="text-muted">
-        <small>Visit <a href="https://gravatar.com" target="_blank">Gravatar</a> to change profile picture</small>
-      </p>
-    </div>
-    <form action="{% url 'edit_profile' %}" method="post">
+  <div class="row py-4 px-4 justify-content-center">
 
-      {% csrf_token %}
-      {% include 'partials/bootstrap_form.html' with form=form %}
-      <input type="submit" value="Update">
-    </form>
-    <a href="{% url 'delete_account' %}">Delete Account</a>
+    <div class="col-md-8 row border bg-light justify-content-center align-items-center rounded position-relative">
+      <div class="back-button small-buttons position-relative">
+        <a class="btn" href="{% url 'password' %}">Change Password</a>
+        <a class="btn btn-delete" href="{% url 'delete_account' %}">Delete Account</a>
+      </div>
+      
+      <h1>Edit Profile</h1>
+      <div class="mb-3 text-center">
+        <img src="{{ user.gravatar }}" alt="Current profile picture" class="profile-picture rounded-circle">
+        <p class="text-muted">
+          <small>Visit <a href="https://gravatar.com" target="_blank">Gravatar</a> to change profile picture</small>
+        </p>
+      </div>
+
+      
+
+      <form action="{% url 'edit_profile' %}" method="post">
+
+        {% csrf_token %}
+        {% include 'partials/bootstrap_form.html' with form=form %}
+        <div class="text-center">
+          <input class="btn" type="submit" value="Update">
+        </div>
+      </form>
+
+    </div>  
+
   </div>
 </section>
 {% endblock %}

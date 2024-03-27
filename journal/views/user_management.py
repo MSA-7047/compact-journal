@@ -25,11 +25,14 @@ class ProfileView(LoginRequiredMixin, DetailView):
         
         level_data = points_to_next_level(user)
 
+        username = user.username
+
         context = super().get_context_data(**kwargs)
         context['total_points'] = calculate_user_points(user)
         context['points_to_next_level'] = level_data['points_to_next_level']
         context['points_needed'] = level_data['points_needed']  # Add this if you want to display it
         context['recent_points'] = recent_points
+        context['user_username'] = username
         return context
 
 
