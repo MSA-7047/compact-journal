@@ -47,7 +47,7 @@
                 {% endif %}
             </div>
             {% if is_owner %}
-                <a role="button" class="btn btn-info" href="{% url 'invite_group_member' %}">Invite Member</a>
+                <a role="button" class="btn btn-info" href="{% url 'send_group_request' group_id=group.group_id%}">Invite Member</a>
                 <a role="button" class="btn btn-warning" href="{% url 'delete_group' group_id=group.group_id %}">Delete Group</a>
             {% endif %}
             <a role="button" class="btn btn-warning" href="{% url 'leave_group' group_id=group.group_id %}">Leave Group</a>

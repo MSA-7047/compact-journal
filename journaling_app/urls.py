@@ -80,8 +80,9 @@ urlpatterns = [
         name='remove_player_from_group'
     ),
     path(
-        'invite_to_group/', send_group_request, name='invite_group_member'
+        'groups/<int:group_id>/send_group_request/', send_group_request, name='send_group_request'
     ),
+    path('groups/<int:group_id>/select-new-owner/', select_new_owner_view, name='select_new_owner'),
 
     path('view_journal_as_PDF/<int:journal_id>/', view_PDF, name='view_PDF'),
     path('view_journals_as_PDF/<str:myJournals>', view_PDF_list, name='view_PDF_list'),

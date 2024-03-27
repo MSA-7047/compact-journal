@@ -3,6 +3,7 @@
 
 from .FriendRequest import FriendRequest
 from .Group import Group
+from .GroupRequest import GroupRequest
 from .GroupMembership import GroupMembership
 from .Journal import Journal
 from .User import User

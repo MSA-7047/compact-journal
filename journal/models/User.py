@@ -48,11 +48,11 @@ class User(AbstractUser):
         return self.gravatar(size=60)
 
     def send_friend_request(self, user):
-        invitation, _ = FriendRequest.objects.get_or_create(user=user, sender=self)
+        invitation, _ = FriendRequest.objects.get_or_create(recipient=user, sender=self)
         return invitation
 
     def accept_request(self, user):
-        request = self.invitations.filter(recipient=self, sender=user, status='Pending')
+        request = self.invitations.filter(recipient=self, sender=user, status='Pending').first()
         if not request:
             return False
         self.friends.add(user)

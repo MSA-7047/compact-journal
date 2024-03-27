@@ -28,4 +28,4 @@ class GroupRequest(models.Model):
         if self.recipient == self.sender:
             raise ValidationError("The recipient and sender of the invitation can't be the same user")
         if not self.sender.groups.filter(id=self.recipient_group_id).exists():
-            raise ValidationError("The sender must be the owner of the group")
+            raise ValidationError("The sender must be the owner of the group.")
