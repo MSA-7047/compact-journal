@@ -79,6 +79,20 @@ def delete_journal(request, journal_id):
     return redirect('dashboard')
 
 @login_required
+def all_journals_view(request, user_id):
+    current_user = request.user
+    viewing_user = User.objects.get(id=user_id)
+    currently_logged_in = current_user == viewing_user
+    journals = viewing_user.journals.all()
+    return render(request, 'my_journals.html',
+                {'user': current_user,
+                'journals': journals,
+                'user': viewing_user,
+                "is_logged_in": currently_logged_in}
+                )
+
+
+@login_required
 def journal_dashboard(request, journal_id):
     current_user = request.user
     today = datetime.now().date()
@@ -100,8 +114,8 @@ def journal_dashboard(request, journal_id):
                 "todays_entry": todays_entry}
                 )
 
+@login_required
 def view_entry(request, entry_id):
-
     current_user = request.user
 
     try:
@@ -197,8 +211,10 @@ def delete_entry(request, entry_id):
 def view_journal_entries(request, user_id, journal_id):
     current_user = get_object_or_404(User, id = user_id)
     current_journal = Journal.objects.get(id = journal_id)
-    #isLoggedInUser = current_user == request.user
+    is_user_logged_in = current_user == request.user
+
     if request.method == 'POST':
+
         filter_form = JournalFilterForm(current_user, request.POST)
         if filter_form.is_valid():
             journal_entries = filter_form.filter_entries(current_journal)
@@ -210,18 +226,28 @@ def view_journal_entries(request, user_id, journal_id):
                     journal_entries = journal_entries.reverse()
                 elif sort_order == 'ascending':
                     journal_entries = journal_entries.order_by("entry_date")    
+
         else:
+
             sort_form = JournalSortForm()
-            journal_entries = Entry.objects.filter(journal=current_journal)
+            journal_entries = current_journal.entries.all()
+
+            if not is_user_logged_in:
+                journal_entries = journal_entries.filter(private = False)
+
             context = {
-            'filter_form': filter_form,
-            'sort_form': sort_form,
-            'journal_entries': journal_entries,
-            'journal_param': my_journals_to_journal_param(journal_entries),
-            'user': current_user,
-            'journal': current_journal
-            }
+                    'filter_form': filter_form,
+                    'sort_form': sort_form,
+                    'journal_entries': journal_entries,
+                    'journal_param': my_journals_to_journal_param(journal_entries),
+                    'user': current_user,
+                    'journal': current_journal,
+                    'is_logged_in': is_user_logged_in
+                }
             return render(request, 'view_all_journal_entries.html', context)
+        
+        if not is_user_logged_in:
+                journal_entries = journal_entries.filter(private = False)
 
         context = {
             'filter_form': filter_form,
@@ -229,11 +255,16 @@ def view_journal_entries(request, user_id, journal_id):
             'journal_entries': journal_entries,
             'journal_param': my_journals_to_journal_param(journal_entries),
             'user': current_user,
-            'journal': current_journal
+            'journal': current_journal,
+            'is_logged_in': is_user_logged_in
         }
         return render(request, 'view_all_journal_entries.html', context) 
 
-    journal_entries = Entry.objects.filter(journal=current_journal)
+    journal_entries = current_journal.entries.all()
+
+    if not is_user_logged_in:
+                journal_entries = journal_entries.filter(private = False)
+
     filter_form = JournalFilterForm(current_user)
     sort_form = JournalSortForm()
     
@@ -243,7 +274,8 @@ def view_journal_entries(request, user_id, journal_id):
             'journal_entries': journal_entries or False,
             'user': current_user,
             'journal_param': my_journals_to_journal_param(journal_entries),
-            'journal': current_journal
+            'journal': current_journal,
+            'is_logged_in': is_user_logged_in
         }
     
     return render(request, 'view_all_journal_entries.html', context)   

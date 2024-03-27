@@ -1,5 +1,5 @@
 <li><a class="nav-link" href="{% url 'view_profile' %}">Profile</a></li>
-
+<li><a class="nav-link" href="{% url 'view_journals' user_id=user.id %}">Journals</a></li>
 <li><a class="nav-link" href="{% url 'view_friends' %}">Friends</a></li>
 <li><a class="nav-link" href="{% url 'groups' %}">Groups</a></li>
 <li><a class="navbar-button" href="{% url 'log_out' %}">Log out</a></li>

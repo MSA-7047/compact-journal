@@ -68,7 +68,7 @@ urlpatterns = [
     
 
     path('view_journal_entries/<int:user_id>/<int:journal_id>/', view_journal_entries, name='journal_entries'),
-    #path('view_friends_journals/<int:userID>/', my_journals_view, name='view_friends_journals'),
+    path('view_journals/<int:user_id>/', all_journals_view, name='view_journals'),
     
     path('groups/', group, name='groups'),
 

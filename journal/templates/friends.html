@@ -6,20 +6,22 @@
     <div class="col-12">
       <h1>Your Friends:</h1>
         {% if user.friends.all %}
-        <ul class="list-group mt-3"></ul>
+          <ul class="list-group mt-3">
               {% for friend in user.friends.all %}
                 <li class="list-group-item">
                   <div class="d-flex justify-content-between align-items-center">
                     <div>
-                      <h4>{{ friend.username }}</h4>
-                      <p>
+                      <h4>{{ friend.username }}
                         <a href="{% url 'view_friends_profile' friendID=friend.id %}" class="btn btn-sm btn-secondary">
                           View Profile
                         </a>
                         <a href="{% url 'remove_friend' user_id=friend.id %}" class="btn btn-sm btn-outline-danger">
                           Remove friend
                         </a>
-                      </p>
+                        <a href="{% url 'view_journals' user_id=friend.id %}" class="btn btn-sm btn-outline-danger">
+                          view journals
+                        </a>
+                      </h4>
                     </div>
                   </div>
                 </li>
@@ -27,7 +29,6 @@
           {% else %}
               You currently have no Friends
           {% endif %}
-          <br/>
       <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
     </div>
   </div>
