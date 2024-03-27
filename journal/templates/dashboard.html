@@ -32,6 +32,11 @@
                         <hr>
                         <h2>{{ journal.title }}</h2>
                         <p>{{ journal.summary }}</p>
+                        {% if journal.private %}
+                        <p><b>Private Journal</b></p>
+                        {% else %}
+                        <p><b>Public Journal</b></p>
+                        {% endif %}
                         <p>Created on: {{journal.entry_date}}</p>
                         <a href="{% url 'journal_dashboard' journal_id=journal.id%}" class="btn btn-sm btn-outline-danger">
                           view

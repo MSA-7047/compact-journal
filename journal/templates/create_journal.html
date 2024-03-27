@@ -32,7 +32,10 @@
                         <h1>{{ form.summary.label }}:</h1>
                         {{ form.summary }}
                     </div>
-                    
+                        <div class="col-6">
+                            <h1>{{ form.private.label }}:</h1>
+                            {{ form.private }}
+                        </div>
                 </div>
                 {% csrf_token %}
                 {{ form.media}}

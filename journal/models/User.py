@@ -29,7 +29,7 @@ class User(AbstractUser):
     bio = models.TextField(blank=True, default='')
     groups = models.ManyToManyField(Group, through='GroupMembership')
     location = models.CharField(max_length=50, blank=False)
-    nationality = CountryField()
+    nationality = CountryField(blank=True, null=True)
     date_joined = models.DateTimeField(auto_now_add=True)
 
 
@@ -50,15 +50,6 @@ class User(AbstractUser):
     def send_friend_request(self, user):
         invitation, _ = FriendRequest.objects.get_or_create(recipient=user, sender=self)
         return invitation
-
-    # def accept_request(self, user):
-    #     request = self.invitations.filter(recipient=self, sender=user, status='Pending')
-    #     if not request:
-    #         return False
-    #     self.friends.add(user)
-    #     request.status = 'Accepted'
-    #     request.save()
-    #     return True
     
     def accept_request(self, user):
     # Retrieve the friend request
@@ -77,8 +68,9 @@ class User(AbstractUser):
         return True
 
     def reject_request(self, user):
-        request = self.invitations.filter(recipient=self, sender=user, status='Pending')
+        request = self.invitations.filter(recipient=self, sender=user, status='Pending').first()
         if not request:
             return False
         request.status = 'Rejected'
+        request.save()
         return True

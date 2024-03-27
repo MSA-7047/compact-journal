@@ -6,10 +6,7 @@ from .new_password_mixin import NewPasswordMixin
 class PasswordForm(NewPasswordMixin):
     """Form enabling users to change their password."""
 
-    password = forms.CharField(
-        label='Current password', 
-        widget=forms.PasswordInput() 
-    )
+    password = forms.CharField(label='Current password', widget=forms.PasswordInput())
 
     def __init__(self, user=None, **kwargs):
         """Construct new form instance with a user instance."""
@@ -23,10 +20,7 @@ class PasswordForm(NewPasswordMixin):
         super().clean()
         password = self.cleaned_data.get('password')
         if self.user is not None:
-            user = authenticate(
-                username=self.user.username, 
-                password=password
-            )
+            user = authenticate(username=self.user.username, password=password)
         else:
             user = None
         if user is None:
@@ -36,9 +30,7 @@ class PasswordForm(NewPasswordMixin):
         """Save the user's new password."""
 
         new_password = self.cleaned_data['new_password']
-        
         if self.user is not None:
             self.user.set_password(new_password)
             self.user.save()
-
         return self.user

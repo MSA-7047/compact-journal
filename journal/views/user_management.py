@@ -16,32 +16,10 @@ from django.db import transaction
 
 
 
-class ProfileView(LoginRequiredMixin, DetailView):
-    """Display user profile screen"""
-
-    def get_context_data(self, **kwargs):
-        user = self.request.user
-        recent_points = Points.objects.filter(user=user).order_by('-id')[:5]
-        
-        level_data = points_to_next_level(user)
-
-        username = user.username
-
-        context = super().get_context_data(**kwargs)
-        context['total_points'] = calculate_user_points(user)
-        context['points_to_next_level'] = level_data['points_to_next_level']
-        context['points_needed'] = level_data['points_needed']  # Add this if you want to display it
-        context['recent_points'] = recent_points
-        context['user_username'] = username
-        return context
-
-
-    template_name = "view_profile.html"
-
-    def get_object(self):
-        """Return the object (user) to be updated."""
-        user = self.request.user
-        return user
+@login_required
+def view_profile(request):
+    user = request.user
+    return render(request, 'view_profile.html', {"user": user, 'my_profile': True})
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     """Display user profile editing screen, and handle profile modifications."""
@@ -104,7 +82,7 @@ def dashboard(request):
 def delete_account(request):
     if request.method == 'POST':
         form = ConfirmAccountDeleteForm(request.POST)
-        if form.is_valid() and form.cleaned_data['confirmation'].upper() == "YES":
+        if form.is_valid():
             to_del = request.user
 
             with transaction.atomic():
