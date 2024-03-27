@@ -215,7 +215,7 @@ def view_journal_entries(request, user_id, journal_id):
 
     if request.method == 'POST':
 
-        filter_form = JournalFilterForm(current_user, request.POST)
+        filter_form = EntryFilterForm(current_user, request.POST)
         if filter_form.is_valid():
             journal_entries = filter_form.filter_entries(current_journal)
             sort_form = JournalSortForm(request.POST) 
@@ -265,7 +265,7 @@ def view_journal_entries(request, user_id, journal_id):
     if not is_user_logged_in:
                 journal_entries = journal_entries.filter(private = False)
 
-    filter_form = JournalFilterForm(current_user)
+    filter_form = EntryFilterForm(current_user)
     sort_form = JournalSortForm()
     
     context = {

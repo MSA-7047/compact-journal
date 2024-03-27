@@ -9,24 +9,13 @@ from django.conf import settings
 from journal.models import Entry
 
 def export_single_entry_as_PDF(request, entry_id):
-    current_user = request.user
-    try:
-        entry = Entry.objects.get(id=entry_id)
-    except ObjectDoesNotExist:
-        return render(request, 'permission_denied.html',)
-    if entry.owner != current_user:
-        return render(request, 'permission_denied.html', {'reason': "You do not own this journal"} )
-    
+    entry = Entry.objects.get(id=entry_id)
     template = get_template('entry_as_PDF.html')
     html = template.render({"entry": entry})  # Pass context data if needed
     title = entry.title
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename={title}'
-    pisa_status = pisa.CreatePDF(html, dest=response)
-
-    if pisa_status.err:
-        return HttpResponse('Error generating PDF: %s' % pisa_status.err)
-
+    pisa.CreatePDF(html, dest=response)
     return response
 
 def export_journal_as_PDF(request, journal_entries):
@@ -40,7 +29,5 @@ def export_journal_as_PDF(request, journal_entries):
     title = journal.title  + " entries"
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename={title}'
-    pisa_status = pisa.CreatePDF(html, dest=response)
-    if pisa_status.err:
-        return HttpResponse('Error generating PDF: %s' % pisa_status.err)
+    pisa.CreatePDF(html, dest=response)
     return response

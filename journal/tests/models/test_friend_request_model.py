@@ -68,4 +68,4 @@ class FriendRequestModelTest(TestCase):
         )
 
         # Check if the __str__ method returns the expected string representation
-        self.assertEqual(str(friend_request), f"FriendRequest from {self.user2} to {self.user}")
+        self.assertEqual(str(friend_request), f"Friend request from {self.user2} to {self.user}")

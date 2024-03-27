@@ -16,15 +16,10 @@ from django.db import transaction
 
 
 
-class ProfileView(LoginRequiredMixin, DetailView):
-    """Display user profile screen"""
-
-    template_name = "view_profile.html"
-
-    def get_object(self):
-        """Return the object (user) to be updated."""
-        user = self.request.user
-        return user
+@login_required
+def view_profile(request):
+    user = request.user
+    return render(request, 'view_profile.html', {"user": user, 'my_profile': True})
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     """Display user profile editing screen, and handle profile modifications."""
@@ -94,7 +89,7 @@ def dashboard(request):
 def delete_account(request):
     if request.method == 'POST':
         form = ConfirmAccountDeleteForm(request.POST)
-        if form.is_valid() and form.cleaned_data['confirmation'].upper() == "YES":
+        if form.is_valid():
             to_del = request.user
 
             with transaction.atomic():
