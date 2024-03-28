@@ -12,13 +12,11 @@
 
 
 
-
-
-input#id_journal_title {
+input#id_title, input#id_title {
   width: 100%;
 }
 
-textarea#id_journal_description {
+textarea#id_journal_description, textarea#id_summary {
   width: 100%;
   resize: none; /* Disable resizing */
 }
