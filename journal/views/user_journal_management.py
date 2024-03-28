@@ -134,17 +134,18 @@ def create_entry(request, journal_id):
     today = datetime.now().date()
     current_user = request.user
 
-    try:
-        journal = Journal.objects.get(id=journal_id)
-    except ObjectDoesNotExist:
-        return render(request, 'permission_denied.html',{'reason':"journal not exist"})
+    journal = Journal.objects.get(id=journal_id)
+    # try:
+    #     journal = Journal.objects.get(id=journal_id)
+    # except ObjectDoesNotExist:
+    #     return render(request, 'permission_denied.html',{'reason':"journal not exist"})
     
-    if journal.owner != current_user:
-        return render(request, 'permission_denied.html', {'reason': "You do not own this journal"} )
+    # if journal.owner != current_user:
+    #     return render(request, 'permission_denied.html', {'reason': "You do not own this journal"} )
 
     
-    if Entry.objects.filter(journal = journal).filter(entry_date__date = today):
-        return render(request, 'permission_denied.html', {'reason': "Daily journal already created"} )
+    # if Entry.objects.filter(journal = journal).filter(entry_date__date = today):
+    #     return render(request, 'permission_denied.html', {'reason': "Daily journal already created"} )
 
     form = CreateEntryForm()
     if request.method != 'POST':
