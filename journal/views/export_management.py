@@ -13,7 +13,7 @@ def export_single_entry_as_PDF(request, entry_id):
     html = template.render({"entry": entry})  # Pass context data if needed
     title = entry.title
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename={title}'
+    response['Content-Disposition'] = f'attachment; filename={title}.pdf'
     pisa.CreatePDF(html, dest=response)
     return response
 
@@ -27,6 +27,6 @@ def export_journal_as_PDF(request, journal_entries):
     html = template.render({"journal_entries": journal_entries, "journal": journal}) 
     title = journal.title  + " entries"
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename={title}'
+    response['Content-Disposition'] = f'attachment; filename={title}.pdf'
     pisa.CreatePDF(html, dest=response)
     return response
