@@ -4,9 +4,17 @@
   <div class="row py-4 px-4 justify-content-center">
 
     <div class="col-md-8 row border bg-light justify-content-center align-items-center rounded position-relative pt-2">
-      <div class="back-button small-buttons position-relative">
-        <a class="btn" href="{% url 'password' %}">Change Password</a>
-        <a class="btn btn-delete" href="{% url 'delete_account' %}">Delete Account</a>
+
+      <div class="small-buttons position-relative">
+        <a class="btn btn-left" href="{% url 'view_profile' %}">
+          <i class="bi bi-arrow-left me-2"></i>
+          <span>Back</span>
+        </a>
+      
+        <div class="right-buttons">
+          <a class="btn" href="{% url 'password' %}">Change Password</a>
+          <a class="btn btn-delete" href="{% url 'delete_account' %}">Delete Account</a>
+        </div>
       </div>
       
       <h1>Edit Profile</h1>

@@ -1,16 +1,16 @@
-/* Journal Dashboard */
-
+/*-- ==================== Journal Dashboard ==================== --*/
 .list-group {
   overflow-y: auto; /* Enable vertical scrolling if content exceeds the height */
 }
 
 
+/*-- ==================== CK Editor Container ==================== --*/
+.ck-editor__main div {
+  resize: none;
+  height: 100px;
+}
 
-
-
-
-
-
+/*-- ==================== Input Boxes ==================== --*/
 input#id_title, input#id_title {
   width: 100%;
 }
@@ -80,32 +80,29 @@ section {
   transition: 0.5s;
 }
 
-.back-button {
-  position: absolute;
-  top: 0;
-  padding: 0 10px;
-  padding-bottom: 0px;
-  text-align: left;
-}
-
-.manage-profile-button {
-  position: absolute;
-  top: 0;
-  margin: -30px 0;
-  padding-top: 30px;
-  text-align: left;
-}
-
 .small-buttons {
-  text-align: right;
+  display: flex;
+  align-items: center;
 }
-
 
 .small-buttons .btn {
   padding: 5px 10px;
   font-size: 12px;
   margin-bottom: 0px;
 }
+
+.small-buttons .btn-left {
+  margin-right: auto; /* Keeps the "Back" button on the left */
+}
+
+.right-buttons {
+  display: flex;
+}
+
+.right-buttons .btn {
+  margin-left: 5px; /* Add margin between buttons if necessary */
+}
+
 
 /* =======================================================*/
 
@@ -202,7 +199,7 @@ ul.errorlist {
     cursor: pointer;
 }
 
-
+/*-- ==================== Body Default Font ==================== --*/
 body {
   font-family: "Ubuntu", sans-serif;
 }
