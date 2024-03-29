@@ -136,8 +136,6 @@ def points_to_next_level(user):
     user_level, _ = Level.objects.get_or_create(user=user)
     level_data = user_level.calculate_level(total_points)
     return level_data
-<<<<<<< HEAD
-=======
 
 def give_points(user, ):
     Points.objects.create(user, points=600, description="test")
@@ -153,4 +151,3 @@ def give_points(request, points, description):
     )
     create_notification(request, f"You have received {points} points", "points")
 
->>>>>>> main
