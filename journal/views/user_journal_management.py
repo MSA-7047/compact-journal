@@ -7,6 +7,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from journal.models import *
 from journal.forms import *
 from django.contrib import messages
+from journal.views.notifications import *
+from journal.views.user_management import *
 
 @login_required
 def create_journal(request):
@@ -26,6 +28,13 @@ def create_journal(request):
         owner=request.user
     )
     journal.save()
+
+    journal_title = form.cleaned_data.get("title")
+
+    """Notification & Points Creation"""
+    notif_message = f"New journal {journal_title} created!"
+    create_notification(request, notif_message, "info")
+    give_points(request, 50, f"New journal {journal_title} created.")
 
     return redirect('/dashboard/')
 

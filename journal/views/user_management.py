@@ -33,18 +33,12 @@ class ProfileView(LoginRequiredMixin, DetailView):
         context['user_username'] = username
         return context
 
-
     template_name = "view_profile.html"
 
     def get_object(self):
         """Return the object (user) to be updated."""
         user = self.request.user
         return user
-
-# @login_required
-# def view_profile(request):
-#     user = request.user
-#     return render(request, 'view_profile.html', {"user": user, 'my_profile': True})
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     """Display user profile editing screen, and handle profile modifications."""
@@ -62,7 +56,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
         """Notification Creation"""
         notif_message = "Profile update message. It can be changed whenever I want it to."
-        create_notification(self.request, notif_message, "info")
+        create_notification(self.request, notif_message, "reminder")
         
         user = self.request.user
 
@@ -89,7 +83,7 @@ def dashboard(request):
     current_month = datetime.now().strftime("%B")
     my_journals = current_user.journals.all()
     print(my_journals)
-    notifications = Notification.objects.filter(user=request.user, is_read=False)
+    notifications = Notification.objects.filter(user=request.user, is_read=False).order_by('-time_created')
 
     return render(
         request,
@@ -137,4 +131,18 @@ def points_to_next_level(user):
     user_level, _ = Level.objects.get_or_create(user=user)
     level_data = user_level.calculate_level(total_points)
     return level_data
+
+def give_points(user, ):
+    Points.objects.create(user, points=600, description="test")
+
+@login_required
+def give_points(request, points, description):
+    current_user = request.user
+
+    Points.objects.create(
+        user=current_user,
+        points=points,
+        description = description
+    )
+    create_notification(request, f"You have received {points} points", "points")
 

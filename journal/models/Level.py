@@ -5,6 +5,7 @@ from .User import User
 
 from django.db import models
 from django.conf import settings
+from .Notification import Notification
 
 class Level(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='level')
@@ -28,6 +29,11 @@ class Level(models.Model):
             points_needed += round(increment / 50) * 50
             points_to_next_level = points_needed - total_points
 
+            Notification.objects.create(
+                user=self.user,
+                message="level up",
+                notification_type = "points"
+    )
             #print("points to next level:",points_to_next_level)
             print("points needed to level",level,"is",points_needed)
 
