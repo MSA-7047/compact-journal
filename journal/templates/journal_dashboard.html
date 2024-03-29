@@ -3,6 +3,7 @@
 {% block content %}
 <!-- Static CSS Files -->
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<link href="{% static 'django_ckeditor_5/dist/styles.css' %}" type="text/css" media="all" rel="stylesheet">
 
 <!-- ==================== Main Dashboard Section ==================== -->
 <section class="container d-flex flex-column">
@@ -25,15 +26,18 @@
   <div class="second-row row px-4 gy-4 pb-4 flex-fill">
     <div class="col-xl-5 d-flex flex-column">
       <div class="todays-journal p-2 border bg-light flex-grow-1">
+        <link href="{% static 'django_ckeditor_5/dist/styles.css' %}" type="text/css" media="all" rel="stylesheet">
         <h1>Today's Entry:</h1>
         <div class="content">
           {% if todays_entry %}
             {% for entry in todays_entry %}
               <h2>{{ entry.title }}</h2>
               Summary: {{ entry.summary }}
-              <br>
-              Journal: {{ entry.content|safe }}
-              <br>
+              <div class="ck ck-content">
+                <hr>
+                {{ entry.content|safe}}
+                <hr>
+            </div>
               Todays Mood: {{ entry.mood }}
               <br>
               Created on: {{ entry.entry_date }}
