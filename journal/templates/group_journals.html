@@ -1,0 +1,31 @@
+{% extends 'base_content.html' %}
+{% block content %}
+<section class="container">
+    {% if group_journals %}
+        <div class="row">
+            <div class="col-12">
+                <h1>Group Journals</h1>
+                    {% for journal in group_journals %}
+                        <h2>{{ journal.journal_title }}</h2>
+                        <h3>{{ journal.journal_description }}</h3>
+                        {{ journal.journal_bio }}
+                        {{ journal.journal_mood }}
+                        {{ journal.last_edited_by }}
+                    {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-12">
+                <p>No group journals available.</p>
+            </div>
+        </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-12">
+            <!-- Back button to group dashboard -->
+            <a href="{% url 'group_dashboard' group_id=group_id %}" class="btn btn-primary">Back to Group Dashboard</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -11,7 +11,8 @@ def group(request) -> HttpResponse:
     """Display the list of groups the current user is in"""
     current_user = request.user
     current_user_groups = current_user.groups.all()
-    return render(request, 'group.html', {'user': current_user, 'groups': current_user_groups})
+    group_request = GroupRequest.objects.filter(recipient=current_user, status="Pending")
+    return render(request, 'group.html', {'user': current_user, 'groups': current_user_groups, 'group_requests': group_request})
 
 
 @login_required
@@ -50,30 +51,26 @@ def create_group(request) -> HttpResponse:
 
 
 @login_required
-def group(request) -> HttpResponse:
-    """Display the list of groups the current user is in"""
-    current_user = request.user
-    current_user_groups = current_user.groups
-    return render(request, 'group.html', {'user': current_user, 'groups': current_user_groups})
-
-
-@login_required
 def edit_group(request, group_id):
     """Allows owner of the group to edit the group."""
     group = get_object_or_404(Group, pk=group_id)
     membership = get_object_or_404(GroupMembership, group=group, user=request.user)
 
     form = GroupForm(instance=group)
-    
+
     if not membership.is_owner:
         # User is not the owner, return forbidden response
-        return HttpResponseForbidden('You are not authorized to edit this group')
+        messages.error(request, "You are not authorized to edit this group")
+        return redirect('group_dashboard', group_id=group_id)
 
     if request.method == 'POST':
         form = GroupForm(request.POST, instance=group)
         if form.is_valid():
-            form.save()
-            return redirect('group_dashboard', {'group_id': group.group_id})
+            cleaned_data = form.cleaned_data
+            group.name = cleaned_data['name']
+            group.save()  # Save the updated group
+            messages.success(request, "Group name updated successfully.")
+            return redirect('group_dashboard', group_id=group_id)
 
     return render(request, 'edit_group.html', {'form': form, 'group_id': group.group_id})
 
@@ -82,11 +79,17 @@ def edit_group(request, group_id):
 def send_group_request(request, group_id):
     """Allows a user to send a group request."""
     group_ = Group.objects.get(pk=group_id)
+    membership = GroupMembership.objects.filter(group=group_, user=request.user).first()
+
+    if not membership.is_owner:
+        messages.error(request, "You are not authorized to send a group request")
+        return redirect('group_dashboard', group_id=group_id)
+
     if request.method == 'POST':
         form = SendGroupRequestForm(request.POST, currentUser=request.user)
         if form.is_valid():
             recipient = form.cleaned_data['recipient']
-            
+            print(recipient)
             # Check if a request from this sender to the recipient for this group already exists
             existing_request = GroupRequest.objects.filter(sender=request.user, recipient=recipient, group=group_).first()
             if existing_request:
@@ -94,40 +97,45 @@ def send_group_request(request, group_id):
                 return render(request, 'send_group_request.html', {'form': form})
 
             # Create the group request
-            GroupRequest.objects.create(sender=request.user, recipient=recipient, group=group_) 
+            GroupRequest.objects.create(sender=request.user, recipient=recipient, group=group_)
+            Notification.objects.create(notification_type="info", message=f"{request.user} has invited you to a new group named {group_.name}.", user=recipient)
+
             messages.success(request, f"{recipient} has now been invited.")
-            return redirect('group_dashboard', group_id=group_.group_id)
+            return redirect('group_dashboard', group_id=group_id)
     else:
         form = SendGroupRequestForm(currentUser=request.user)
     return render(request, 'send_group_request.html', {'form': form})
 
 @login_required
-def accept_group_request(request, group_request_id):
+def accept_group_request(request, group_id):
     """Allows a user that has a sent request to accept the request."""
-    group_request = get_object_or_404(GroupRequest, id=group_request_id, recipient=request.user, is_accepted=True)
-
-    # Add the user to the group
-    group_ = group_request.group  # Assuming group_request has a ForeignKey to Group model
-    user = group_request.sender  # The user who sent the group request
+    group = get_object_or_404(Group, group_id=group_id)
+    group_request = get_object_or_404(GroupRequest, group=group, recipient=request.user)
+    group_request.is_accepted = True
+    group_request.status = 'accepted'
 
     # Create GroupMembership for the user
-    GroupMembership.objects.create(user=user, group=group_)
+    GroupMembership.objects.create(user=request.user, group=group)
+    Notification.objects.create(notification_type="info", message=f"{request.user} has joined your group named {group}", user=group_request.sender)
 
-    group_request.status = 'accepted'
-    group_request.save()
+    group_request.delete()
     #invitation.delete()
 
-    return redirect('group')
+    return redirect('groups')
 
 
 @login_required
-def reject_group_invitation(request, group_request_id):
+def reject_group_request(request, group_id):
     """Allows the user with the sent friend request to reject it"""
-    group_request = get_object_or_404(GroupRequest, id=group_request_id, recipient=request.user, is_accepted=False)
+    group = get_object_or_404(Group, group_id=group_id)
+    group_request = get_object_or_404(GroupRequest, group=group, recipient=request.user)
     group_request.status = 'rejected'
-    group_request.save()
+
+    Notification.objects.create(notification_type="info", message=f"{request.user} has rejected your group named {group}", user=group_request.sender)
+
+    group_request.delete()
     #invitation.delete()
-    return redirect('group')
+    return redirect('groups')
 
 
 @login_required
@@ -162,17 +170,11 @@ def leave_group(request, group_id):
     user = request.user
     membership = get_object_or_404(GroupMembership, group=group, user=request.user)
 
-    if not membership.is_owner:
+    if membership.is_owner:
+        return redirect('select_new_owner', group_id=group_id)
+    else:
         membership.delete()
         return redirect('dashboard')
-
-    if group:
-        # The owner is the only member, delete the group
-        group.delete()
-        return redirect('dashboard')
-
-    return render(request, 'select_new_owner.html', {'group': group})
-
 
 @login_required
 def remove_player_from_group(request, group_id, player_id):
@@ -203,7 +205,7 @@ def remove_player_from_group(request, group_id, player_id):
     return redirect('group_dashboard', group_id=group_.group_id)
 
 @login_required
-def select_new_owner_view(request, group_id):
+def select_new_owner(request, group_id):
     group = get_object_or_404(Group, pk=group_id)
     membership = get_object_or_404(GroupMembership, group=group, user=request.user)
 
@@ -218,7 +220,6 @@ def select_new_owner_view(request, group_id):
             new_owner = form.cleaned_data['new_owner']
             membership.is_owner = False
             membership.delete()
-            membership.save()
             new_owner_membership = get_object_or_404(GroupMembership, group=group, user=new_owner)
             new_owner_membership.is_owner = True
             new_owner_membership.save()

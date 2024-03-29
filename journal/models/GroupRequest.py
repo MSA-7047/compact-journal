@@ -21,7 +21,7 @@ class GroupRequest(models.Model):
 
     class Meta:
         app_label = 'journal'
-        unique_together = 'recipient', 'sender'
+        unique_together = 'recipient', 'sender', 'group'
 
     def clean(self):
         super().clean()

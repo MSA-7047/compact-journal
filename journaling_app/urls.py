@@ -82,7 +82,15 @@ urlpatterns = [
     path(
         'groups/<int:group_id>/send_group_request/', send_group_request, name='send_group_request'
     ),
-    path('groups/<int:group_id>/select-new-owner/', select_new_owner_view, name='select_new_owner'),
+    path('groups/<int:group_id>/accept-group-request', accept_group_request, name='accept_group_request'),
+    path('groups/<int:group_id>/reject-group-request', reject_group_request, name='reject_group_request'),
+
+    path('groups/<int:group_id>/select-new-owner', select_new_owner, name='select_new_owner'),
+
+    path('groups/<int:group_id>/create-group-journal', create_group_journal, name='create_group_journal'),
+    path('groups/<int:group_id>/edit_group_journal/<int:journal_id>', edit_group_journal, name='edit_group_journal'),
+    path('groups/<int:group_id>/delete_group_journal/<int:journal_id>', delete_group_journal, name='delete_group_journal'),
+    path('groups/<int:group_id>/view_group_journals', view_group_journals, name='view_group_journals'),
 
     path('view_journal_as_PDF/<int:journal_id>/', view_PDF, name='view_PDF'),
     path('view_journals_as_PDF/<str:myJournals>', view_PDF_list, name='view_PDF_list'),

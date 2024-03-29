@@ -1,7 +1,8 @@
 from django.contrib import admin
-from .models import Journal
+from .models import Journal, GroupRequest
 
 admin.site.register(Journal)
+admin.site.register(GroupRequest)
 # Register your models here.
 #@admin.register(Journal)
 #class JournalAdmin(admin.ModelAdmin):

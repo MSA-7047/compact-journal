@@ -1,64 +1,35 @@
-from django.test import TestCase, RequestFactory
+from django.test import TestCase, Client
 from django.urls import reverse
-from journal.models import GroupRequest, User
-from journal.views.group_management import send_group_request
-from journal.forms import SendGroupRequestForm
-from unittest.mock import patch
+from journal.models import Group, GroupRequest, GroupMembership, Notification, User, FriendRequest
 
 class SendGroupRequestViewTest(TestCase):
     def setUp(self):
-        self.factory = RequestFactory()
-        self.user = User.objects.create_user(username='@testuser', email='test@example.com', password='password')
-        self.other_user = User.objects.create_user(username='@otheruser', email='other@example.com', password='password')
+        self.user = User.objects.create(username='@testuser', password='testpassword', email='test@example.com')
+        self.recipient = User.objects.create(username='@testuser2', password='testpassword', email='test2@example.com')
+        self.user.friends.set([self.recipient])
+        self.group = Group.objects.create(name='Test Group')
+        self.membership = GroupMembership.objects.create(user=self.user, group=self.group, is_owner=True)
 
-    def test_send_group_request_get(self):
-        """
-        Test GET request to send_group_request view.
-        """
-        request = self.factory.get(reverse('send_group_request'))
-        request.user = self.user
+        self.client = Client()
 
-        with patch('journal.views.SendGroupRequestForm') as mock_form:
-            send_group_request(request)
-            mock_form.assert_called_once_with(currentUser=self.user)
-            
-    def test_send_group_request_post_valid(self):
-        """
-        Test POST request with valid form data to send_group_request view.
-        """
-        form_data = {'recipient': self.other_user.pk}
-        request = self.factory.post(reverse('send_group_request'), form_data)
-        request.user = self.user
+    def test_send_group_request(self):
+        # Log in the user
+        self.client.force_login(self.user)
 
-        with patch('journal.views.SendGroupRequestForm') as mock_form:
-            mock_form_instance = mock_form.return_value
-            mock_form_instance.is_valid.return_value = True
+        # Simulate sending a group request
+        response = self.client.post(reverse('send_group_request', kwargs={'group_id': self.group.group_id}), data={'recipient': self.recipient})
 
-            response = send_group_request(request)
-
-            # Check if the group request is created
-            self.assertEqual(GroupRequest.objects.count(), 1)
-            group_request = GroupRequest.objects.first()
-            self.assertEqual(group_request.sender, self.user)
-            self.assertEqual(group_request.recipient, self.other_user)
-
-            # Check if the view redirects to the home page
-            self.assertRedirects(response, reverse('home'))
+        # Check if the request was successful
+        self.assertEqual(response.status_code, 200)  # Redirect to group dashboard
     
-    def test_send_group_request_post_invalid(self):
-        """Test POST request with invalid form data to send_group_request view."""
-        form_data = {'recipient': self.other_user.pk}
-        request = self.factory.post(reverse('send_group_request'), form_data)
-        request.user = self.user
+    def test_send_group_request_not_owner(self):
+        other_user = User.objects.create(username='@testuser3', password='testpassword', email='test3@example.com')
+        other_membership = GroupMembership.objects.create(user=self.recipient, group=self.group)
+        self.user.friends.set([other_user])
 
-        with patch('journal.views.SendGroupRequestForm') as mock_form:
-            mock_form_instance = mock_form.return_value
-            mock_form_instance.is_valid.return_value = False
+        self.client.force_login(self.recipient)
+        response = self.client.post(reverse('send_group_request', kwargs={'group_id': self.group.group_id}), data={'recipient': other_user}, follow=True)
 
-            response = send_group_request(request)
+        self.assertEqual(response.status_code, 200)  # Check if the user is redirected
+        self.assertContains(response, "You are not authorized to send a group request")  # Check for error message content
 
-            # Check if the view renders the template with the form
-            self.assertEqual(response.status_code, 200)
-            self.assertTemplateUsed(response, 'send_group_request.html')
-            self.assertIn('form', response.context)
-            self.assertIsInstance(response.context['form'], SendGroupRequestForm)

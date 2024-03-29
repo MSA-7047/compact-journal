@@ -12,13 +12,34 @@
             <div class="group-list">
                 {% if groups %}
                     {% for group in groups.all %}
-                    <button class="btn btn-info">
-                        {{ group.name }}
-                    </button>
+                        <a role="button" href="{% url 'group_dashboard' group_id=group.group_id %}" class="btn justify-content-center">{{ group.name }}</a>
                     {% endfor %}
                 {% endif %}
             </div>
             <a role="button" href="{% url 'create_group' %}" class="btn btn-success">Create Group +</a>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-12">
+            <h1>Group Invitations</h1>
+            {% if group_requests %}
+                <ul>
+                    {% for group_request in group_requests %}
+                        <li>{{ group_request.sender.username }} invited you to join {{ group_request.group.name }}
+                        <form action="{% url 'accept_group_request' group_id=group_request.group.group_id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success">Accept</button>
+                        </form>
+                        <form action="{% url 'reject_group_request' group_id=group_request.group.group_id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Reject</button>
+                        </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No pending group requests.</p>
+            {% endif %}
         </div>
     </div>
 </section>

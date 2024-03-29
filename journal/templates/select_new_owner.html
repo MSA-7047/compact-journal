@@ -3,19 +3,23 @@
 {% extends 'base_content.html' %}
 
 {% block content %}
-<div class="container">
-    <h1>Select New Owner for "{{ group.name }}"</h1>
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Select New Owner</button>
-    </form>
-</div>
+<section class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1>Select New Owner for "{{ group.name }}"</h1>
+            {% if messages %}
+                <ul class="messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Select New Owner</button>
+            </form>
+        </div>
+    </div>
+</section>
 {% endblock %}
