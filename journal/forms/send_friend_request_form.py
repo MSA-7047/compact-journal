@@ -16,6 +16,7 @@ class SendFriendRequestForm(forms.Form):
     def __init__(self, *args, user=None, **kwargs):
         super().__init__(*args, **kwargs)
         if user is not None:
+            self.fields['recipient'].queryset = User.objects.exclude(id=user.id)
             friends = user.friends.all()
             if friends.exists():
                 self.fields['recipient'].queryset = User.objects.exclude(

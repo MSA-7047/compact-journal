@@ -1,9 +1,11 @@
 {% extends 'base_content.html' %}
 {% block content %}
+{% load static %}
 <section class="container">
+  <link href="{% static 'django_ckeditor_5/dist/styles.css' %}" type="text/css" media="all" rel="stylesheet">
   <div class="row">
     <div class="col-12">
-      {% if is_logged_in_user %}
+      {% if is_logged_in %}
         <h1>All entries in {{journal.title}} :</h1>
       {% else %}
         <h1>All entries in {{journal.title}} (owned by {{user.username}}) :</h1>
@@ -17,11 +19,11 @@
                       <div>
                         <h3>Title: {{ entry.title }}</h3>
                         <p>Summary: {{ entry.summary }}</p>
-                        <p>
-                          <hr/>
-                          {{entry.content|safe}}
-                          <hr/>
-                        </p>
+                        <div class="ck ck-content">
+                          <hr>
+                          {{ entry.content|safe}}
+                          <hr>
+                      </div>
 
                         <p>Mood: {{entry.mood}}</p>
                         </p>

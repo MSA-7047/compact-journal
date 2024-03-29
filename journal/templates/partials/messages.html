@@ -12,6 +12,8 @@
         <i class="bi bi-exclamation-triangle"></i>
         {% elif message.tags == 'error' %}
         <i class="bi bi-x-circle"></i>
+        {% elif message.level == 35 %}
+        <i class="bi bi-bell-fill"></i>
         {% else %}
         <i class="bi bi-info-circle"></i>
         {% endif %}
@@ -23,6 +25,8 @@
         Warning
         {% elif message.tags == 'error' %}
         Error
+        {% elif message.level == 35 %}
+        New Notification
         {% else %}
         Info
         {% endif %}

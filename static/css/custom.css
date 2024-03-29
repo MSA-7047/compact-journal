@@ -1,8 +1,21 @@
-input#id_journal_title {
+/* Journal Dashboard */
+
+.list-group {
+  overflow-y: auto; /* Enable vertical scrolling if content exceeds the height */
+}
+
+
+
+
+
+
+
+
+input#id_title, input#id_title {
   width: 100%;
 }
 
-textarea#id_journal_description {
+textarea {
   width: 100%;
   resize: none; /* Disable resizing */
 }
@@ -70,7 +83,8 @@ section {
 .back-button {
   position: absolute;
   top: 0;
-  padding: 10px;
+  padding: 0 10px;
+  padding-bottom: 0px;
   text-align: left;
 }
 

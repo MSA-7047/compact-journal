@@ -55,7 +55,7 @@ def create_template(request, journal_id):
                 owner = current_user,
             )
             template.save()
-            return redirect(f'/select-template/{journal_id}')
+            return redirect(f'/select_template/{journal_id}')
         else:
             print("errors")
             return render(request, 'create_template.html', {'form': form, 'title': "Create Template"})

@@ -3,21 +3,24 @@
 {% block content %}
 <!-- Static CSS Files -->
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<link href="{% static 'django_ckeditor_5/dist/styles.css' %}" type="text/css" media="all" rel="stylesheet">
 
 <!-- ==================== Main Dashboard Section ==================== -->
-<section class="container d-flex flex-column">
+<section class="container d-flex flex-column h-100">
 
-  <div class="first-row row py-4 px-4 gy-4">
+  <div class="first-row row pb-4 px-4 gy-4">
     <div class="col-xl-12 d-flex flex-column justify-content-center">
       <div class="welcome-message p-2 border bg-light ">
-        <div class="d-flex justify-content-center">
-        <h1>Journal Dashboard: {{journal.title}}
-          <a href="{% url 'edit_journal' journal_id=journal.id %}" >
-            Edit 
-          </a></h1>
-        </div>
         
+        <div class="back-button small-buttons position-relative">
+          <a class="btn" href="{% url 'edit_journal' journal_id=journal.id %}">Edit Journal</a>
+        </div>
+
+        <div class="d-flex flex-column justify-content-center align-items-center text-center">
+          <h1>Journal Dashboard: {{journal.title}}</h1>
+
           <p>{{journal.summary}}</p>
+        </div>        
       </div>
     </div>
   </div>
@@ -25,15 +28,18 @@
   <div class="second-row row px-4 gy-4 pb-4 flex-fill">
     <div class="col-xl-5 d-flex flex-column">
       <div class="todays-journal p-2 border bg-light flex-grow-1">
+        <link href="{% static 'django_ckeditor_5/dist/styles.css' %}" type="text/css" media="all" rel="stylesheet">
         <h1>Today's Entry:</h1>
         <div class="content">
           {% if todays_entry %}
             {% for entry in todays_entry %}
               <h2>{{ entry.title }}</h2>
               Summary: {{ entry.summary }}
-              <br>
-              Journal: {{ entry.content|safe }}
-              <br>
+              <div class="ck ck-content">
+                <hr>
+                {{ entry.content|safe}}
+                <hr>
+            </div>
               Todays Mood: {{ entry.mood }}
               <br>
               Created on: {{ entry.entry_date }}
@@ -44,47 +50,49 @@
               <br>
             {% endfor %}
           {% else %}
-            <p>You have not created an entry today! Press the button below to add your entry for the day.</p>
-            <div class="d-flex justify-content-center">
-              <a href="{% url 'select_template' journal_id=journal.id %}" class="btn"> Select Template </a>
-            </div>
+          <p>You have not created an entry today! Press the button below to add your entry for the day.</p>
+          <div class="d-flex justify-content-center">
+            <a href="{% url 'select_template' journal_id=journal.id %}" class="btn"> Select Template </a>
+          </div>
           {% endif %}
         </div>
-        
+
       </div>
     </div>
 
 
 
     <div class="col-xl-7 d-flex flex-column">
-      <div class="your-groups p-2 border bg-light flex-grow-1">
-      <div class="d-flex justify-content-center">
-      <h1>All Journal Entries</h1>
-      </div>
-      <div class="d-flex justify-content-center">
-      <a class="btn" href="{% url 'journal_entries' user_id=user.id journal_id=journal.id %}">View all entries </a>
-      </div>
-        {% if journal_entries %}
-        <ul class="list-group mt-3">
-            {% for entry in journal_entries %}
-                <li class="list-group-item">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div>
-                        <h2><a href="{% url 'view_entry' entry_id=entry.id %}">{{ entry.title }}</a></h2>
-                        <p>Summary: {{ entry.summary }}</p>
-                        <p><b>Entry Date: {{ entry.entry_date }}</b></p>
-                        </div>
-                    </div>
-                </li>
-                {%endfor%}
-        {% else %}
+      <div class="your-groups p-2 border bg-light flex-grow-1 d-flex flex-column">
         <div class="d-flex justify-content-center">
-        <p>You have no entries for this journal. <br>
-          Feel free to create your first entry using the "select template" button on the left</p></div>
-        {% endif %}
+          <h1>All Journal Entries</h1>
         </div>
+
+        {% if journal_entries %}
+        <div class="d-flex justify-content-center">
+          <a class="btn" href="{% url 'journal_entries' user_id=user.id journal_id=journal.id %}">View all entries </a>
+        </div>
+        <ul class="list-group mt-3 flex-grow-1">
+          {% for entry in journal_entries %}
+          <li class="list-group-item">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h2><a href="{% url 'view_entry' entry_id=entry.id %}">{{ entry.title }}</a></h2>
+                <p>Summary: {{ entry.summary }}</p>
+                <p><b>Entry Date: {{ entry.entry_date }}</b></p>
+              </div>
+            </div>
+          </li>
+          {%endfor%}
+          {% else %}
+          <div class="d-flex justify-content-center text-center">
+            <p>You have no entries for this journal. <br>
+              Feel free to create your first entry using the "select template" button on the left.</p>
+          </div>
+          {% endif %}
       </div>
     </div>
+  </div>
 
 
 </section>
@@ -92,4 +100,3 @@
 
 
 {% endblock %}
-

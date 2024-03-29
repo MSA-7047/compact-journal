@@ -38,19 +38,19 @@ urlpatterns = [
     path('delete_account/', views.delete_account, name='delete_account'),
     path('sign_up/', SignUpView.as_view(), name='sign_up'),
 
-    path('create-journal/', create_journal, name='create_journal'),
+    path('create_journal/', create_journal, name='create_journal'),
     path('journal_dashboard/<int:journal_id>/', journal_dashboard, name='journal_dashboard'),
     path('delete_journal/<int:journal_id>/', delete_journal, name='delete_journal'),
     path('edit_journal/<int:journal_id>/', edit_journal, name='edit_journal'),
 
-    path('create-entry/<int:journal_id>', create_entry, name='create_entry'),
+    path('create_entry/<int:journal_id>', create_entry, name='create_entry'),
     path('delete_entry/<int:entry_id>/', delete_entry, name='delete_entry'),
-    path('edit_entryl/<int:entry_id>/', edit_entry, name='edit_entry'),
+    path('edit_entry/<int:entry_id>/', edit_entry, name='edit_entry'),
     path('view_entry/<int:entry_id>/', view_entry, name='view_entry'),
 
-    path('select-template/<int:journal_id>', select_template, name='select_template'),
-    path('create-template/<int:journal_id>', create_template, name='create_template'),
-    path('createJournalWithTemplate/<int:template_id>/<int:journal_id>/', views.create_journal_From_Template, name='create_journal_with_template'),
+    path('select_template/<int:journal_id>', select_template, name='select_template'),
+    path('create_template/<int:journal_id>', create_template, name='create_template'),
+    path('create_journal_with_template/<int:template_id>/<int:journal_id>/', views.create_journal_From_Template, name='create_journal_with_template'),
     path('delete_template/<int:template_id>/<int:journal_id>/', DeleteTemplate, name='delete_template'),
     path('edit_template/<int:template_id>/<int:journal_id>/', EditTemplate, name='edit_template'),
 
