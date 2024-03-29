@@ -14,11 +14,6 @@ from journal.models import *
 from journal.views.notifications import *
 from django.db import transaction
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> main
 class ProfileView(LoginRequiredMixin, DetailView):
     """Display user profile screen"""
 
