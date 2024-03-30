@@ -16,7 +16,7 @@
         <div class="right-buttons">
           {% include 'partials/filter_partial.html' with filter_form=filter_form journal=journal %}
           {% if journal_param and is_logged_in %}
-            <a class="btn" href="{% url 'export_journal' journal_entries=journal_param  %}">Export Entries  PDF</a>
+            <a class="btn" href="{% url 'export_journal' journal_entries=journal_param  %}">Export Entries As PDF</a>
           {% endif %}
         </div>
       </div>
