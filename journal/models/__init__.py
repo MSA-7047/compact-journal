@@ -5,9 +5,11 @@ from .FriendRequest import FriendRequest
 from .Group import Group
 from .GroupRequest import GroupRequest
 from .GroupMembership import GroupMembership
-from .Journal import Journal
 from .User import User
-from .Entries import Entries
+from .Journal import Journal
 from .Template import Template
 from .Notification import Notification
 from .GroupJournal import GroupJournal
+from .Entry import Entry
+from .Points import Points
+from .Level import Level

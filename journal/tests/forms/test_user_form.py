@@ -1,50 +1,55 @@
-"""Unit tests of the user form."""
-from django import forms
 from django.test import TestCase
 from journal.forms import UserForm
 from journal.models import User
+from datetime import date
 
-class UserFormTestCase(TestCase):
-    """Unit tests of the user form."""
-
-    fixtures = [
-        'journal/tests/fixtures/default_user.json'
-    ]
-
+class UserFormTest(TestCase):
+    
     def setUp(self):
-        self.form_input = {
-            'first_name': 'Jane',
+        self.user_data = {
+            'first_name': 'John',
             'last_name': 'Doe',
-            'username': '@janedoe',
-            'email': 'janedoe@example.org',
+            'username': '@johndoe',
+            'email': 'johndoe@example.com',
+            'dob': date(1990, 1, 1),
+            'bio': 'This is a test bio.',
+            'location': 'New York',
+            'nationality': 'US'
         }
 
-    def test_form_has_necessary_fields(self):
+    def test_form_fields(self):
         form = UserForm()
-        self.assertIn('first_name', form.fields)
-        self.assertIn('last_name', form.fields)
-        self.assertIn('username', form.fields)
-        self.assertIn('email', form.fields)
-        email_field = form.fields['email']
-        self.assertTrue(isinstance(email_field, forms.EmailField))
+        expected_fields = [
+            'first_name',
+            'last_name',
+            'username',
+            'email',
+            'dob',
+            'bio',
+            'location',
+            'nationality'
+        ]
+        self.assertEqual(list(form.fields.keys()), expected_fields)
 
-    def test_valid_user_form(self):
-        form = UserForm(data=self.form_input)
+    def test_form_labels(self):
+        form = UserForm()
+        self.assertEqual(form.fields['dob'].label, 'Date of Birth')
+        self.assertEqual(form.fields['nationality'].label, 'Nationality')
+
+    def test_form_widgets(self):
+        form = UserForm()
+        self.assertEqual(form.fields['dob'].widget.input_type, 'date')
+
+    def test_form_save(self):
+        form = UserForm(data=self.user_data)
         self.assertTrue(form.is_valid())
-
-    def test_form_uses_model_validation(self):
-        self.form_input['username'] = 'badusername'
-        form = UserForm(data=self.form_input)
-        self.assertFalse(form.is_valid())
-
-    def test_form_must_save_correctly(self):
-        user = User.objects.get(username='@johndoe')
-        form = UserForm(instance=user, data=self.form_input)
-        before_count = User.objects.count()
-        form.save()
-        after_count = User.objects.count()
-        self.assertEqual(after_count, before_count)
-        self.assertEqual(user.username, '@janedoe')
-        self.assertEqual(user.first_name, 'Jane')
+        user = form.save()
+        self.assertEqual(user.first_name, 'John')
         self.assertEqual(user.last_name, 'Doe')
-        self.assertEqual(user.email, 'janedoe@example.org')
+        self.assertEqual(user.username, '@johndoe')
+        self.assertEqual(user.email, 'johndoe@example.com')
+        self.assertEqual(user.dob.strftime('%Y-%m-%d'), '1990-01-01')
+        self.assertEqual(user.bio, 'This is a test bio.')
+        self.assertEqual(user.location, 'New York')
+        self.assertEqual(user.nationality, 'US')
+

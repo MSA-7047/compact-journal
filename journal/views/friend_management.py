@@ -44,7 +44,7 @@ def view_friends(request):
 @login_required
 def view_friends_profile(request, friendID):
     friend = get_object_or_404(User, id=friendID)
-    return render(request, 'view_profile.html', {"user": friend})
+    return render(request, 'view_profile.html', {"user": friend, 'my_profile': False})
 
 
 
@@ -110,5 +110,5 @@ def remove_friend(request, user_id):
     friend = get_object_or_404(User, id=user_id)
     request.user.friends.remove(friend)
     friend.friends.remove(request.user)
-    return redirect('friends')
+    return redirect('view_friends')
 

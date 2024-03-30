@@ -54,3 +54,11 @@ class SendFriendRequestFormTest(TestCase):
         all_users_except_current = User.objects.exclude(id=self.user.id)
         for other_user in all_users_except_current:
             self.assertIn(other_user, queryset)
+
+    def test_form_invalid_user(self):
+        form = SendFriendRequestForm(user=None)
+        queryset = form.fields['recipient'].queryset
+        all_users_except_current = User.objects.exclude(id=self.user.id)
+        for other_user in all_users_except_current:
+            self.assertIn(other_user, queryset)
+

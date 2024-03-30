@@ -5,9 +5,9 @@
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 
 <!-- ==================== Main Dashboard Section ==================== -->
-<section class="container d-flex flex-column">
+<section class="container d-flex flex-column h-100">
 
-  <div class="first-row row py-4 px-4 gy-4">
+  <div class="first-row row pb-4 px-4 gy-4">
     <div class="col-xl-8 d-flex flex-column justify-content-center">
       <div class="welcome-message p-2 border bg-light ">
         <h1>Welcome to your dashboard {{user.username}}</h1>
@@ -23,34 +23,31 @@
   <div class="second-row row px-4 gy-4 pb-4 flex-fill">
     <div class="col-xl-5 d-flex flex-column">
       <div class="todays-journal p-2 border bg-light flex-grow-1">
-        <h1>Today's Journal:</h1>
-        <div class="content">
-          {% if todays_journal is None %}
-            <p>You have not created a journal today! Press the button below to add your journal for the day.</p>
+        <h1>Your Journals:</h1>
+          <div class="content">
+            {% if my_journals is None %}
+              <p>You have no Journals! Press below to create your first journal</p>
+            {% else %}
+                {% for journal in my_journals%}
+                        <hr>
+                        <h2>{{ journal.title }}</h2>
+                        <p>{{ journal.summary }}</p>
+                        {% if journal.private %}
+                        <p><b>Private Journal</b></p>
+                        {% else %}
+                        <p><b>Public Journal</b></p>
+                        {% endif %}
+                        <p>Created on: {{journal.entry_date}}</p>
+                        <a href="{% url 'journal_dashboard' journal_id=journal.id %}" class="btn btn-sm btn-outline-danger">
+                          view
+                        </a>
+                        <hr>
+                {% endfor %}
+            {% endif %}
             <div class="d-flex justify-content-center">
-              <a href="{% url 'select_template' %}" class="btn"> Select Template </a>
+              <a href="{% url 'create_journal' %}" class="btn"> Create Journal </a>
             </div>
-          {% else %}
-            <p>
-              {% for journal in todays_journal%}
-                <h2>{{ journal.journal_title }}</h2>
-                Summary: {{ journal.journal_description }}
-                <br>
-                Journal: {{ journal.journal_bio|safe }}
-                <br>
-                Todays Mood: {{ journal.journal_mood }}
-                <br>
-                Created on: {{ journal.entry_date }}
-                <br>
-                <a href="{% url 'edit_journal' journalID=journal.id%}" class="edit-button">Edit</a>
-                <br>
-                Last edited at : {{ journal.last_edited}}
-                <br>
-              {% endfor %}
-            </p>
-          {% endif %}
         </div>
-        
       </div>
     </div>
 

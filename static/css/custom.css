@@ -1,12 +1,31 @@
-input#id_journal_title {
+/*-- ==================== Journal Dashboard ==================== --*/
+.list-group {
+  overflow-y: auto; /* Enable vertical scrolling if content exceeds the height */
+}
+
+
+/*-- ==================== CK Editor Container ==================== --*/
+.ck-editor__main div {
+  resize: none;
+  height: 100px;
+}
+
+/*-- ==================== Input Boxes ==================== --*/
+input#id_title, input#id_title {
   width: 100%;
 }
 
-textarea#id_journal_description {
+textarea {
   width: 100%;
   resize: none; /* Disable resizing */
 }
 
+textarea#id_bio.form-control {
+  height: 100px;
+  resize: none;
+}
+
+/*-- ==================== Containers ==================== --*/
 .container .row h1 {
   -webkit-text-stroke: 1px black;
   color: #ffffff;
@@ -27,11 +46,18 @@ textarea#id_journal_description {
   }
 }
 
+/*-- ==================== Sections ==================== --*/
+section {
+  padding-top: 95px;
+}
+
+/*-- ==================== Buttons ==================== --*/
+
 .btn, .btn:focus {
   color: #ffffff;
   background: #26363e;
   padding: 10px 20px;
-  margin: 25px 0px;
+  margin: 5px 0px 20px;
   display: inline-flex;
   border-radius: 1000px;
   font-family: "Tilt-Warp", sans-serif;
@@ -44,11 +70,40 @@ textarea#id_journal_description {
   background: #93c9f7;
   transition: 0.5s;
 }
-/*-- ==================== Sections ==================== --*/
-section {
-    padding-top: 90px;
-    height: 100vh;
-  }
+
+.btn-delete, .btn-delete:focus {
+  background: #dc3545;
+}
+
+.btn-delete:hover, .btn-delete:focus:hover {
+  background: #b12a38;
+  transition: 0.5s;
+}
+
+.small-buttons {
+  display: flex;
+  align-items: center;
+}
+
+.small-buttons .btn {
+  padding: 5px 10px;
+  font-size: 12px;
+  margin-bottom: 0px;
+}
+
+.small-buttons .btn-left {
+  margin-right: auto; /* Keeps the "Back" button on the left */
+}
+
+.right-buttons {
+  display: flex;
+}
+
+.right-buttons .btn {
+  margin-left: 5px; /* Add margin between buttons if necessary */
+}
+
+
 /* =======================================================*/
 
 /*
@@ -130,29 +185,6 @@ ul.errorlist {
   margin-bottom: 20px;
 }
 
-/*
- * Profile
- */
-.profile-image {
-  width: 120px;
-  clear:both;
-  float:left;
-}
-
-.profile-text {
-  overflow:hidden;
-  padding-left:20px
-}
-
-h3.profile-title {
-  margin-bottom: 0px;
-}
-
-.profile-username {
-  color: #777777;
-  font-weight: 300;
-  font-style: italic;
-}
 
 /**
  * Buttons
@@ -167,5 +199,7 @@ h3.profile-title {
     cursor: pointer;
 }
 
-
-
+/*-- ==================== Body Default Font ==================== --*/
+body {
+  font-family: "Ubuntu", sans-serif;
+}

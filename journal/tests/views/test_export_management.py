@@ -1,0 +1,38 @@
+from django.test import TestCase, RequestFactory
+from django.http import HttpRequest
+from journal.views import export_single_entry_as_PDF, export_journal_as_PDF
+from journal.models import Entry, User, Journal
+
+class PDFExportViewTest(TestCase):
+
+
+    fixtures = [
+        'journal/tests/fixtures/default_user.json']
+
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.user = User.objects.get(username='@johndoe')
+        self.journal = Journal.objects.create(title='Test Journal', summary='Journal Summary', owner=self.user, private=True)
+        self.journal_entry = Entry.objects.create(owner=self.user, title='Journal Entry 1', summary='Journal Summary 1', content='Journal Content 1', journal=self.journal, private=True)
+
+    def test_export_single_entry_as_PDF(self):
+        request = self.factory.get('/export-entry-pdf/1/')
+        request.user = self.user
+        response = export_single_entry_as_PDF(request, entry_id=1)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get('Content-Disposition'), 'attachment; filename=Journal Entry 1')
+
+    def test_export_single_entry_as_PDF_invalid_entry_id(self):
+        request = self.factory.get('/export-entry-pdf/1000/')
+        request.user = self.user
+        response = export_single_entry_as_PDF(request, entry_id=1000)
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_export_journal_as_PDF(self):
+        id = self.journal_entry.id
+        request = self.factory.get(f'/export-journal-pdf/{id}/')
+        request.user = self.user
+        response = export_journal_as_PDF(request, journal_entries='1')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get('Content-Disposition'), 'attachment; filename=Test Journal entries')

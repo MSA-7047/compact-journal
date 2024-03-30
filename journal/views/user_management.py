@@ -14,10 +14,24 @@ from journal.models import *
 from journal.views.notifications import *
 from django.db import transaction
 
-
-
 class ProfileView(LoginRequiredMixin, DetailView):
     """Display user profile screen"""
+
+    def get_context_data(self, **kwargs):
+        user = self.request.user
+        recent_points = Points.objects.filter(user=user).order_by('-id')[:5]
+        
+        level_data = points_to_next_level(user)
+
+        username = user.username
+
+        context = super().get_context_data(**kwargs)
+        context['total_points'] = calculate_user_points(user)
+        context['points_to_next_level'] = level_data['points_to_next_level']
+        context['points_needed'] = level_data['points_needed']  # Add this if you want to display it
+        context['recent_points'] = recent_points
+        context['user_username'] = username
+        return context
 
     template_name = "view_profile.html"
 
@@ -30,7 +44,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     """Display user profile editing screen, and handle profile modifications."""
 
     model = UserForm
-    template_name = "profile.html"
+    template_name = "edit_profile.html"
     form_class = UserForm
 
     def get_object(self):
@@ -39,7 +53,15 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         """Process a valid form."""
-        create_notification(self.request)
+
+        """Notification Creation"""
+        notif_message = "Profile update message. It can be changed whenever I want it to."
+        create_notification(self.request, notif_message, "reminder")
+        
+        user = self.request.user
+
+        Points.objects.create(user=user, points=600, description="test")
+
         messages.success(self.request, "Profile updated!")
         return super().form_valid(form)
 
@@ -59,8 +81,9 @@ def dashboard(request):
 
     current_year = datetime.now().year
     current_month = datetime.now().strftime("%B")
-    todays_journal = Journal.objects.filter(entry_date__date=today).filter(journal_owner=current_user)
-    notifications = Notification.objects.filter(user=request.user, is_read=False)
+    my_journals = current_user.journals.all()
+    print(my_journals)
+    notifications = Notification.objects.filter(user=request.user, is_read=False).order_by('-time_created')
 
     return render(
         request,
@@ -69,7 +92,7 @@ def dashboard(request):
             'user': current_user,
             'groups': user_groups,
             'current_year': current_year, 'current_month': current_month,
-            'todays_journal': todays_journal or None,
+            'my_journals': my_journals or None,
             'notifications': notifications
         }
     )
@@ -78,7 +101,7 @@ def dashboard(request):
 def delete_account(request):
     if request.method == 'POST':
         form = ConfirmAccountDeleteForm(request.POST)
-        if form.is_valid() and form.cleaned_data['confirmation'].upper() == "YES":
+        if form.is_valid():
             to_del = request.user
 
             with transaction.atomic():
@@ -92,3 +115,34 @@ def delete_account(request):
         form = ConfirmAccountDeleteForm()
 
     return render(request, 'delete_account.html', {'form': form})
+
+from django.db.models import Sum
+from journal.models import Points
+
+def calculate_user_points(user):
+    """
+    Calculate the total points for a given user.
+    """
+    total_points = Points.objects.filter(user=user).aggregate(total=Sum('points'))['total']
+    return total_points if total_points is not None else 0
+
+def points_to_next_level(user):
+    total_points = calculate_user_points(user)
+    user_level, _ = Level.objects.get_or_create(user=user)
+    level_data = user_level.calculate_level(total_points)
+    return level_data
+
+def give_points(user, ):
+    Points.objects.create(user, points=600, description="test")
+
+@login_required
+def give_points(request, points, description):
+    current_user = request.user
+
+    Points.objects.create(
+        user=current_user,
+        points=points,
+        description = description
+    )
+    create_notification(request, f"You have received {points} points", "points")
+

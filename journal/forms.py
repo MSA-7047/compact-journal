@@ -177,21 +177,7 @@ class CreateJournalForm(forms.ModelForm):
         # otherwise it will throw error in console
         self.fields["journal_bio"].required = False
 
-    # journal_title = forms.CharField(label="Title")
-    # journal_description = forms.CharField(label="Description")
-    # journal_bio = forms.CharField(label="Bio")
-    # journal_mood = forms.ChoiceField(choices=(
-    #     ('Happy', 'Happy'),
-    #     ('Sad', 'Sad'),
-    #     ('Angry', 'Angry'),
-    #     ('Neutral', 'Neutral'),
-    # ), required=True)
 
-
-    # journal_title = forms.CharField(label="Title")
-    # journal_description = forms.CharField(label="Description")
-    # journal_bio = forms.CharField(label="Bio")
-    # journal_mood = forms.CharField(label="Mood")
 
     class Meta:
         model = Journal
@@ -201,22 +187,6 @@ class CreateJournalForm(forms.ModelForm):
 
 class EditJournalInfoForm(forms.ModelForm):
 
-    # class Meta:
-    #     model = Journal
-    #     fields = ['journal_title', 'journal_description', 'journal_bio']
-
-
-
-    # def save(self, commit=True):
-    #     instance = super().save(commit=False)
-    #     instance.journal_title = self.cleaned_data['journal_title']
-    #     instance.journal_description = self.cleaned_data['journal_description']
-    #     instance.journal_bio = self.cleaned_data['journal_bio']
-    #     if commit:
-    #         instance.save()
-    #     return instance
-
-    #journal_bio = forms.CharField(widget=CKEditor5Widget(config_name='extends'), required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -250,12 +220,13 @@ class JournalFilterForm(forms.Form):
 
     title_search = forms.CharField(required=False)
 
-    def __init__(self, user, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, user=None, *args, **kwargs):
+        self.user = user
+        super(JournalFilterForm, self).__init__(*args, **kwargs)
 
     def filter_tasks(self):
 
-        myjournals = Journal.objects.all()
+        myjournals = Journal.objects.filter(journal_owner=self.user)
         #label = self.cleaned_data.get('label')
         title_contains = self.cleaned_data.get('title_contains')
         entry_date = self.cleaned_data.get('entry_date')

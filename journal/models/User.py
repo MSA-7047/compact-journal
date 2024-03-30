@@ -4,8 +4,8 @@ from django.db import models
 from libgravatar import Gravatar
 from django_countries.fields import CountryField
 from .Group import Group
-from .Journal import Journal
 from .FriendRequest import FriendRequest
+
 
 
 class User(AbstractUser):
@@ -27,11 +27,11 @@ class User(AbstractUser):
     friends = models.ManyToManyField('self', symmetrical=False, blank=True)
     dob = models.DateField(null=True, blank=True)
     bio = models.TextField(blank=True, default='')
-    # This implementation could need refactoring based on calendar implementation
     groups = models.ManyToManyField(Group, through='GroupMembership')
     location = models.CharField(max_length=50, blank=False)
-    nationality = CountryField()
+    nationality = CountryField(blank=True, null=True)
     date_joined = models.DateTimeField(auto_now_add=True)
+
 
     class Meta:
         app_label = 'journal'
@@ -50,19 +50,25 @@ class User(AbstractUser):
     def send_friend_request(self, user):
         invitation, _ = FriendRequest.objects.get_or_create(recipient=user, sender=self)
         return invitation
-
+    
     def accept_request(self, user):
         request = self.invitations.filter(recipient=self, sender=user, status='Pending').first()
         if not request:
             return False
+
+        # Add the sender to the user's friends list
         self.friends.add(user)
+
+        # Update the status of the friend request
         request.status = 'Accepted'
         request.save()
+
         return True
 
     def reject_request(self, user):
-        request = self.invitations.filter(recipient=self, sender=user, status='Pending')
+        request = self.invitations.filter(recipient=self, sender=user, status='Pending').first()
         if not request:
             return False
         request.status = 'Rejected'
+        request.save()
         return True
