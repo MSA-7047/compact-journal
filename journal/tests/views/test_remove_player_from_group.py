@@ -73,3 +73,15 @@ class RemovePlayerFromGroupViewTest(TestCase):
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)
         self.assertEqual(str(messages[0]), "The owner cannot be removed from the group.")
+    
+    def test_remove_player_not_in_group(self):
+        new_user = User.objects.create(username="@test17", password="TESTPASSWORD123", email="email@email.org")
+        self.client.force_login(self.owner_user)
+
+        response = self.client.post(reverse('remove_player_from_group', args=[self.group.group_id, new_user.id]))
+
+        self.assertEqual(response.status_code, 404)  # Assuming you return a 404 when the player is not found in the group
+
+        # Optionally, check that the player is not removed from the group
+        self.assertFalse(GroupMembership.objects.filter(user=new_user, group=self.group).exists())
+
