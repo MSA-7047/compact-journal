@@ -31,9 +31,15 @@
                             <a href="{% url 'edit_journal' journal_id=journal.id%}" class="btn btn-sm btn-outline-danger">
                               Edit Journal
                             </a>
-                        {% endif %}
+                            <a href="{% url 'journal_dashboard' journal_id=journal.id %}" class="btn btn-sm btn-secondary">
+                              View Journal
+                            </a>
+                          {% else %}
                             <a href="{% url 'journal_entries' user_id=user.id journal_id=journal.id %}" class="btn btn-sm btn-secondary">
                               View Journal
+                            </a>
+
+                          {% endif %}
                             </a>
                         </p>
                       </div>
