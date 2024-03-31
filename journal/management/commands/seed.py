@@ -47,10 +47,10 @@ class Command(BaseCommand):
     help = "Seeds database with sample data"
 
     # Database 'settings'
-    GROUP_COUNT = 50
-    USER_COUNT_PER_GROUP = 6
+    GROUP_COUNT: int = 50
+    USER_COUNT_PER_GROUP: int = 6
 
-    DEFAULT_PASSWORD = "Password123"
+    DEFAULT_PASSWORD: str = "Password123"
 
     def __init__(self) -> None:
         self._faker: Faker = Faker("en_GB")
@@ -118,16 +118,23 @@ class Command(BaseCommand):
     ) -> GroupMembership:
         """Creates a GroupMembership record which ties the user to the group
 
-        :param user:
-        :param group:
-        :param is_owner:
+        :param user: User to add the the group
+        :param group: Group in which the user is being added to 
+        :param is_owner: Whether the user specified is the owner of the group
 
-        :return:"""
+        :return: GroupMembership object that represents user membership to group"""
         return GroupMembership.objects.create(user=user, group=group, is_owner=is_owner)
 
     def try_to_bind_group_to_user(
         self, user: User, group: Group, is_owner: bool
     ) -> GroupMembership:
+        """Ensures that the binding is aborted safely upon an error occuring
+
+        :param user: User to add the the group
+        :param group: Group in which the user is being added to 
+        :param is_owner: Whether the user specified is the owner of the group
+
+        :return: GroupMembership object that represents user membership to group"""
         try:
             return self.bind_group_to_user(user, group, is_owner)
         except Exception:
@@ -136,13 +143,19 @@ class Command(BaseCommand):
     def try_and_bind_multiple_users_to_empty_group(
         self, group: Group, user_list: list[User]
     ) -> None:
-
+        """Creates Membership instances in the database for a list of users joining a group
+        
+        :param group: The group in which the users will be joining to
+        :param user_list: the list of users that will join the group"""
         owner = self.try_to_bind_group_to_user(user_list[0], group, True)
         other_members = [
             self.try_to_bind_group_to_user(user, group, False) for user in user_list[1:]
         ]
 
     def create_users_for_groups(self, group: Group) -> None:
+        """Creates and binds the users to the given group
+        
+        :param group: The group the users will be joining"""
         group_users = [
             self.try_to_create_user() for _ in range(Command.USER_COUNT_PER_GROUP)
         ]
@@ -150,19 +163,26 @@ class Command(BaseCommand):
         self.try_and_bind_multiple_users_to_empty_group(group, group_users)
 
     def generate_groups(self) -> None:
+        """Generates the groups & populates them with random users"""
         current_group_count = Group.objects.count()
+
         while current_group_count < Command.GROUP_COUNT:
             print(f"Creating group {current_group_count}/{Command.GROUP_COUNT}")
             current_group: Group = self.try_to_create_group(current_group_count)
             print("\t- Populating group")
             if current_group is not None:
                 self.create_users_for_groups()
+
+            current_group_count = Group.objects.count()
         print("Seeding complete")
 
     def generate_fixtures(
         self, user_fixtures: list[list[dict]], group_fixtures: list[dict]
     ) -> None:
-
+        """Uses the provided fixtures to create predefined groups, users & memberships
+        
+        :param user_fixtures: contains fixtures of users (2-D to accomodate for memberships)
+        :param group_fixtures: contains fixtures of groups"""
         for user_list, group in zip(user_fixtures, group_fixtures, strict=True):
             created_group: Group = Group.objects.get_or_create(**group)
             print(f"Creating group from fixture")
@@ -175,6 +195,7 @@ class Command(BaseCommand):
             )
 
     def handle(self, *args: Any, **options: Any) -> str | None:
-        self.generate_fixtures()
+        """Handles request"""
+        self.generate_fixtures(user_fixtures, group_fixtures)
         self.generate_groups()
         return super().handle(*args, **options)
