@@ -11,9 +11,13 @@
                             {{ journal.journal_title }}
                             {{ journal.journal_description }}
                             {{ journal.entry_date }}
+                            {{ journal.last_edited_by }}
                             {{ journal.journal_mood }}
+                            <a role="button" class="btn btn-info" href="{% url 'edit_group_journal' group_id=group.group_id journal_id=journal.id%}">Edit Journal</a>
                             {% if is_owner %}
-                                <a role="button" class="btn btn-info" href="#">Edit Journal</a>
+                                <form method="post" action="{% url 'delete_group_journal' group_id=group.group_id journal_id=journal.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Delete Journal</button>
                             {% endif %}
                         </div>
                     {% endfor %}
@@ -24,7 +28,7 @@
                     </div>
                 {% endif %}
             </div>
-            <a role="button" class="btn btn-info" href="">Create Journal</a>
+            <a role="button" class="btn btn-info" href="{% url 'create_group_journal' group_id=group.group_id%}">Create Journal</a>
 
             <div class="list-group">
                 {% if members %}
@@ -47,10 +51,12 @@
                 {% endif %}
             </div>
             {% if is_owner %}
-                <a role="button" class="btn btn-info" href="{% url 'invite_group_member' %}">Invite Member</a>
+                <a role="button" class="btn btn-info" href="{% url 'send_group_request' group_id=group.group_id%}">Invite Member</a>
+                <a role="button" class="btn btn-warning" href="{% url 'edit_group' group_id=group.group_id %}">Edit Group</a>
                 <a role="button" class="btn btn-warning" href="{% url 'delete_group' group_id=group.group_id %}">Delete Group</a>
             {% endif %}
             <a role="button" class="btn btn-warning" href="{% url 'leave_group' group_id=group.group_id %}">Leave Group</a>
+            <a role="button" class="btn btn-info" href="{% url 'view_group_journals' group_id=group.group_id%}">View All Group Journals</a>
         </div>
     </div>
 </div>

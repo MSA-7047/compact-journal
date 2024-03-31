@@ -9,10 +9,4 @@ class CreateGroupJournalForm(forms.ModelForm):
 
     class Meta:
         model = GroupJournal
-        fields = [
-            'journal_title', 
-            'journal_description', 
-            'journal_bio', 
-            'journal_mood', 
-            'private'
-        ]
+        fields = ['journal_title', 'journal_description', 'journal_bio', 'journal_mood']

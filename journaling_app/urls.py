@@ -88,8 +88,17 @@ urlpatterns = [
         name='remove_player_from_group'
     ),
     path(
-        'invite_to_group/', send_group_request, name='invite_group_member'
+        'groups/<int:group_id>/send_group_request/', send_group_request, name='send_group_request'
     ),
+    path('groups/<int:group_id>/accept-group-request', accept_group_request, name='accept_group_request'),
+    path('groups/<int:group_id>/reject-group-request', reject_group_request, name='reject_group_request'),
+
+    path('groups/<int:group_id>/select-new-owner', select_new_owner, name='select_new_owner'),
+
+    path('groups/<int:group_id>/create-group-journal', create_group_journal, name='create_group_journal'),
+    path('groups/<int:group_id>/edit_group_journal/<int:journal_id>', edit_group_journal, name='edit_group_journal'),
+    path('groups/<int:group_id>/delete_group_journal/<int:journal_id>', delete_group_journal, name='delete_group_journal'),
+    path('groups/<int:group_id>/view_group_journals', view_group_journals, name='view_group_journals'),
 
     path('export_entry_as_PDF/<int:entry_id>/', export_single_entry_as_PDF, name='export_entry'),
     path('export_journal_as_PDF/<str:journal_entries>', export_journal_as_PDF, name='export_journal'),

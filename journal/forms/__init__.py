@@ -13,4 +13,5 @@ from .send_friend_request_form import SendFriendRequestForm
 from .sign_up_form import SignUpForm
 from .user_form import UserForm
 from .template_form import CreateTemplateForm
-
+from .select_new_owner_form import SelectNewOwnerForm
+from .confirm_group_deletion import ConfirmGroupDeleteForm

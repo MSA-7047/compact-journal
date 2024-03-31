@@ -36,9 +36,16 @@
       
       <div class="p-2 border bg-light">
         {% if user.username == user_username %}
-          <div class="manage-profile-button small-buttons position-relative">
+        <div class="small-buttons position-relative">
+          <a class="btn btn-left" href="{% url 'dashboard' %}">
+            <i class="bi bi-arrow-left me-2"></i>
+            <span>Back</span>
+          </a>
+        
+          <div class="right-buttons">
             <a class="btn" href="{% url 'edit_profile' %}">Manage Profile</a>
           </div>
+        </div>
         {% endif %}
 
         <div class="d-flex align-items-center justify-content-center">
