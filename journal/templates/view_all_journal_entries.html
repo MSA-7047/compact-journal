@@ -4,7 +4,7 @@
 <link href="{% static 'django_ckeditor_5/dist/styles.css' %}" type="text/css" media="all" rel="stylesheet">
 
 <section class="container">
-  <div class="row py-4 px-4 justify-content-center">
+  <div class="row px-4 justify-content-center">
 
     <div class="col-12 row border bg-light rounded justify-content-center align-items-center position-relative pt-2 pb-3">
 
@@ -61,15 +61,18 @@
                         <hr>
                       </div>
 
-                      <p>
-                        <b>Mood:</b>
-                        {{entry.mood}}
-                      </p>
-
-                      <p>
-                        <b>Entry Date:</b>
-                        {{ entry.entry_date }}
-                      </p>
+                      <div class="d-flex justify-content-between">
+                        <p>
+                          <b>Mood:</b>
+                          {{entry.mood}}
+                        </p>
+                      
+                        <p>
+                          <b>Entry Date:</b>
+                          {{ entry.entry_date }}
+                        </p>
+                      </div>
+                      
                       
                     </div>
                 </li>
