@@ -1,21 +1,45 @@
 from django.test import TestCase
-from journal.models import *
-from journal.models.GroupJournal import GroupJournal
-from django.utils import timezone
+from django.contrib.auth import get_user_model
+from journal.models import GroupEntry, Group
 
-class GroupMembershipTestCase(TestCase):
+User = get_user_model()
+
+class GroupEntryModelTest(TestCase):
+
+    fixtures = ['journal/tests/fixtures/default_user.json']
+
+
     def setUp(self):
-        self.user = User.objects.create(username="@test_user", password='Password123', email="test@hotmail.com")
-        self.group = Group.objects.create(name="Test Group")
-        self.membership = GroupMembership.objects.create(user=self.user, group=self.group, is_owner=True)
-        self.journal = GroupJournal.objects.create(
-            journal_title='Test Journal',
-            journal_description='Description of the test journal.',
-            journal_bio='Bio of the test journal.',
-            entry_date=timezone.now(),
-            journal_mood='Happy',
-            journal_group=self.group
+        self.user = User.objects.get(username='@johndoe')
+        self.group = Group.objects.create(name='Test Group')
+
+    def test_group_entry_creation(self):
+        # Create a GroupEntry instance
+        entry = GroupEntry.objects.create(
+            title='Test Entry',
+            summary='This is a test summary.',
+            content='This is the content of the test entry.',
+            mood='Happy',
+            owner=self.group,
+            last_edited_by=self.user
         )
-    
-    def test_journal_name_is_valid(self):
-        self.journal.journal_title = 'Test Journal'
+
+        # Retrieve the created entry from the database
+        retrieved_entry = GroupEntry.objects.get(pk=entry.pk)
+
+        # Assert that the retrieved entry matches the created entry
+        self.assertEqual(retrieved_entry.title, 'Test Entry')
+        self.assertEqual(retrieved_entry.summary, 'This is a test summary.')
+        self.assertEqual(retrieved_entry.content, 'This is the content of the test entry.')
+        self.assertEqual(retrieved_entry.mood, 'Happy')
+        self.assertEqual(retrieved_entry.owner, self.group)
+        self.assertEqual(retrieved_entry.last_edited_by, self.user)
+
+    def test_group_entry_fields(self):
+        # Assert that the fields have the expected attributes
+        entry = GroupEntry()
+        self.assertEqual(entry._meta.get_field('title').verbose_name, 'Title')
+        self.assertEqual(entry._meta.get_field('summary').max_length, 200)
+        # Add assertions for other fields as needed
+
+   

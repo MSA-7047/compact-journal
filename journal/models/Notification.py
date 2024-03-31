@@ -10,7 +10,7 @@ class Notification(models.Model):
         ('points', 'Points'),
     ]
 
-    notification_type = models.CharField(max_length=15, choices=NOTIFICATION_TYPES)
+    notification_type = models.CharField(max_length=15, choices=NOTIFICATION_TYPES, default='info')
     message = models.TextField()
     time_created = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
@@ -22,3 +22,12 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"Notification for {self.user.username} - {self.message}"
+    
+    class Meta:
+        ordering = ['-time_created']
+    
+
+class UserMessage(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    message = models.TextField()
+    read = models.BooleanField(default=False)
