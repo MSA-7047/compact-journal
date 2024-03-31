@@ -3,6 +3,8 @@ from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonRespon
 from django.shortcuts import redirect, render, get_object_or_404
 from journal.models import Group, GroupMembership, User, GroupJournal
 from journal.forms import *
+from django.contrib import messages
+
 
 
 @login_required    

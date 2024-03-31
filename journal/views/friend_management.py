@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from journal.views.notifications import *
 from journal.models import *
 from journal.forms import *
-
+from journal.views.user_management import calculate_user_points, points_to_next_level
 
 def get_friend_requests_and_sent_invitations(user):
     requests = FriendRequest.objects.filter(recipient=user, is_accepted=False)
@@ -44,7 +44,25 @@ def view_friends(request):
 @login_required
 def view_friends_profile(request, friendID):
     friend = get_object_or_404(User, id=friendID)
-    return render(request, 'view_profile.html', {"user": friend, 'my_profile': False})
+    
+
+    totalpoints = calculate_user_points(friend)
+    level_data = points_to_next_level(friend)
+    points_next_level = level_data['points_to_next_level']
+    points_needed = level_data['points_needed']
+    recent_points = Points.objects.filter(user=friend).order_by('-id')[:5]
+
+
+
+    return render(request, 'view_profile.html', 
+                  {"user": friend, 
+                   'my_profile': False, 
+                   'total_points': totalpoints, 
+                   'level_data': level_data,
+                   'points_to_next_level': points_next_level,
+                   'points_needed': points_needed,
+                   'recent_points': recent_points
+                   })
 
 
 

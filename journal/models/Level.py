@@ -19,7 +19,7 @@ class Level(models.Model):
 
     def calculate_level(self, total_points=int(0)):
         level = 1
-        points_needed = 200
+        points_needed = 100
         increment = 50
         points_to_next_level = points_needed - total_points
 
@@ -28,10 +28,7 @@ class Level(models.Model):
             increment *= 1.5  
             points_needed += round(increment / 50) * 50
             points_to_next_level = points_needed - total_points
-
-            
-
-
+            #print("points needed for level ",level,"is",points_needed)
 
         return {
             'current_level': level,

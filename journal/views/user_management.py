@@ -30,7 +30,7 @@ class ProfileView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['total_points'] = calculate_user_points(user)
         context['points_to_next_level'] = level_data['points_to_next_level']
-        context['points_needed'] = level_data['points_needed']  # Add this if you want to display it
+        context['points_needed'] = level_data['points_needed'] 
         context['recent_points'] = recent_points
         context['user_username'] = username
         return context
@@ -76,6 +76,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
             messages.success(self.request, "Profile updated! However, you must wait before getting points again.")
         
         create_notification(self.request, "Profile was updated.", "info")
+        give_points(self.request, 200, "Profile Updated.")
 
         return super().form_valid(form)
 

@@ -88,6 +88,9 @@ def delete_journal(request, journal_id):
     if journal.owner != current_user:
         return render(request, 'permission_denied.html')
     
+    notif_message = f"Journal {journal.title} deleted!"
+    create_notification(request, notif_message, "info")
+
     journal.delete()
     return redirect('dashboard')
 

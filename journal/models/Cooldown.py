@@ -6,7 +6,7 @@ User = get_user_model()
 
 class ActionCooldown(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="cooldowns")
-    action_type = models.CharField(max_length=50)  # e.g., 'update_profile', 'create_journal'
+    action_type = models.CharField(max_length=50)
     last_performed = models.DateTimeField()
 
     class Meta:
