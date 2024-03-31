@@ -4,6 +4,9 @@ from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from journal.models import GroupRequest, Group, GroupMembership, User, GroupEntry, Notification
 from journal.forms import *
+from journal.views import *
+from journal.models.Cooldown import ActionCooldown
+from journal.views.user_management import give_points
 
 
 @login_required
@@ -42,10 +45,21 @@ def create_group(request) -> HttpResponse:
     if request.method == 'POST':
         form = GroupForm(request.POST)
         if form.is_valid():
-            form.save(commit=True, creator=request.user)
+            form_data = form.save(commit=True, creator=request.user)
+
+            if ActionCooldown.can_perform_action(request.user, 'create_group', cooldown_hours=1):
+                messages.success(request, "New Group Created! Points awarded.")
+                give_points(request, 20, "New Group Created.")
+            else:
+                messages.success(request, "New group created! However, you must wait before getting points again.")
+
+            create_notification(request, f"New group {form_data.name} created!", "info")
+
             return redirect('groups')
     else:
         form = GroupForm()
+
+    
 
     return render(request, 'create_group.html', {'form': form})
 
@@ -55,6 +69,8 @@ def edit_group(request, group_id):
     """Allows owner of the group to edit the group."""
     group = get_object_or_404(Group, pk=group_id)
     membership = get_object_or_404(GroupMembership, group=group, user=request.user)
+
+    old_group_name = group.name
 
     form = GroupForm(instance=group)
 
@@ -69,7 +85,14 @@ def edit_group(request, group_id):
             cleaned_data = form.cleaned_data
             group.name = cleaned_data['name']
             group.save()  # Save the updated group
+
             messages.success(request, "Group name updated successfully.")
+
+            memberships = GroupMembership.objects.filter(group=group)
+            for member in memberships:
+                notif_message = f"Group '{old_group_name}' has been changed to '{group.name}'."
+                Notification.objects.create(notification_type="info", message=notif_message, user=member.user)
+
             return redirect('group_dashboard', group_id=group_id)
 
     return render(request, 'edit_group.html', {'form': form, 'group_id': group.group_id})
@@ -117,6 +140,7 @@ def accept_group_request(request, group_id):
     # Create GroupMembership for the user
     GroupMembership.objects.create(user=request.user, group=group)
     Notification.objects.create(notification_type="info", message=f"{request.user} has joined your group named {group}", user=group_request.sender)
+    Points.objects.create(user=group_request.sender, points=40, description=f"{request.user} has joined your group named {group}")
 
     group_request.delete()
     #invitation.delete()
@@ -152,9 +176,15 @@ def delete_group(request, group_id):
         form = ConfirmGroupDeleteForm(request.POST)
         if form.is_valid() and form.cleaned_data['confirmation'].upper() == "YES":
             to_del = Group.objects.filter(group_id=group_id).first()
-            to_del.delete()
-
+            
             messages.success(request, f"The group has been deleted.")
+
+            memberships = GroupMembership.objects.filter(group=group)
+            for member in memberships:
+                notif_message = f"Group '{to_del.name}' has been deleted."
+                Notification.objects.create(notification_type="info", message=notif_message, user=member.user)
+            
+            to_del.delete()    
             return redirect('dashboard')
         else:
             form.add_error('confirmation', 'Please enter "YES" to confirm deletion.')

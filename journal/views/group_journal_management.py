@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
-from journal.models import Group, GroupMembership, User, GroupEntry
+from journal.models import Group, GroupMembership, User, GroupEntry, Notification
 from journal.forms import *
 from django.contrib import messages
 
@@ -24,6 +24,12 @@ def create_group_journal(request, group_id):
             entry.last_edited_by = request.user
             entry.owner = group
             entry.save()
+
+            memberships = GroupMembership.objects.filter(group=group)
+            for member in memberships:
+                notif_message = f"A new group entry {entry.title} in '{group.name}' has been created."
+                Notification.objects.create(notification_type="info", message=notif_message, user=member.user)
+
             return redirect('group_dashboard', group_id=group_id)
     else:
         form = CreateGroupJournalForm()
@@ -43,6 +49,12 @@ def edit_group_journal(request, group_id, journal_id):
             entry = form.save(commit=False)
             entry.owner = group
             entry.last_edited_by = request.user
+
+            memberships = GroupMembership.objects.filter(group=group)
+            for member in memberships:
+                notif_message = f"The entry {entry.title} in group '{group.name}' has been edited by {entry.last_edited_by}."
+                Notification.objects.create(notification_type="info", message=notif_message, user=member.user)
+
             entry.save()
 
             return redirect('group_dashboard', group_id=group_id)
@@ -54,6 +66,7 @@ def edit_group_journal(request, group_id, journal_id):
 @login_required
 def delete_group_journal(request, group_id, journal_id):
     journal = get_object_or_404(GroupEntry, pk=journal_id)
+    group = get_object_or_404(Group, group_id=group_id)
     group_membership = get_object_or_404(GroupMembership, user=request.user, group=journal.owner)
     # Allows only the owner of the group to delete the journal.
     if not group_membership.is_owner:
@@ -61,8 +74,15 @@ def delete_group_journal(request, group_id, journal_id):
         return redirect('group_dashboard', group_id=group_id) 
     
     if request.method == 'POST':
+
+        memberships = GroupMembership.objects.filter(group=group)
+        for member in memberships:
+            notif_message = f"The entry {journal.title} in group '{group.name}' has been deleted."
+            Notification.objects.create(notification_type="info", message=notif_message, user=member.user)
+
         journal.delete()
-        messages.success(request, "Journal has been deleted successfully")
+        messages.success(request, f"The entry {journal.title} has been deleted successfully.")
+        
         return redirect('group_dashboard', group_id=group_id) 
     
     return redirect('group_dashboard', group_id=group_id) 

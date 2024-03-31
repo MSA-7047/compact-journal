@@ -87,6 +87,7 @@ def select_template(request, journal_id):
 @login_required
 def DeleteTemplate(request,template_id,journal_id):
     template= get_object_or_404(Template, id=template_id)
+    create_notification(request, f"The template {template.title} has been deleted.", "info")
     template.delete()
     return redirect(f'/select_template/{journal_id}')
 
@@ -104,6 +105,11 @@ def create_journal_From_Template(request, template_id, journal_id):
                 private = False
             )
     entry.save()
+
+    notif_message = f"New entry {entry.title} created in {journal.title} journal."
+    give_points(request, 50, notif_message)
+    create_notification(request, notif_message, "info")
+
     return redirect("edit_entry", entry_id=entry.id)
 
 @login_required
@@ -113,6 +119,10 @@ def EditTemplate(request, template_id, journal_id):
         form = CreateTemplateForm(request.POST, instance=template)
         if form.is_valid():
             form.save()
+
+            notif_message = f"The template {template.title} has been edited."
+            create_notification(request, notif_message, "info")
+
             return redirect(f'/select_template/{journal_id}')  # Redirect to the detail view of the edited journal
     else:
         form = CreateTemplateForm(instance=template)

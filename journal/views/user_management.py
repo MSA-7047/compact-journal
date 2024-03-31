@@ -16,6 +16,17 @@ from journal.views.notifications import *
 from journal.models.Cooldown import ActionCooldown
 from django.db import transaction
 
+def level_up_message(request):
+    """
+    Fetches unread messages for the request's user, sends a notification for each,
+    and marks them as read.
+    """
+    user_messages = UserMessage.objects.filter(user=request.user, read=False)
+    for msg in user_messages:
+        messages.add_message(request, 35, msg.message)
+        msg.read = True
+        msg.save()
+
 class ProfileView(LoginRequiredMixin, DetailView):
     """Display user profile screen"""
 
@@ -38,14 +49,10 @@ class ProfileView(LoginRequiredMixin, DetailView):
     template_name = "view_profile.html"
 
     def get(self, request, *args, **kwargs):
-                    # Retrieve unread messages for the user
-                    user_messages = UserMessage.objects.filter(user=request.user, read=False)
-                    if user_messages:
-                        for msg in user_messages:
-                            messages.add_message(request, 35, msg.message)
-                            msg.read = True  # Mark the message as read
-                            msg.save()
-                    return super().get(request, *args, **kwargs)
+        # Utilize the utility function
+        level_up_message(request)
+        return super().get(request, *args, **kwargs)
+
     
     def get_object(self):
         """Return the object (user) to be updated."""
@@ -98,6 +105,8 @@ def dashboard(request):
     print(my_journals)
     notifications = Notification.objects.filter(user=request.user, is_read=False).order_by('-time_created')
 
+    level_up_message(request)
+
     return render(
         request,
         'dashboard.html',
@@ -145,8 +154,8 @@ def points_to_next_level(user):
     level_data = user_level.calculate_level(total_points)
     return level_data
 
-def give_points(user, ):
-    Points.objects.create(user, points=600, description="test")
+# def give_points(user, ):
+#     Points.objects.create(user, points=600, description="test")
 
 @login_required
 def give_points(request, points, description):

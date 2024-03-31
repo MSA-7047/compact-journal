@@ -9,6 +9,10 @@ from journal.forms import *
 from django.contrib import messages
 from journal.views.notifications import *
 from journal.views.user_management import *
+from django.http import JsonResponse, Http404
+from django.utils.translation import gettext as _
+from django_ckeditor_5.forms import UploadFileForm
+from django_ckeditor_5.views import image_verify, handle_uploaded_file, NoImageException
 
 @login_required
 def create_journal(request):
@@ -19,11 +23,6 @@ def create_journal(request):
             journal = form.save(commit=False)
             journal.owner = request.user
             journal.save()
-
-            # Notification & Points Creation
-            notif_message = f"New journal {journal.title} created!"
-            create_notification(request, notif_message, "info")
-            give_points(request, 50, f"New journal {journal.title} created.")
         
             if ActionCooldown.can_perform_action(request.user, 'create_journal', cooldown_hours=1):
                 messages.success(request, "New Journal Created! Points awarded.")
@@ -31,9 +30,11 @@ def create_journal(request):
             else:
                 messages.success(request, "New journal created! However, you must wait before getting points again.")
 
-            notif_message = f"New journal {journal_title} created!"
-            create_notification(request, notif_message, "info")
+            create_notification(request, f"New journal {journal.title} created!", "info")
             
+            
+
+
             return redirect(reverse('dashboard'))  # Redirect to the dashboard page
     else:
         form = CreateJournalForm()
@@ -65,6 +66,7 @@ def edit_journal(request, journal_id):
         form = CreateJournalForm(request.POST, instance=journal_instance)
         if form.is_valid():
             form.save()
+            create_notification(request, f"Journal {journal_instance.title} was edited.", "info")
             return redirect(reverse('dashboard'))  # Redirect to the dashboard page after saving
     else:
         form = CreateJournalForm(instance=journal_instance)
@@ -89,8 +91,7 @@ def delete_journal(request, journal_id):
     if journal.owner != current_user:
         return render(request, 'permission_denied.html')
     
-    notif_message = f"Journal {journal.title} deleted!"
-    create_notification(request, notif_message, "info")
+    create_notification(request, f"Journal {journal.title} deleted.", "info")
 
     journal.delete()
     return redirect('dashboard')
@@ -171,6 +172,11 @@ def create_entry(request, journal_id):
             entry.journal = journal_instance
             entry.save()
 
+
+            notif_message = f"New entry {entry.title} created in {entry.journal.title} journal."
+            give_points(request, 50, notif_message)
+            create_notification(request, notif_message, "info")
+
             return redirect(f'/journal_dashboard/{journal_instance.id}')  # Redirect to the journal dashboard page
     else:
         form = CreateEntryForm()
@@ -185,12 +191,14 @@ def edit_entry(request, entry_id):
 
     # Check if the current user has permission to edit the entry
     if request.user != entry_instance.owner:
-        messages.warning(request, "premmision denied")
+        messages.warning(request, "permission denied")
 
     if request.method == 'POST':
         form = CreateEntryForm(request.POST, instance=entry_instance)
         if form.is_valid():
             form.save()
+            notif_message = f"Entry {entry_instance.title} edited in {entry_instance.journal.title} journal."
+            create_notification(request, notif_message, "info")
             return redirect(f'/journal_dashboard/{entry_instance.journal.id}')  # Redirect to the journal dashboard page
     else:
         form = CreateEntryForm(instance=entry_instance)
@@ -222,76 +230,36 @@ def delete_entry(request, entry_id):
 
 @login_required
 def view_journal_entries(request, user_id, journal_id):
-    current_user = get_object_or_404(User, id = user_id)
-    current_journal = Journal.objects.get(id = journal_id)
-    is_user_logged_in = current_user == request.user
+    # Fetching objects directly and handling errors efficiently
+    current_user = get_object_or_404(User, id=user_id)
+    current_journal = get_object_or_404(Journal, id=journal_id)
+    is_user_logged_in = request.user == current_user
+    
+    # Initialize forms outside the condition to avoid repetition
+    filter_form = EntryFilterForm(current_user, request.POST or None)
+    sort_form = JournalSortForm(request.POST or None)
 
-    if request.method == 'POST':
-
-        filter_form = EntryFilterForm(current_user, request.POST)
-        if filter_form.is_valid():
-            journal_entries = filter_form.filter_entries(current_journal)
-            sort_form = JournalSortForm(request.POST) 
-            if sort_form.is_valid():
-                sort_order = sort_form.cleaned_data['sort_by_entry_date']
-                if sort_order == 'descending':
-                    journal_entries = journal_entries.order_by("entry_date")
-                    journal_entries = journal_entries.reverse()
-                elif sort_order == 'ascending':
-                    journal_entries = journal_entries.order_by("entry_date")    
-
-        else:
-
-            sort_form = JournalSortForm()
-            journal_entries = current_journal.entries.all()
-
-            if not is_user_logged_in:
-                journal_entries = journal_entries.filter(private = False)
-
-            context = {
-                    'filter_form': filter_form,
-                    'sort_form': sort_form,
-                    'journal_entries': journal_entries,
-                    'journal_param': my_journals_to_journal_param(journal_entries),
-                    'user': current_user,
-                    'journal': current_journal,
-                    'is_logged_in': is_user_logged_in
-                }
-            return render(request, 'view_all_journal_entries.html', context)
-        
-        if not is_user_logged_in:
-                journal_entries = journal_entries.filter(private = False)
-
-        context = {
-            'filter_form': filter_form,
-            'sort_form': sort_form,
-            'journal_entries': journal_entries,
-            'journal_param': my_journals_to_journal_param(journal_entries),
-            'user': current_user,
-            'journal': current_journal,
-            'is_logged_in': is_user_logged_in
-        }
-        return render(request, 'view_all_journal_entries.html', context) 
-
-    journal_entries = current_journal.entries.all()
+    if request.method == 'POST' and filter_form.is_valid() and sort_form.is_valid():
+        journal_entries = filter_form.filter_entries(current_journal)
+        sort_order = sort_form.cleaned_data['sort_by_entry_date']
+        journal_entries = journal_entries.order_by('-entry_date' if sort_order == 'descending' else 'entry_date')
+    else:
+        journal_entries = current_journal.entries.all()
 
     if not is_user_logged_in:
-                journal_entries = journal_entries.filter(private = False)
+        journal_entries = journal_entries.filter(private=False)
 
-    filter_form = EntryFilterForm(current_user)
-    sort_form = JournalSortForm()
-    
     context = {
-            'filter_form': filter_form,
-            'sort_form': sort_form,
-            'journal_entries': journal_entries or False,
-            'user': current_user,
-            'journal_param': my_journals_to_journal_param(journal_entries),
-            'journal': current_journal,
-            'is_logged_in': is_user_logged_in
-        }
-    
-    return render(request, 'view_all_journal_entries.html', context)   
+        'filter_form': filter_form,
+        'sort_form': sort_form,
+        'journal_entries': journal_entries,
+        'journal_param': my_journals_to_journal_param(journal_entries),
+        'user': current_user,
+        'journal': current_journal,
+        'is_logged_in': is_user_logged_in
+    }
+
+    return render(request, 'view_all_journal_entries.html', context)
 
 
 def my_journals_to_journal_param(journal_entries):
@@ -301,13 +269,6 @@ def my_journals_to_journal_param(journal_entries):
     journal_param = ','.join(journals)
     return journal_param
 
-from django.http import JsonResponse, Http404
-from django.utils.translation import gettext as _
-
-# Attempt to import the necessary functionalities from the package
-# Note: This is hypothetical and depends on the actual package structure
-from django_ckeditor_5.forms import UploadFileForm
-from django_ckeditor_5.views import image_verify, handle_uploaded_file, NoImageException
 
 def custom_upload_file(request):
     if request.method == "POST":
