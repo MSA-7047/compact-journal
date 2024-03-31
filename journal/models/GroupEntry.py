@@ -1,10 +1,11 @@
 from django.conf import settings
 from django.db import models
-from journal.models import Group
+from journal.models import AbstractEntry, Group
 from django_ckeditor_5.fields import CKEditor5Field
 
 
-class GroupJournal(models.Model):
+
+class GroupEntry(AbstractEntry.AbstractEntry):
     """Model to represent the Journals the Group will be writing on."""
     journal_title = models.CharField(max_length=50, blank=False)
     journal_description = models.TextField(max_length=1000, blank=False)

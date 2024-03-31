@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
-from journal.models import GroupRequest, Group, GroupMembership, User, GroupJournal, Notification
+from journal.models import GroupRequest, Group, GroupMembership, User, GroupEntry, Notification
 from journal.forms import *
 
 
@@ -21,7 +21,7 @@ def group_dashboard(request, group_id) -> HttpResponse:
     current_user = request.user
     given_group = get_object_or_404(Group, pk=group_id)
     all_members_in_group = User.objects.filter(groupmembership__group=given_group)
-    group_journals = GroupJournal.objects.filter(owner=given_group)
+    group_journals = GroupEntry.objects.filter(owner=given_group)
     user_membership = GroupMembership.objects.get(user=current_user, group=given_group)
     is_owner = user_membership.is_owner
     return render(
