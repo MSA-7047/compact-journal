@@ -4,6 +4,9 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from journal.models import *
 from journal.forms import *
+from journal.views.notifications import *
+from journal.models.Cooldown import ActionCooldown
+from journal.views.user_management import *
 
 def generate_generic_templates(currentUser):
     html_file_paths = [
@@ -54,6 +57,18 @@ def create_template(request, journal_id):
                 bio = form.cleaned_data.get("bio"),
                 owner = current_user,
             )
+
+            if ActionCooldown.can_perform_action(request.user, 'create_template', cooldown_hours=1):
+                messages.success(request, "New Custom Template Created! Points awarded.")
+                give_points(request, 20, "New Custom Template Created.")
+            else:
+                messages.success(request, "New custom template created! However, you must wait before getting points again.")
+            
+            notif_message = f"New custom template {template.title} created!"
+            create_notification(request, notif_message, "info")
+
+
+
             template.save()
             return redirect(f'/select_template/{journal_id}')
         else:
@@ -73,7 +88,7 @@ def select_template(request, journal_id):
 def DeleteTemplate(request,template_id,journal_id):
     template= get_object_or_404(Template, id=template_id)
     template.delete()
-    return redirect(f'/select-template/{journal_id}')
+    return redirect(f'/select_template/{journal_id}')
 
 def create_journal_From_Template(request, template_id, journal_id):
     current_user = request.user
@@ -98,7 +113,7 @@ def EditTemplate(request, template_id, journal_id):
         form = CreateTemplateForm(request.POST, instance=template)
         if form.is_valid():
             form.save()
-            return redirect(f'/select-template/{journal_id}')  # Redirect to the detail view of the edited journal
+            return redirect(f'/select_template/{journal_id}')  # Redirect to the detail view of the edited journal
     else:
         form = CreateTemplateForm(instance=template)
 

@@ -22,3 +22,12 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"Notification for {self.user.username} - {self.message}"
+    
+    class Meta:
+        ordering = ['-time_created']
+    
+
+class UserMessage(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    message = models.TextField()
+    read = models.BooleanField(default=False)

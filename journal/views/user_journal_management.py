@@ -24,7 +24,16 @@ def create_journal(request):
             notif_message = f"New journal {journal.title} created!"
             create_notification(request, notif_message, "info")
             give_points(request, 50, f"New journal {journal.title} created.")
+        
+            if ActionCooldown.can_perform_action(request.user, 'create_journal', cooldown_hours=1):
+                messages.success(request, "New Journal Created! Points awarded.")
+                give_points(request, 20, "New Journal Created.")
+            else:
+                messages.success(request, "New journal created! However, you must wait before getting points again.")
 
+            notif_message = f"New journal {journal_title} created!"
+            create_notification(request, notif_message, "info")
+            
             return redirect(reverse('dashboard'))  # Redirect to the dashboard page
     else:
         form = CreateJournalForm()
@@ -80,6 +89,9 @@ def delete_journal(request, journal_id):
     if journal.owner != current_user:
         return render(request, 'permission_denied.html')
     
+    notif_message = f"Journal {journal.title} deleted!"
+    create_notification(request, notif_message, "info")
+
     journal.delete()
     return redirect('dashboard')
 
