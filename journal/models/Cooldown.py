@@ -25,4 +25,5 @@ class ActionCooldown(models.Model):
             cooldown.last_performed = now
             cooldown.save()
             return True
+        
         return False

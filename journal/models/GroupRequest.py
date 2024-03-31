@@ -2,6 +2,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from journal.models import Group
+from journal.models.GroupMembership import GroupMembership
 
 class GroupRequest(models.Model):
     """"""
@@ -27,5 +28,5 @@ class GroupRequest(models.Model):
         super().clean()
         if self.recipient == self.sender:
             raise ValidationError("The recipient and sender of the invitation can't be the same user")
-        if not self.sender.groups.filter(id=self.recipient_group_id).exists():
+        if not GroupMembership.objects.filter(user=self.sender).filter(group=self.group).filter(is_owner=True).exists():
             raise ValidationError("The sender must be the owner of the group.")

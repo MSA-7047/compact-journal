@@ -10,7 +10,7 @@ class Notification(models.Model):
         ('points', 'Points'),
     ]
 
-    notification_type = models.CharField(max_length=15, choices=NOTIFICATION_TYPES)
+    notification_type = models.CharField(max_length=15, choices=NOTIFICATION_TYPES, default='info')
     message = models.TextField()
     time_created = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)

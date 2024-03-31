@@ -8,8 +8,9 @@ from .GroupMembership import GroupMembership
 from .User import User
 from .Journal import Journal
 from .Template import Template
-from .Notification import Notification
+from .Notification import Notification, UserMessage
 from .GroupEntry import GroupEntry
 from .Entry import Entry
 from .Points import Points
 from .Level import Level
+from .Cooldown import ActionCooldown

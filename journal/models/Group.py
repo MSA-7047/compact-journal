@@ -10,7 +10,7 @@ class Group(models.Model):
         app_label = 'journal'
 
     def is_user_member(self, user):
-        return self.group_membership_set.filter(user=user).exists()
+        return self.groupmembership_set.filter(user=user).exists()
 
     def __str__(self):
         return self.name

@@ -27,7 +27,7 @@ class JournalModelTest(TestCase):
 
     def test_summary_max_length(self):
         max_length = self.journal._meta.get_field('summary').max_length
-        self.assertEqual(max_length, 150)
+        self.assertEqual(max_length, 350)
 
     def test_owner_relation(self):
         owner = self.journal.owner
