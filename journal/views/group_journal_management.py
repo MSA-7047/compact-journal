@@ -1,65 +1,59 @@
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
-from journal.models import Group, GroupMembership, User, GroupJournal
+from journal.models import Group, GroupMembership, User, GroupEntry
 from journal.forms import *
+from django.contrib import messages
 
 
 @login_required    
 def create_group_journal(request, group_id):
     """View used to allow the user to create a group journal."""
-    group_ = get_object_or_404(Group, group_id=group_id)
-    membership = get_object_or_404(GroupMembership, group=group_, user=request.user)
+    group = get_object_or_404(Group, group_id=group_id)
+    membership = get_object_or_404(GroupMembership, group=group, user=request.user)
 
     if not membership.is_owner:
         messages.error(request, "You are not authorized to create a journal.")
         return redirect('group_dashboard', group_id=group_id)
 
-    form = CreateGroupJournalForm()
     if request.method == 'POST':
         form = CreateGroupJournalForm(request.POST)
-        if not form.is_valid():
-            return render(request, 'create_group_journal.html', {'form': form, 'group_id': group_id})
-    
-        journal = GroupJournal.objects.create(
-            journal_title = form.cleaned_data.get('journal_title'),
-            journal_description = form.cleaned_data.get('journal_description'),
-            journal_bio = form.cleaned_data.get('journal_bio'),
-            journal_mood = form.cleaned_data.get('journal_mood'),
-            owner = group_,
-            last_edited_by = request.user
-        )
-        journal.save()
-        return redirect('group_dashboard', group_id=group_id)
+        if form.is_valid():
+            # Save the form data to the existing GroupEntry instance
+            entry = form.save(commit=False)
+            entry.last_edited_by = request.user
+            entry.owner = group
+            entry.save()
+            return redirect('group_dashboard', group_id=group_id)
+    else:
+        form = CreateGroupJournalForm()
 
     return render(request, 'create_group_journal.html', {'form': form, 'group_id': group_id})
 
 @login_required
-def edit_group_journal(request, group_id, journal_id): 
+def edit_group_journal(request, group_id, journal_id):
     """Allows the user to edit a group journal."""
-    group_ = get_object_or_404(Group, group_id=group_id)
-    journal = get_object_or_404(GroupJournal, id=journal_id, owner=group_)
-    form = EditGroupJournalForm(instance=journal)
+    group = get_object_or_404(Group, group_id=group_id)
+    entry = get_object_or_404(GroupEntry, id=journal_id, owner=group)
+    
     if request.method == 'POST':
-        form = EditGroupJournalForm(request.POST, instance=journal)
+        form = CreateGroupJournalForm(request.POST, instance=entry)
         if form.is_valid():
-            cleaned_data = form.cleaned_data
-
-            # Update the GroupJournal instance with the new data
-            journal.journal_title = cleaned_data['journal_title']
-            journal.journal_description = cleaned_data['journal_description']
-            journal.journal_bio = cleaned_data['journal_bio']
-            journal.journal_mood = cleaned_data['journal_mood']
-            journal.last_edited_by = request.user
-            journal.save()
+            # Save the form data to the existing GroupEntry instance
+            entry = form.save(commit=False)
+            entry.owner = group
+            entry.last_edited_by = request.user
+            entry.save()
 
             return redirect('group_dashboard', group_id=group_id)
-    return render(request, 'create_group_journal.html', {'form': form, 'group_id': group_id}) 
+    else:
+        form = CreateGroupJournalForm(instance=entry)
+    
+    return render(request, 'create_group_journal.html', {'form': form, 'group_id': group_id})
 
 @login_required
 def delete_group_journal(request, group_id, journal_id):
-    """Allows the owner to delete a group journal."""
-    journal = get_object_or_404(GroupJournal, pk=journal_id)
+    journal = get_object_or_404(GroupEntry, pk=journal_id)
     group_membership = get_object_or_404(GroupMembership, user=request.user, group=journal.owner)
     # Allows only the owner of the group to delete the journal.
     if not group_membership.is_owner:
@@ -77,5 +71,5 @@ def delete_group_journal(request, group_id, journal_id):
 def view_group_journals(request, group_id):
     """Used to allow members of a group to see all journals written by that group."""
     group = Group.objects.get(pk=group_id)
-    group_journals = GroupJournal.objects.filter(owner=group)
+    group_journals = GroupEntry.objects.filter(owner=group)
     return render(request, 'group_journals.html', {'group_id': group_id, 'group_journals': group_journals})

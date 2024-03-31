@@ -9,7 +9,7 @@ from .User import User
 from .Journal import Journal
 from .Template import Template
 from .Notification import Notification
-from .GroupJournal import GroupJournal
+from .GroupEntry import GroupEntry
 from .Entry import Entry
 from .Points import Points
 from .Level import Level
