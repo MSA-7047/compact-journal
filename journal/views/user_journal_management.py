@@ -12,35 +12,33 @@ from journal.views.user_management import *
 
 @login_required
 def create_journal(request):
+    if request.method == 'POST':
+        form = CreateJournalForm(request.POST)
+        if form.is_valid():
+            # Create and save the journal instance
+            journal = form.save(commit=False)
+            journal.owner = request.user
+            journal.save()
 
-    form = CreateJournalForm()
-    if request.method != 'POST':
-        return render(request, 'create_journal.html', {'form': form})
+            # Notification & Points Creation
+            notif_message = f"New journal {journal.title} created!"
+            create_notification(request, notif_message, "info")
+            give_points(request, 50, f"New journal {journal.title} created.")
+        
+            if ActionCooldown.can_perform_action(request.user, 'create_journal', cooldown_hours=1):
+                messages.success(request, "New Journal Created! Points awarded.")
+                give_points(request, 20, "New Journal Created.")
+            else:
+                messages.success(request, "New journal created! However, you must wait before getting points again.")
 
-    form = CreateJournalForm(request.POST)
-    if not form.is_valid():
-        print("inbalid form")
-        return render(request, 'create_journal.html', {'form': form})
-
-    journal = Journal.objects.create(
-        title=form.cleaned_data.get("title"),
-        summary=form.cleaned_data.get("summary"),
-        owner=request.user
-    )
-    journal.save()
-
-    journal_title = form.cleaned_data.get("title")
-
-    if ActionCooldown.can_perform_action(request.user, 'create_journal', cooldown_hours=1):
-        messages.success(request, "New Journal Created! Points awarded.")
-        give_points(request, 20, "New Journal Created.")
+            notif_message = f"New journal {journal_title} created!"
+            create_notification(request, notif_message, "info")
+            
+            return redirect(reverse('dashboard'))  # Redirect to the dashboard page
     else:
-        messages.success(request, "New journal created! However, you must wait before getting points again.")
-    
-    notif_message = f"New journal {journal_title} created!"
-    create_notification(request, notif_message, "info")
+        form = CreateJournalForm()
 
-    return redirect('/dashboard/')
+    return render(request, 'create_journal.html', {'form': form})
 
 def create_first_journal(current_user):
     Journal.objects.create(
@@ -55,26 +53,29 @@ def create_first_journal(current_user):
     )
 
 @login_required
-def edit_journal(request, journal_id): 
-    current_user = request.user
-    try:
-        journal = Journal.objects.get(id=journal_id)
-    except ObjectDoesNotExist:
-        messages.warning(request, "premmision denied")
-        return redirect('dashboard')
-    
-    if journal.owner != current_user:
+def edit_journal(request, journal_id):
+    # Retrieve the journal instance
+    journal_instance = get_object_or_404(Journal, id=journal_id)
+
+    # Check if the current user has permission to edit the journal
+    if request.user != journal_instance.owner:
         messages.warning(request, "premmision denied")
 
     if request.method == 'POST':
-        form = CreateJournalForm(request.POST, instance=journal)
+        form = CreateJournalForm(request.POST, instance=journal_instance)
         if form.is_valid():
             form.save()
-            return redirect('dashboard') 
+            return redirect(reverse('dashboard'))  # Redirect to the dashboard page after saving
     else:
-        form = CreateJournalForm(instance=journal)
+        form = CreateJournalForm(instance=journal_instance)
 
-    return render(request, 'create_journal.html', {'form': form, 'journal': journal, 'title': "Update Journal", "update": True})
+    context = {
+        'form': form,
+        'journal': journal_instance,
+        'title': "Update Journal",
+        'update': True
+    }
+    return render(request, 'create_journal.html', context)
 
 
 @login_required
@@ -150,60 +151,56 @@ def create_entry(request, journal_id):
     today = datetime.now().date()
     current_user = request.user
 
-    try:
-        journal = Journal.objects.get(id=journal_id)
-    except ObjectDoesNotExist:
-        return render(request, 'permission_denied.html',{'reason':"journal not exist"})
-    
-    if journal.owner != current_user:
-        return render(request, 'permission_denied.html', {'reason': "You do not own this journal"} )
+    # Retrieve the journal instance
+    journal_instance = get_object_or_404(Journal, id=journal_id)
 
-    
-    if Entry.objects.filter(journal = journal).filter(entry_date__date = today):
-        return render(request, 'permission_denied.html', {'reason': "Daily journal already created"} )
+    # Check if the current user has permission to create an entry for the journal
+    if current_user != journal_instance.owner:
+        messages.warning(request, "premmision denied")
 
-    form = CreateEntryForm()
-    if request.method != 'POST':
-        return render(request, 'create_entry.html', {'form': form})
+    # Check if a daily journal entry already exists for today
+    if Entry.objects.filter(journal=journal_instance, entry_date__date=today).exists():
+        return render(request, 'permission_denied.html', {'reason': "Daily journal already created"})
 
-    form = CreateEntryForm(request.POST)
-    if not form.is_valid():
-        return render(request, 'create_entry.html', {'form': form})
+    if request.method == 'POST':
+        form = CreateEntryForm(request.POST)
+        if form.is_valid():
+            # Create and save the entry instance
+            entry = form.save(commit=False)
+            entry.owner = current_user
+            entry.journal = journal_instance
+            entry.save()
 
-    entry = Entry.objects.create(
-        title=form.cleaned_data.get("title"),
-        summary=form.cleaned_data.get("summary"),
-        content=form.cleaned_data.get("content"),
-        mood=form.cleaned_data.get("mood"),
-        owner=request.user,
-        journal = journal
-    )
-    entry.save()
+            return redirect(f'/journal_dashboard/{journal_instance.id}')  # Redirect to the journal dashboard page
+    else:
+        form = CreateEntryForm()
 
-    return redirect(f'/journal_dashboard/{journal.id}')
+    context = {'form': form}
+    return render(request, 'create_entry.html', context)
 
 @login_required
-def edit_entry(request, entry_id): 
-    current_user = request.user
-    try:
-        entry = Entry.objects.get(id=entry_id)
-    except ObjectDoesNotExist:
-        messages.warning(request, "premmision denied")
-        return redirect('dashboard')
+def edit_entry(request, entry_id):
+    # Retrieve the entry instance
+    entry_instance = get_object_or_404(Entry, id=entry_id)
 
-    
-    if entry.owner != current_user:
+    # Check if the current user has permission to edit the entry
+    if request.user != entry_instance.owner:
         messages.warning(request, "premmision denied")
 
     if request.method == 'POST':
-        form = CreateEntryForm(request.POST, instance=entry)
+        form = CreateEntryForm(request.POST, instance=entry_instance)
         if form.is_valid():
             form.save()
-            return redirect(f'/journal_dashboard/{entry.journal.id}')
+            return redirect(f'/journal_dashboard/{entry_instance.journal.id}')  # Redirect to the journal dashboard page
     else:
-        form = CreateEntryForm(instance=entry)
+        form = CreateEntryForm(instance=entry_instance)
 
-    return render(request, 'create_entry.html', {'form': form, 'entry': entry, 'title': "Update entry"})
+    context = {
+        'form': form,
+        'entry': entry_instance,
+        'title': "Update Entry"
+    }
+    return render(request, 'create_entry.html', context)
 
 
 @login_required

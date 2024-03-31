@@ -2,7 +2,6 @@ from .confirm_account_delete_form import ConfirmAccountDeleteForm
 from .create_entry_form import CreateEntryForm
 from .create_group_journal_form import CreateGroupJournalForm
 from .create_journal_form import CreateJournalForm
-from .edit_group_journal_form import EditGroupJournalForm
 from .group_form import GroupForm
 from .entry_filter_form import EntryFilterForm
 from .journal_sort_form import JournalSortForm
