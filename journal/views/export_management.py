@@ -3,21 +3,35 @@ from django.http import HttpResponse
 from django.http import HttpResponse
 from xhtml2pdf import pisa
 from django.template.loader import get_template
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 from django.conf import settings
 from journal.models import Entry
+from django.contrib import messages
 
 def export_single_entry_as_PDF(request, entry_id):
-    entry = Entry.objects.get(id=entry_id)
+
+    try:
+        entry_instance = Entry.objects.get(id=entry_id)
+    except ObjectDoesNotExist:
+        messages.warning(request, "You have attempted to access an invalid URL, redirected to dashboard")
+        return redirect(reverse('dashboard'))
+
+    # Check if the current user has permission to edit the journal
+    if request.user != entry_instance.owner:
+        messages.warning(request, "You have attempted to export an entry that is not yours, redirected to dashboard")
+        return redirect(reverse('dashboard'))
+
     template = get_template('entry_as_PDF.html')
-    html = template.render({"entry": entry})  # Pass context data if needed
-    title = entry.title
+    html = template.render({"entry": entry_instance})  # Pass context data if needed
+    title = entry_instance.title
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename={title}.pdf'
     pisa.CreatePDF(html, dest=response)
     return response
 
 def export_journal_as_PDF(request, journal_entries):
+
     journals = journal_entries.split(',')
     journal_entries = []
     for journal in journals:

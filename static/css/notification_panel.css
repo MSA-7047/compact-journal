@@ -19,6 +19,11 @@
     font-size: 25px;
 }
 
+.dropdown-toggle:hover i, .dropdown-toggle:focus:hover i {
+    color: #93c9f7;
+    transition: 0.5s;
+}
+
 .dropdown-toggle::after {
     display: none;
 }
@@ -69,8 +74,4 @@
 h6 {
     font-size: 12px;
     margin: 5px 0px;
-}
-
-@media (max-width: 1200px) {
-
 }

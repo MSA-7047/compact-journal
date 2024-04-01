@@ -4,12 +4,16 @@
 <link href="{% static 'django_ckeditor_5/dist/styles.css' %}" type="text/css" media="all" rel="stylesheet">
 
 <section class="container">
-  <div class="row py-4 px-4 justify-content-center">
+  <div class="row pb-4 px-4 justify-content-center">
 
     <div class="col-12 row border bg-light rounded justify-content-center align-items-center position-relative pt-2 pb-3">
 
       <div class="small-buttons position-relative">
+        {% if journal.owner != user %}
+        <a class="btn btn-left" href="{% url 'view_friends' %}">
+        {% else %}
         <a class="btn btn-left" href="{% url 'journal_dashboard' journal_id=journal.id %}">
+        {% endif %}
           <i class="bi bi-arrow-left me-2"></i>
           <span>Back</span>
         </a>
@@ -17,7 +21,9 @@
         <div class="right-buttons">
           {% include 'partials/filter_partial.html' with filter_form=filter_form journal=journal %}
           {% if journal_param and is_logged_in %}
+            {% if journal.owner == user %}
             <a class="btn" href="{% url 'export_journal' journal_entries=journal_param  %}">Export Entries As PDF</a>
+            {% endif %}
           {% endif %}
         </div>
       </div>
@@ -38,9 +44,9 @@
 
                       <div class="small-buttons position-relative">
                         <div class="right-buttons ms-auto">
-                          {% if is_logged_in %}
-                          <a class="btn" href="{% url 'view_entry' entry_id=entry.id %}">View Entry</a>
-                          <a class="btn btn-delete" href="{% url 'delete_entry' entry_id=entry.id%}">Delete Entry</a>
+                          {% if is_logged_in and journal.owner == user %}
+                            <a class="btn" href="{% url 'view_entry' entry_id=entry.id %}">View Entry</a>
+                            <a class="btn btn-delete" href="{% url 'delete_entry' entry_id=entry.id %}">Delete Entry</a>
                           {% endif %}
                         </div>
                       </div>
@@ -61,22 +67,28 @@
                         <hr>
                       </div>
 
-                      <p>
-                        <b>Mood:</b>
-                        {{entry.mood}}
-                      </p>
-
-                      <p>
-                        <b>Entry Date:</b>
-                        {{ entry.entry_date }}
-                      </p>
+                      <div class="d-flex justify-content-between">
+                        <p>
+                          <b>Mood:</b>
+                          {{entry.mood}}
+                        </p>
+                      
+                        <p>
+                          <b>Entry Date:</b>
+                          {{ entry.entry_date }}
+                        </p>
+                      </div>
+                      
                       
                     </div>
                 </li>
-                {%endfor%}
+            {% endfor %}
         {% else %}
-          <p>No Entries avalaible in this journal</p>
+        <li class="list-group-item mb-2 border bg-white py-5 text-center">
+          No Entries avalaible in this journal.
+        </li>  
         {% endif %}
+        </ul>
 
     </div>  
 

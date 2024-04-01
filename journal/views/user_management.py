@@ -123,7 +123,7 @@ def dashboard(request):
 def delete_account(request):
     if request.method == 'POST':
         form = ConfirmAccountDeleteForm(request.POST)
-        if form.is_valid():
+        if form.is_valid() and form.cleaned_data['confirmation'].upper() == "YES":
             to_del = request.user
 
             with transaction.atomic():

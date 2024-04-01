@@ -28,7 +28,7 @@ def create_group_journal(request, group_id):
             memberships = GroupMembership.objects.filter(group=group)
             for member in memberships:
                 notif_message = f"A new group entry {entry.title} in '{group.name}' has been created."
-                Notification.objects.create(notification_type="info", message=notif_message, user=member.user)
+                Notification.objects.create(notification_type="group", message=notif_message, user=member.user)
 
             return redirect('group_dashboard', group_id=group_id)
     else:
@@ -53,7 +53,7 @@ def edit_group_journal(request, group_id, journal_id):
             memberships = GroupMembership.objects.filter(group=group)
             for member in memberships:
                 notif_message = f"The entry {entry.title} in group '{group.name}' has been edited by {entry.last_edited_by}."
-                Notification.objects.create(notification_type="info", message=notif_message, user=member.user)
+                Notification.objects.create(notification_type="group", message=notif_message, user=member.user)
 
             entry.save()
 
@@ -78,7 +78,7 @@ def delete_group_journal(request, group_id, journal_id):
         memberships = GroupMembership.objects.filter(group=group)
         for member in memberships:
             notif_message = f"The entry {journal.title} in group '{group.name}' has been deleted."
-            Notification.objects.create(notification_type="info", message=notif_message, user=member.user)
+            Notification.objects.create(notification_type="group", message=notif_message, user=member.user)
 
         journal.delete()
         messages.success(request, f"The entry {journal.title} has been deleted successfully.")

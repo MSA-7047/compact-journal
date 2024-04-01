@@ -1,3 +1,9 @@
+/*-- ==================== Templates ==================== --*/
+.template-item {
+  height: 400px;
+  overflow-y: auto;
+}
+
 /*-- ==================== Journal Dashboard ==================== --*/
 .list-group {
   overflow-y: auto; /* Enable vertical scrolling if content exceeds the height */

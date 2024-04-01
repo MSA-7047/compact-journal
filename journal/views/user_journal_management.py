@@ -1,8 +1,6 @@
 from datetime import datetime
-
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
-from django.views.generic.detail import DetailView
 from django.core.exceptions import ObjectDoesNotExist
 from journal.models import *
 from journal.forms import *
@@ -13,6 +11,8 @@ from django.http import JsonResponse, Http404
 from django.utils.translation import gettext as _
 from django_ckeditor_5.forms import UploadFileForm
 from django_ckeditor_5.views import image_verify, handle_uploaded_file, NoImageException
+
+from django.shortcuts import render
 
 @login_required
 def create_journal(request):
@@ -44,23 +44,27 @@ def create_journal(request):
 def create_first_journal(current_user):
     Journal.objects.create(
         title="Welcome To Compact Journals",
-        summary="""This is your first Compact Journal.
-         With each compact journal you can create a daily entry to keep track of ur activites and productivity as well as ur mood
-         You can create as many journals as you want to keep track of all the different aspects of your life
-         Journals can be edited from the journal dashboard (press view button to access) as well as deleted
-         The journal dashboard is where youy can create your daily entry and keep track of all your previous ones
+        summary="""This is your first Compact Journal!
+         With each Compact Journal you can create a daily entry to keep track of your activites, productivity as well as your mood.
+         Create as many Journals as you like!
+         The Journal Dashboard is where you create your daily entry, edit, delete and store your previous entries (press the button below to access).
         """,
         owner=current_user
     )
 
 @login_required
 def edit_journal(request, journal_id):
-    # Retrieve the journal instance
-    journal_instance = get_object_or_404(Journal, id=journal_id)
+
+    try:
+        journal_instance = Journal.objects.get(id=journal_id)
+    except ObjectDoesNotExist:
+        messages.warning(request, "You have attempted to access an invalid URL, redirected to dashboard")
+        return redirect(reverse('dashboard'))
 
     # Check if the current user has permission to edit the journal
     if request.user != journal_instance.owner:
-        messages.warning(request, "premmision denied")
+        messages.warning(request, "You have attempted to access a journal that is not yours, redirected to dashboard")
+        return redirect(reverse('dashboard'))
 
     if request.method == 'POST':
         form = CreateJournalForm(request.POST, instance=journal_instance)
@@ -82,30 +86,40 @@ def edit_journal(request, journal_id):
 
 @login_required
 def delete_journal(request, journal_id):
-    current_user = request.user
-    try:
-        journal = Journal.objects.get(id=journal_id)
-    except ObjectDoesNotExist:
-        return render(request, 'permission_denied.html', {'reason': "Journal doesn not exists"})
-    
-    if journal.owner != current_user:
-        return render(request, 'permission_denied.html')
-    
-    create_notification(request, f"Journal {journal.title} deleted.", "info")
 
-    journal.delete()
+    try:
+        journal_instance = Journal.objects.get(id=journal_id)
+    except ObjectDoesNotExist:
+        messages.warning(request, "You have attempted to access an invalid URL, redirected to dashboard")
+        return redirect(reverse('dashboard'))
+
+    # Check if the current user has permission to edit the journal
+    if request.user != journal_instance.owner:
+        messages.warning(request, "You have attempted to delete a journal that is not yours, redirected to dashboard")
+        return redirect(reverse('dashboard'))
+    
+    create_notification(request, f"Journal {journal_instance.title} deleted.", "info")
+
+    journal_instance.delete()
     return redirect('dashboard')
 
 @login_required
 def all_journals_view(request, user_id):
+
+    try:
+        viewing_user = User.objects.get(id=user_id)
+    except ObjectDoesNotExist:
+        messages.warning(request, "You have attempted to view a user's journal who doesn't exist, redirected to dashboard")
+        return redirect(reverse('dashboard'))
+    
     current_user = request.user
     viewing_user = User.objects.get(id=user_id)
     currently_logged_in = current_user == viewing_user
     journals = viewing_user.journals.all()
     return render(request, 'my_journals.html',
-                {'user': current_user,
+                {'user': viewing_user,
                 'journals': journals,
-                'user': viewing_user,
+
                 "is_logged_in": currently_logged_in}
                 )
 
@@ -116,18 +130,21 @@ def journal_dashboard(request, journal_id):
     today = datetime.now().date()
 
     try:
-        journalobject = Journal.objects.get(id=journal_id)
+        journal_instance = Journal.objects.get(id=journal_id)
     except ObjectDoesNotExist:
-        return render(request, 'permission_denied.html', {'reason': "Journal doesn not exists"})
+        messages.warning(request, "You have attempted to access an invalid URL, redirected to dashboard")
+        return redirect(reverse('dashboard'))
+
+    # Check if the current user has permission to edit the journal
+    if request.user != journal_instance.owner:
+        messages.warning(request, "You have attempted to access a journal that is not yours, redirected to dashboard")
+        return redirect(reverse('dashboard'))
     
-    if journalobject.owner != current_user:
-        return render(request, 'permission_denied.html')
-    
-    journal_entries = journalobject.entries.all()
+    journal_entries = journal_instance.entries.all()
     todays_entry = journal_entries.filter(entry_date__date = today)
     return render(request, 'journal_dashboard.html',
                 {'user': current_user,
-                'journal': journalobject,
+                'journal': journal_instance,
                 'journal_entries': journal_entries,
                 "todays_entry": todays_entry}
                 )
@@ -138,13 +155,13 @@ def view_entry(request, entry_id):
 
     try:
         entry = Entry.objects.get(id=entry_id)
+        referer_url = request.META.get('HTTP_REFERER', f'/journal_dashboard/{entry.id}/')
     except ObjectDoesNotExist:
-        return render(request, 'permission_denied.html',)
+        messages.warning(request, "You have attempted to access an invalid URL, redirected to dashboard")
+        return redirect(reverse('dashboard'))
+
     
-    if entry.owner != current_user:
-        return render(request, 'permission_denied.html', {'reason': "You do not own this journal"} )
-    
-    return render(request, 'view_entry.html', {'user': current_user, 'entry': entry})
+    return render(request, 'view_entry.html', {'user': current_user, 'entry': entry, 'referer_url': referer_url,})
 
 
 @login_required
@@ -152,16 +169,21 @@ def create_entry(request, journal_id):
     today = datetime.now().date()
     current_user = request.user
 
-    # Retrieve the journal instance
-    journal_instance = get_object_or_404(Journal, id=journal_id)
+    try:
+        journal_instance = Journal.objects.get(id=journal_id)
+    except ObjectDoesNotExist:
+        messages.warning(request, "You have attempted to access an invalid URL, redirected to dashboard")
+        return redirect(reverse('dashboard'))
 
-    # Check if the current user has permission to create an entry for the journal
-    if current_user != journal_instance.owner:
-        messages.warning(request, "premmision denied")
+    # Check if the current user has permission to edit the journal
+    if request.user != journal_instance.owner:
+        messages.warning(request, "You have attempted to access a journal that is not yours, redirected to dashboard")
+        return redirect(reverse('dashboard'))
 
     # Check if a daily journal entry already exists for today
     if Entry.objects.filter(journal=journal_instance, entry_date__date=today).exists():
-        return render(request, 'permission_denied.html', {'reason': "Daily journal already created"})
+        messages.warning(request, "Daily entry already created, edit or delete todays journal. Redirected to dashboard")
+        return redirect(reverse('dashboard'))
 
     if request.method == 'POST':
         form = CreateEntryForm(request.POST)
@@ -186,12 +208,16 @@ def create_entry(request, journal_id):
 
 @login_required
 def edit_entry(request, entry_id):
-    # Retrieve the entry instance
-    entry_instance = get_object_or_404(Entry, id=entry_id)
+    try:
+        entry_instance = Entry.objects.get(id=entry_id)
+    except ObjectDoesNotExist:
+        messages.warning(request, "You have attempted to access an invalid URL, redirected to dashboard")
+        return redirect(reverse('dashboard'))
 
-    # Check if the current user has permission to edit the entry
+    # Check if the current user has permission to edit the journal
     if request.user != entry_instance.owner:
-        messages.warning(request, "permission denied")
+        messages.warning(request, "You have attempted to edit an entry that is not yours, redirected to dashboard")
+        return redirect(reverse('dashboard'))
 
     if request.method == 'POST':
         form = CreateEntryForm(request.POST, instance=entry_instance)
@@ -213,17 +239,20 @@ def edit_entry(request, entry_id):
 
 @login_required
 def delete_entry(request, entry_id):
-    current_user = request.user
+
     try:
-        entry = Entry.objects.get(id=entry_id)
+        entry_instance = Entry.objects.get(id=entry_id)
     except ObjectDoesNotExist:
-        return render(request, 'permission_denied.html', {'reason': "Journal doesn not exists"})
+        messages.warning(request, "You have attempted to access an invalid URL, redirected to dashboard")
+        return redirect(reverse('dashboard'))
+
+    # Check if the current user has permission to edit the journal
+    if request.user != entry_instance.owner:
+        messages.warning(request, "You have attempted to edit an entry that is not yours, redirected to dashboard")
+        return redirect(reverse('dashboard'))
     
-    if entry.owner != current_user:
-        return render(request, 'permission_denied.html')
-    
-    journal = entry.journal
-    entry.delete()
+    journal = entry_instance.journal
+    entry_instance.delete()
     return redirect(f'/journal_dashboard/{journal.id}')
 
 

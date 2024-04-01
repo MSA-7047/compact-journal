@@ -20,10 +20,7 @@ def create_notification(request, text, type):
 @login_required
 def mark_notification_as_read(request, notification_id):
     notification = get_object_or_404(Notification, id=notification_id, user=request.user)
-    if notification.is_read:
-        notification.is_read = False
-    else:
-        notification.is_read = True
+    notification.is_read = True
     time = notification.time_created.strftime("%Y-%m-%d %H:%M:%S")
     messages.success(request, f"Notification created at {time} was marked as read.")
     notification.save()

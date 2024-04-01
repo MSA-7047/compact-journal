@@ -25,6 +25,10 @@
           <i class="bi bi-alarm-fill"></i>
           {% elif  notification.notification_type == 'points' %}
           <i class="bi bi-star-fill"></i>
+          {% elif  notification.notification_type == 'friend' %}
+          <i class="bi bi-person-fill"></i>
+          {% elif  notification.notification_type == 'group' %}
+          <i class="bi bi-people-fill"></i>
           {% endif %}
           
           <div class="notification-message">
