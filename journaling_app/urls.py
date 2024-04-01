@@ -102,6 +102,8 @@ urlpatterns = [
 
     path('export_entry_as_PDF/<int:entry_id>/', export_single_entry_as_PDF, name='export_entry'),
     path('export_journal_as_PDF/<str:journal_entries>', export_journal_as_PDF, name='export_journal'),
+    path('groups/<int:group_id>/export_journal_as_PDF', export_group_journal_as_PDF, name='export_group_journal'),
+    path('groups/<int:group_id>/export_entry_as_PDF/<int:journal_id>', export_single_group_entry_as_PDF, name='export_single_group_entry')
 
 
 

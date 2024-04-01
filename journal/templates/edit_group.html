@@ -3,14 +3,17 @@
 <section class="container">
     <div class="row">
         <div class="col-12">
-            <h1>Edit Group</h1>
             <form action="{% url 'edit_group' group_id=group_id%}" method="post">
                 {% csrf_token %}
-
-                <label for="name">Group Name:</label>
-                <input type="text" id="name" name="name" required>
-                <br>
-                <input type="submit" value="Edit Group" class="btn btn-success">
+                <h1>Edit Group</h1>
+                <form action="{% url 'create_group' %}" method="post">
+                    {% csrf_token %}
+    
+                    {% include 'partials/bootstrap_form.html' with form=form %}
+    
+                    <div class="col-12 justify-content-center text-center">
+                        <input class="btn" type="submit" value="Create Group +">
+                    </div>
             </form>
         </div>
     </div>

@@ -119,6 +119,7 @@
                             {{ journal.last_edited_by }}
                             {{ journal.journal_mood }}
                             <a role="button" class="btn btn-info" href="{% url 'edit_group_journal' group_id=group.group_id journal_id=journal.id%}">Edit Journal</a>
+                            <a href="{% url 'export_single_group_entry'  group_id=group.group_id journal_id=journal.id %}" class="btn btn-lg btn-secondary"> Export </a>
                             {% if is_owner %}
                                 <form method="post" action="{% url 'delete_group_journal' group_id=group.group_id journal_id=journal.id %}">
                                     {% csrf_token %}

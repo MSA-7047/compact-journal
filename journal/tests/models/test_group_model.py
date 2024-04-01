@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.test import TestCase
 from django.contrib.auth.models import User
 from journal.models import User, Group, GroupMembership
@@ -5,7 +6,7 @@ from django.core.exceptions import ValidationError
 
 class GroupMembershipTestCase(TestCase):
     def setUp(self):
-        self.group = Group.objects.create(name="Test Group")
+        self.group = Group.objects.create(name="Test Group", description="Test Description")
         self.user = User.objects.create(username="@test_user", password='Password123', email="test@hotmail.com")
         self.membership = GroupMembership.objects.create(user=self.user, group=self.group, is_owner=True)
         self.user2 = User.objects.create(username="@test_user2", password='Password123', email="test2@hotmail.com")
@@ -46,3 +47,21 @@ class GroupMembershipTestCase(TestCase):
     def test_same_user_cannot_be_added_twice(self):
         with self.assertRaises(Exception):
             GroupMembership.objects.create(user=self.user, group=self.group)
+    
+    def test_group_description_valid(self):
+        self.group.description = 'x' * 50
+        self.group.full_clean()
+    
+    def test_group_description_invalid(self):
+        self.group.description = 'x' * 51
+        with self.assertRaises(Exception):
+            self.group.full_clean()
+    
+    def test_group_date_created(self):
+        self.assertIsInstance(self.group.date_created, datetime)
+    
+    def test_is_user_member_valid(self):
+        self.assertTrue(self.group.is_user_member(self.user))
+    
+    def test_str_valid(self):
+        self.assertEqual(self.group.name, str(self.group))

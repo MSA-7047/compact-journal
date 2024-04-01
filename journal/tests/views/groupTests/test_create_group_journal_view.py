@@ -1,8 +1,8 @@
 from django.test import TestCase
 from django.urls import reverse
-from journal.models import Group, GroupJournal, GroupMembership, User
+from journal.models import Group, GroupEntry, GroupMembership, User
 
-class CreateGroupJournalViewTest(TestCase):
+class CreateGroupEntryViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.create(username='@testuser', password='testpassword', email='test@example.com')
         self.group = Group.objects.create(name='Test Group')
@@ -24,9 +24,9 @@ class CreateGroupJournalViewTest(TestCase):
 
         # Check if the journal is created and the user is redirected to the group dashboard
         self.assertEqual(response.status_code, 302)  # Redirect status code
-        self.assertEqual(GroupJournal.objects.count(), 1)
-        self.assertEqual(GroupJournal.objects.first().journal_title, 'Test Journal')
-        self.assertEqual(GroupJournal.objects.first().last_edited_by, self.user)
+        self.assertEqual(GroupEntry.objects.count(), 1)
+        self.assertEqual(GroupEntry.objects.first().journal_title, 'Test Journal')
+        self.assertEqual(GroupEntry.objects.first().last_edited_by, self.user)
 
     def test_create_group_journal_authenticated_non_owner(self):
         # Create another user who is not the owner of the group
@@ -48,7 +48,7 @@ class CreateGroupJournalViewTest(TestCase):
         # Check if the non-owner user is redirected and receives an error message
         self.assertEqual(response.status_code, 302)  # Redirect status code
         self.assertRedirects(response, reverse('group_dashboard', kwargs={'group_id': self.group.pk}))
-        self.assertEqual(GroupJournal.objects.count(), 0)
+        self.assertEqual(GroupEntry.objects.count(), 0)
 
     def test_create_group_journal_unauthenticated_user(self):
         login_url = reverse('log_in')
@@ -81,7 +81,7 @@ class CreateGroupJournalViewTest(TestCase):
 
         # Check if the journal is created and the user is redirected to the group dashboard
         self.assertEqual(response.status_code, 200)  # Redirect status code
-        self.assertEqual(GroupJournal.objects.count(), 0)
+        self.assertEqual(GroupEntry.objects.count(), 0)
     
     def test_create_group_journal_get_request_redirection(self):
         # Authenticate user
