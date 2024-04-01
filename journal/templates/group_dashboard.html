@@ -1,8 +1,9 @@
 {% extends 'base_content.html' %}
 {% block content %}
-<div class="container">
+
+<section class="container">
     <div class="row">
-        <div class="col-12">
+        <div class="col-12 border bg-light">
             <h1>{{ group.name }}</h1>
             <div class="group-list">
                 {% if journals %}
@@ -59,5 +60,5 @@
             <a role="button" class="btn btn-info" href="{% url 'view_group_journals' group_id=group.group_id%}">View All Group Journals</a>
         </div>
     </div>
-</div>
+</section>
 {% endblock %}
