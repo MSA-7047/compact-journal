@@ -16,7 +16,7 @@ class ProfileViewTest(TestCase):
 
     def setUp(self):
         self.user = User.objects.get(username='@johndoe')
-        self.url = reverse('profile')
+        self.url = reverse('view_profile')
         self.form_input = {
             'first_name': 'John2',
             'last_name': 'Doe2',
@@ -25,13 +25,13 @@ class ProfileViewTest(TestCase):
         }
 
     def test_profile_url(self):
-        self.assertEqual(self.url, '/profile/')
+        self.assertEqual(self.url, '/view_profile/')
 
     def test_get_profile(self):
         self.client.login(username=self.user.username, password='Password123')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'profile.html')
+        self.assertTemplateUsed(response, 'view_profile.html')
         form = response.context['form']
         self.assertTrue(isinstance(form, UserForm))
         self.assertEqual(form.instance, self.user)

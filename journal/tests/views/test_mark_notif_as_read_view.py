@@ -1,17 +1,18 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from django.contrib.auth.models import User
-from django.contrib.auth import get_user_model
 from django.contrib.messages import get_messages
-from django.shortcuts import get_object_or_404
-from journal.models import Notification
+
+from journal.models import Notification, User
 
 
 class MarkNotificationAsReadTestCase(TestCase):
+
+    fixtures = ['journal/tests/fixtures/default_user.json']
+
     def setUp(self):
         self.client = Client()
-        self.user = get_user_model().objects.create_user(username='test_user', password='test_password')
-        self.client.login(username='test_user', password='test_password')
+        self.user = User.objects.get(username='@johndoe')
+        self.client.login(username='@johndoe', password='Password123')
         self.notification = Notification.objects.create(
             message="Test notification message",
             user=self.user
@@ -30,4 +31,16 @@ class MarkNotificationAsReadTestCase(TestCase):
                 success_message = message
                 break
         self.assertIsNotNone(success_message)  # Check if a success message is returned
-        self.assertEqual(success_message.message, f"Notification for the Test Notification created at {time} was marked as read.")  # Check if the success message is correct
+        self.assertEqual(success_message.message, f"Notification created at {time} was marked as read.")  # Check if the success message is correct
+
+    def test_mark_all_notification_as_read(self):
+        notification1 = Notification.objects.create(user=self.user, message='Test Notification 1', notification_type='info')
+        notification2 = Notification.objects.create(user=self.user, message='Test Notification 2', notification_type='info')
+        response = self.client.post(reverse('mark_all_notification_as_read'))
+        self.assertEqual(response.status_code, 302)  # Assuming it redirects after marking all notifications as read
+        notification1.refresh_from_db()
+        notification2.refresh_from_db()
+        self.assertTrue(notification1.is_read)
+        self.assertTrue(notification2.is_read)
+
+
