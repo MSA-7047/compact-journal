@@ -64,68 +64,13 @@ class JournalTestCase(TestCase):
         # Check if the instance is saved successfully
         self.assertIsNotNone(valid_description_journal.pk)
 
-    def test_invalid_journal_description_max_length(self):
-        # Try to create a Journal instance with a description exceeding max length
-        with self.assertRaises(ValueError):
-            invalid_description_journal = Entry(
-                journal_title='Invalid Description Journal',
-                journal_description='D' * 1001,  # Exceeds max length
-                journal_bio='This is a valid bio.',
-                journal_mood='Happy',
-                journal_owner=self.user,
-                private=True
-            )
-            invalid_description_journal.full_clean()  # This should raise a ValueError
+    def test_summary_max_length(self):
+        max_length = self.journal._meta.get_field('summary').max_length
+        self.assertEqual(max_length, 350)
 
-    def test_invalid_journal_description_empty(self):
-        # Try to create a Journal instance with an empty description
-        with self.assertRaises(ValueError):
-            empty_description_journal = Entry(
-                journal_title='Empty Description Journal',
-                journal_description='',
-                journal_bio='This is a valid bio.',
-                journal_mood='Happy',
-                journal_owner=self.user,
-                private=True
-            )
-            empty_description_journal.full_clean()  # This should raise a ValueError
-    def test_valid_journal_bio(self):
-        # Create a Journal instance with a valid bio
-        valid_bio_journal = Entry(
-            journal_title='Valid Bio Journal',
-            journal_description='This is a valid description.',
-            journal_bio='This is a valid bio.',
-            journal_mood='Happy',
-            journal_owner=self.user,
-            private=True
-        )
-        valid_bio_journal.full_clean()  # Should not raise any errors
+    def test_owner_relation(self):
+        owner = self.journal.owner
+        self.assertEqual(owner.username, '@johndoe')
 
-        # Check if the instance is saved successfully
-        self.assertIsNotNone(valid_bio_journal.pk)
-
-    def test_invalid_journal_bio_max_length(self):
-        # Try to create a Journal instance with a bio exceeding max length
-        with self.assertRaises(ValueError):
-            invalid_bio_journal = Entry(
-                journal_title='Invalid Bio Journal',
-                journal_description='This is a valid description.',
-                journal_bio='B' * 10001,  # Exceeds max length
-                journal_mood='Happy',
-                journal_owner=self.user,
-                private=True
-            )
-            invalid_bio_journal.full_clean()  # This should raise a ValueError
-
-    def test_invalid_journal_bio_empty(self):
-        # Try to create a Journal instance with an empty bio
-        with self.assertRaises(ValueError):
-            empty_bio_journal = Entry(
-                journal_title='Empty Bio Journal',
-                journal_description='This is a valid description.',
-                journal_bio='',
-                journal_mood='Happy',
-                journal_owner=self.user,
-                private=True
-            )
-            empty_bio_journal.full_clean()  # This should raise a ValueError
+    def test_private_default_value(self):
+        self.assertFalse(self.journal.private)

@@ -11,8 +11,21 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from journal.forms import *
 from journal.models import *
+from journal.models.Notification import UserMessage
 from journal.views.notifications import *
+from journal.models.Cooldown import ActionCooldown
 from django.db import transaction
+
+def level_up_message(request):
+    """
+    Fetches unread messages for the request's user, sends a notification for each,
+    and marks them as read.
+    """
+    user_messages = UserMessage.objects.filter(user=request.user, read=False)
+    for msg in user_messages:
+        messages.add_message(request, 35, msg.message)
+        msg.read = True
+        msg.save()
 
 class ProfileView(LoginRequiredMixin, DetailView):
     """Display user profile screen"""
@@ -28,13 +41,19 @@ class ProfileView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['total_points'] = calculate_user_points(user)
         context['points_to_next_level'] = level_data['points_to_next_level']
-        context['points_needed'] = level_data['points_needed']  # Add this if you want to display it
+        context['points_needed'] = level_data['points_needed'] 
         context['recent_points'] = recent_points
         context['user_username'] = username
         return context
 
     template_name = "view_profile.html"
 
+    def get(self, request, *args, **kwargs):
+        # Utilize the utility function
+        level_up_message(request)
+        return super().get(request, *args, **kwargs)
+
+    
     def get_object(self):
         """Return the object (user) to be updated."""
         user = self.request.user
@@ -47,6 +66,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "edit_profile.html"
     form_class = UserForm
 
+    
     def get_object(self):
         """Return the object (user) to be updated."""
         return self.request.user
@@ -54,22 +74,22 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         """Process a valid form."""
 
-        """Notification Creation"""
-        notif_message = "Profile update message. It can be changed whenever I want it to."
-        create_notification(self.request, notif_message, "reminder")
+        user=self.request.user
+
+        if ActionCooldown.can_perform_action(user, 'update_profile', cooldown_hours=1):
+            messages.success(self.request, "Profile updated! Points awarded.")
+            give_points(self.request, 20, "Profile Updated.")
+        else:
+            messages.success(self.request, "Profile updated! However, you must wait before getting points again.")
         
-        user = self.request.user
+        create_notification(self.request, "Profile was updated.", "info")
+        give_points(self.request, 200, "Profile Updated.")
 
-        Points.objects.create(user=user, points=600, description="test")
-
-        messages.success(self.request, "Profile updated!")
         return super().form_valid(form)
 
     def get_success_url(self):
         """Return redirect URL after successful update."""
-        return reverse(settings.REDIRECT_URL_WHEN_LOGGED_IN)
-
-
+        return reverse('view_profile')
 
 @login_required
 def dashboard(request):
@@ -84,6 +104,8 @@ def dashboard(request):
     my_journals = current_user.journals.all()
     print(my_journals)
     notifications = Notification.objects.filter(user=request.user, is_read=False).order_by('-time_created')
+
+    level_up_message(request)
 
     return render(
         request,
@@ -132,8 +154,8 @@ def points_to_next_level(user):
     level_data = user_level.calculate_level(total_points)
     return level_data
 
-def give_points(user, ):
-    Points.objects.create(user, points=600, description="test")
+# def give_points(user, ):
+#     Points.objects.create(user, points=600, description="test")
 
 @login_required
 def give_points(request, points, description):
@@ -144,5 +166,4 @@ def give_points(request, points, description):
         points=points,
         description = description
     )
-    create_notification(request, f"You have received {points} points", "points")
 

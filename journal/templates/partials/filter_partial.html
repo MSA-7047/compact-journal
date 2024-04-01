@@ -1,7 +1,7 @@
-<button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#filterModal">
-    Filter Journal Entries
+<button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#filterModal">
+    Filter Entries
   </button>
-    <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true" data-bs-backdrop="false" style="z-index: 400;">
+    <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true" data-bs-backdrop="false">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
@@ -11,9 +11,14 @@
           <div class="modal-body">
             <form method="post" action="{% url 'journal_entries' user_id=user.id journal_id=journal.id %}">
                 {% csrf_token %}
-                {{ filter_form.as_p }}
-                {{ sort_form.as_p}}
-                <button type="submit" class="btn btn-primary" name="filter_form_submit">Apply Filter</button>
+                <b>
+                  {{ filter_form.as_p }}
+                  {{ sort_form.as_p}}
+                </b>
+
+                <div class="d-flex flex-column justify-content-center align-items-center text-center">
+                  <button type="submit" class="btn" name="filter_form_submit">Apply Filter</button>
+                </div>
             </form>
           </div>
         </div>

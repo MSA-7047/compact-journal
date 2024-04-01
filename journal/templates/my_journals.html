@@ -1,54 +1,74 @@
 {% extends 'base_content.html' %}
 {% block content %}
+
 <section class="container">
-  <div class="row">
-    <div class="col-12">
-      {% if is_logged_in %}
-        <h1>My Journals :</h1>
-      {% else %}
-        <h1> {{user.username}}'s Public Journals :</h1>
-      {%endif%}
-      {% if journals %}
-        <ul class="list-group mt-3">
-            {% for journal in journals %}
-                <li class="list-group-item">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div>
-                        <h2>{{ journal.title }}</h2>
-                        <p>{{ journal.summary }}</p>
-                        <p>Entry Date: {{ journal.entry_date }}</p>
-                        <p>Number of entries: {{journal.entries.count}}</p>
-                        <p>
-                        {% if is_logged_in  %}
-                            {% if journal.private %}
-                            <p><b>Private Journal</b></p>
-                            {% else %}
-                            <p><b>Public Journal</b></p>
-                            {% endif %}
-                            <a href="{% url 'delete_journal' journal_id=journal.id%}" class="btn btn-sm btn-outline-danger">
-                              Delete Journal
-                            </a>
-                            <a href="{% url 'edit_journal' journal_id=journal.id%}" class="btn btn-sm btn-outline-danger">
-                              Edit Journal
-                            </a>
-                        {% endif %}
-                            <a href="{% url 'journal_entries' user_id=user.id journal_id=journal.id %}" class="btn btn-sm btn-secondary">
-                              View Journal
-                            </a>
-                        </p>
-                      </div>
-                    </div>
-                </li>
-            {%endfor%}
+  <div class="row pb-4 px-4 justify-content-center">
+
+    <div class="col-12 row border bg-light rounded justify-content-center align-items-center position-relative pt-2 pb-3">
+      
+      <div class="small-buttons position-relative">
+        {% if not is_logged_in %}
+        <a class="btn btn-left" href="{% url 'view_friends' %}">
         {% else %}
+        <a class="btn btn-left" href="{% url 'dashboard' %}">
+        {% endif %}  
+          <i class="bi bi-arrow-left me-2"></i>
+          <span>Back</span>
+        </a>
+      </div>
+
+      <div class="d-flex justify-content-center text-center">
+        {% if is_logged_in %}
+          <h1>My Journals :</h1>
+        {% else %}
+          <h1> {{user.username}}'s Public Journals :</h1>
+        {%endif%}
+      </div>
+          
+      {% if journals %}
+        <ul class="list-group px-3">
+          {% for journal in journals %}
+            {% if is_logged_in or not journal.private %}
+              <li class="list-group-item mb-2 border">
+                <div class="d-flex flex-column justify-content-center">
+
+                  <div class="small-buttons position-relative">
+                    <div class="right-buttons ms-auto">
+                      {% if is_logged_in %}
+                        <a class="btn" href="{% url 'journal_dashboard' journal_id=journal.id %}">View Journal Dashboard</a>
+                        <a class="btn btn-delete" href="{% url 'delete_journal' journal_id=journal.id%}">Delete Journal</a>
+                      {% else %}
+                        <a class="btn" href="{% url 'journal_entries' user_id=user.id journal_id=journal.id %}">View Journal Entries</a>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  <h2>{{ journal.title }}</h2>
+                  <p>{{ journal.summary }}</p>
+                  <p>Entry Date: {{ journal.entry_date }}</p>
+                  <p>Number of entries: {{journal.entries.count}}</p>
+                  {% if is_logged_in  %}
+                    {% if journal.private %}
+                      <b>Private Journal</b>
+                    {% else %}
+                      <b>Public Journal</b>
+                    {% endif %}
+                  {% endif %}
+                </div>
+              </li>
+            {% endif %}
+          {% endfor%}
+        </ul>
+      {% else %}
           {% if is_logged_in  %}
             <p>You have no journals</p>
           {% else %}
-            <p> {{user.username}} has no public journals<p>
-          {%endif%}
-        {% endif %}
-        <a href="{% url 'dashboard' %}" class="btn btn-primary mt-3">Back to dashboard</a>
-    </div>
+            <p> {{user.username}} has no public journals</p>
+          {% endif %}
+      {% endif %}
+    </div>  
+
   </div>
 </section>
+
 {% endblock %}

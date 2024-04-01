@@ -52,9 +52,7 @@ class User(AbstractUser):
         return invitation
     
     def accept_request(self, user):
-    # Retrieve the friend request
         request = self.invitations.filter(recipient=self, sender=user, status='Pending').first()
-
         if not request:
             return False
 
