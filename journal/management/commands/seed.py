@@ -101,6 +101,20 @@ class Command(BaseCommand):
         except Exception:
             pass
 
+    @staticmethod
+    def create_user_from_fixture(fixture: dict) -> User:
+        user = User.objects.create(**fixture)
+        points = Points.objects.create(user=user)
+        level = Level.objects.create(user=user)
+        return user
+    
+    @staticmethod
+    def try_to_create_user_from_fixture(fixture: dict) -> User | None:
+        try:
+            return Command.create_user_from_fixture(fixture)
+        except Exception:
+            pass
+
     def create_group(self, group_number: int) -> Group:
         """Creates a Group with an assigned number
 
@@ -112,6 +126,17 @@ class Command(BaseCommand):
         """Ensures that Group creation is aborted if an error occurs"""
         try:
             return self.create_group(group_number)
+        except Exception:
+            pass
+
+    @staticmethod
+    def create_group_from_fixture(fixture: dict) -> Group:
+        return Group.objects.create(**fixture)
+    
+    @staticmethod
+    def try_to_create_group_from_fixture(fixture: dict) -> Group | None:
+        try:
+            return Command.create_group_from_fixture(fixture)
         except Exception:
             pass
 
@@ -173,7 +198,7 @@ class Command(BaseCommand):
             current_group: Group = self.try_to_create_group(current_group_count)
             print("\t- Populating group")
             if current_group is not None:
-                self.create_users_for_groups()
+                self.create_users_for_groups(current_group)
 
             current_group_count = Group.objects.count()
         print("Seeding complete")
@@ -186,21 +211,16 @@ class Command(BaseCommand):
         :param user_fixtures: contains fixtures of users (2-D to accomodate for memberships)
         :param group_fixtures: contains fixtures of groups"""
         for user_list, group in zip(user_fixtures, group_fixtures, strict=True):
-            created_group: Group = Group.objects.get_or_create(**group)
+            created_group: Group = Command.try_to_create_group_from_fixture(group)
             print(f"Creating group from fixture")
             users_in_group: list[User] = [
-                User.objects.get_or_create(**user_details) for user_details in user_list
-            ]
-            user_points_and_level: list[tuple[Points, Level]] = [
-                (Points.objects.get_or_create(user=user), Level.objects.get_or_create(user=user))
-                for user in users_in_group
+                Command.try_to_create_user_from_fixture(user_details) for user_details in user_list
             ]
             self.try_and_bind_multiple_users_to_empty_group(
                 created_group, users_in_group
             )
 
-    def handle(self, *args: Any, **options: Any) -> str | None:
+    def handle(self, *args: Any, **options: Any) -> None:
         """Handles request"""
         self.generate_fixtures(user_fixtures, group_fixtures)
         self.generate_groups()
-        return super().handle(*args, **options)

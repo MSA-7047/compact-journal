@@ -5,6 +5,7 @@ from libgravatar import Gravatar
 from django_countries.fields import CountryField
 from .Group import Group
 from .FriendRequest import FriendRequest
+from .Friendship import Friendship
 
 
 class User(AbstractUser):
@@ -23,7 +24,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=50, blank=False)
     last_name = models.CharField(max_length=50, blank=False)
     email = models.EmailField(unique=True, blank=False)
-    friends = models.ManyToManyField("self", symmetrical=False, blank=True)
+    friends = models.ManyToManyField("self", symmetrical=False, blank=True, through="Friendship")
     dob = models.DateField(null=True, blank=True)
     bio = models.TextField(blank=True, default="")
     groups = models.ManyToManyField(Group, through="GroupMembership")

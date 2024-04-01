@@ -16,11 +16,18 @@ from .models import (
     Points,
     Level,
     ActionCooldown,
+    Friendship
 )
 
 
 class GroupMembershpInline(TabularInline):
     model = GroupMembership
+    extra = 1
+
+
+class FriendshipInline(TabularInline):
+    model = Friendship
+    fk_name = "friend"
     extra = 1
 
 
@@ -61,15 +68,13 @@ class UserAdmin(ModelAdmin):
         "first_name",
         "last_name",
         "email",
-        "friends",
         "dob",
         "bio",
-        "groups",
         "location",
         "nationality",
         "date_joined",
     )
-    inlines = [GroupMembershpInline]
+    inlines = [GroupMembershpInline, FriendshipInline]
 
 
 class JournalAdmin(ModelAdmin):
