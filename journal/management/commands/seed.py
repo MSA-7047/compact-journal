@@ -3,14 +3,12 @@ from django.core.management.base import BaseCommand, CommandError
 from django.forms import ValidationError
 
 
-from journal.models import User, Group, GroupMembership
+from journal.models import User, Group, GroupMembership, Points, Level
 
 import pytz
 from faker import Faker
-from random import randint, random
-from math import floor, log10 as log
 
-from typing import Annotated, Any
+from typing import Any
 
 user_fixtures = [
     [
@@ -83,7 +81,7 @@ class Command(BaseCommand):
         email = Command.create_email(first_name, last_name)
         location = "nowhere"
 
-        return User.objects.create_user(
+        created_user: User = User.objects.create_user(
             first_name=first_name,
             last_name=last_name,
             username=username,
@@ -91,6 +89,10 @@ class Command(BaseCommand):
             location=location,
             password=Command.DEFAULT_PASSWORD,
         )
+        Points.objects.create(user=created_user)
+        Level.objects.create(user=created_user)
+        return created_user
+
 
     def try_to_create_user(self) -> User | None:
         """Ensures that User creation is aborted if an error occurs"""
@@ -189,7 +191,10 @@ class Command(BaseCommand):
             users_in_group: list[User] = [
                 User.objects.get_or_create(**user_details) for user_details in user_list
             ]
-
+            user_points_and_level: list[tuple[Points, Level]] = [
+                (Points.objects.get_or_create(user=user), Level.objects.get_or_create(user=user))
+                for user in users_in_group
+            ]
             self.try_and_bind_multiple_users_to_empty_group(
                 created_group, users_in_group
             )
