@@ -35,8 +35,7 @@
                   <div class="small-buttons position-relative">
                     <div class="right-buttons ms-auto">
                       {% if is_logged_in %}
-                        <a class="btn" href="{% url 'journal_dashboard' journal_id=journal.id %}">View Journal</a>
-                        <a class="btn" href="{% url 'edit_journal' journal_id=journal.id%}">Edit Journal</a>
+                        <a class="btn" href="{% url 'journal_dashboard' journal_id=journal.id %}">View Journal Dashboard</a>
                         <a class="btn btn-delete" href="{% url 'delete_journal' journal_id=journal.id%}">Delete Journal</a>
                       {% else %}
                         <a class="btn" href="{% url 'journal_entries' user_id=user.id journal_id=journal.id %}">View Journal Entries</a>

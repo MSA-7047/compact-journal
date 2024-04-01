@@ -58,8 +58,10 @@
             {% endfor %}
           {% else %}
           <p>You have not created an entry today! Press the button below to add your entry for the day.</p>
-          <div class="d-flex justify-content-center">
-            <a href="{% url 'select_template' journal_id=journal.id %}" class="btn"> Select Template </a>
+          <div class="d-flex flex-column justify-content-center align-items-center text-center">
+            <a class="btn mb-2" href="{% url 'select_template' journal_id=journal.id %}"> Select A Template </a>
+            <b>Or</b>
+            <a class="btn mt-2" href="{% url 'create_entry' journal_id=journal.id %}">Proceed Without Template</a>
           </div>
           {% endif %}
         </div>

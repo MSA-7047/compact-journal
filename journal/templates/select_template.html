@@ -1,42 +1,54 @@
 {% extends 'base_content.html' %}
 {% block content %}
 <section class="container">
-  <div class="row">
-    <div class="col-12">
-      <h1>Select template</h1>
-      <a href="{% url 'create_entry' journal_id=journal.id %}" class="btn btn-primary">Proceed Without Template</a>
-      <a href="{% url 'create_template' journal_id=journal.id%}" class="btn btn-primary">Create Custom Template</a>
+  <div class="row px-4 justify-content-center">
+    <div class="col-xl-10 row border bg-light rounded justify-content-center align-items-center position-relative pt-2 pb-3">
+
+      <div class="small-buttons position-relative">
+        <a class="btn btn-left" href="{% url 'journal_dashboard' journal_id=journal.id %}">
+          <i class="bi bi-arrow-left me-2"></i>
+          <span>Back</span>
+        </a>
+
+        <div class="right-buttons ms-auto">
+          <a class="btn" href="{% url 'create_template' journal_id=journal.id%}">Create Custom Template</a>
+        </div>
+      </div>
+
+
+      <h1>Select Template</h1>
+      
         {% if templates %}
-        <ul class="list-group mt-3">
+        <ul class="list-group px-3">
           {% for template in templates %}
-                <li class="list-group-item">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div>
-                        <p>
-                          <a href="{% url 'edit_template' template_id=template.id journal_id=journal.id%}" class="btn btn-sm btn-secondary">
-                            Edit Template
-                          </a>
-                          <a href="{% url 'delete_template' template_id=template.id journal_id=journal.id%}" class="btn btn-sm btn-outline-danger">
-                            Delete Template
-                          </a>
-                        </p>
-                        <h2>{{ template.title }}</h2>
-                        <h5>summary: {{ template.description }}</h5>
-                        <hr>
-                        <p> 
-                          {{ template.bio|safe }}<p>
-                        <hr>
-                        <a href="{% url 'create_journal_with_template' template_id=template.id journal_id=journal.id%}" class="btn btn-sm btn-secondary">Select This Template</a>
-                      </div>
-                    </div>
-                </li>
-          {%endfor%}
+            <li class="list-group-item mb-2 border">
+              <div class="d-flex flex-column justify-content-between">
+
+                <div class="small-buttons position-relative">
+                  <div class="right-buttons ms-auto">
+                    <a class="btn" href="{% url 'create_journal_with_template' template_id=template.id journal_id=journal.id%}">Select</a>
+                    <a class="btn" href="{% url 'edit_template' template_id=template.id journal_id=journal.id%}">Edit</a>
+                    <a class="btn btn-delete" href="{% url 'delete_template' template_id=template.id journal_id=journal.id%}">Delete</a>
+                  </div>
+                </div>
+
+                <h2>{{ template.title }}</h2>
+                <h5><b>Summary:</b> {{ template.description }}</h5>
+                <hr>
+                <p>{{ template.bio|safe }}<p>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
         {% else %}
-        <p>You have no templates, create some using the buttom above</p>
+          <li class="list-group-item mb-2 border bg-white py-5 text-center">
+            You have no templates right now, create some using the buttons above!
+          </li> 
+        </ul>
         {% endif %}
+
     </div>
   </div>
-  <br>
-  <a href="{% url 'journal_dashboard' journal_id=journal.id %}" class="btn btn-secondary">Back to Dashboard</a>
+  
 </section>
 {% endblock %}

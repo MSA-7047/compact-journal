@@ -44,7 +44,7 @@
                         <div class="right-buttons ms-auto">
                           {% if is_logged_in %}
                           <a class="btn" href="{% url 'view_entry' entry_id=entry.id %}">View Entry</a>
-                          <a class="btn btn-delete" href="{% url 'delete_entry' entry_id=entry.id%}">Delete Entry</a>
+                          <a class="btn btn-delete" href="{% url 'delete_entry' entry_id=entry.id %}">Delete Entry</a>
                           {% endif %}
                         </div>
                       </div>
@@ -82,8 +82,11 @@
                 </li>
             {% endfor %}
         {% else %}
-          <p>No Entries avalaible in this journal</p>
+        <li class="list-group-item mb-2 border bg-white py-5 text-center">
+          No Entries avalaible in this journal.
+        </li>  
         {% endif %}
+        </ul>
 
     </div>  
 
