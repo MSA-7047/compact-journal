@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from journal.models import Group, GroupMembership, User
-from django.db.utils import IntegrityError
+from django.utils import timezone
 
 
 class GroupMembershipModelTest(TestCase):
@@ -61,13 +61,19 @@ class GroupMembershipModelTest(TestCase):
         )
 
     def test_membership_is_unique(self) -> None:
-    # Attempt to create a duplicate GroupMembership object
-        with self.assertRaises(IntegrityError):
-            GroupMembership.objects.create(
-                user=self.user,
-                group=self.group,
-                is_owner=True
-            )
+        group_membership_2: GroupMembership = GroupMembership.objects.create(
+            user=self.user,
+            group=self.group,
+            is_owner=True
+        )
+        self._assert_group_membership_is_invalid(
+            self.group_membership,
+            "Membership is no longer unique, and thus invalid"
+        )
+        self._assert_group_membership_is_invalid(
+            group_membership_2,
+            "New membership has same values as an existing record, and thus is invalid"
+        )
 
     
 
