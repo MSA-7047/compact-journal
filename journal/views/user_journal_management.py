@@ -105,7 +105,7 @@ def all_journals_view(request, user_id):
     return render(request, 'my_journals.html',
                 {'user': current_user,
                 'journals': journals,
-                'user': viewing_user,
+                'viewing_user': viewing_user,
                 "is_logged_in": currently_logged_in}
                 )
 
