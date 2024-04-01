@@ -74,11 +74,11 @@
                             <div class="right-buttons ms-auto">
                                 <form action="{% url 'accept_group_request' group_id=group_request.group.group_id %}" method="post">
                                     {% csrf_token %}
-                                    <a type="submit" class="btn">Accept</a>
+                                    <input class="btn" type="submit" value="Accept">
                                 </form>
                                 <form action="{% url 'reject_group_request' group_id=group_request.group.group_id %}" method="post">
                                     {% csrf_token %}
-                                    <a type="submit" class="btn btn-delete">Reject</a>
+                                    <input class="btn btn-delete" type="submit" value="Reject">
                                 </form>
                             </div>
                           </div>
