@@ -53,7 +53,7 @@ def create_group(request) -> HttpResponse:
             else:
                 messages.success(request, "New group created! However, you must wait before getting points again.")
 
-            create_notification(request, f"New group {form_data.name} created!", "info")
+            create_notification(request, f"New group {form_data.name} created!", "group")
 
             return redirect('groups')
     else:
@@ -91,7 +91,7 @@ def edit_group(request, group_id):
             memberships = GroupMembership.objects.filter(group=group)
             for member in memberships:
                 notif_message = f"Group '{old_group_name}' has been changed to '{group.name}'."
-                Notification.objects.create(notification_type="info", message=notif_message, user=member.user)
+                Notification.objects.create(notification_type="group", message=notif_message, user=member.user)
 
             return redirect('group_dashboard', group_id=group_id)
 
@@ -122,7 +122,7 @@ def send_group_request(request, group_id):
 
             # Create the group request
             GroupRequest.objects.create(sender=request.user, recipient=recipient, group=group_)
-            Notification.objects.create(notification_type="info", message=f"{request.user} has invited you to a new group named {group_.name}.", user=recipient)
+            Notification.objects.create(notification_type="group", message=f"{request.user} has invited you to a new group named {group_.name}.", user=recipient)
 
             messages.success(request, f"{recipient} has now been invited.")
             return redirect('group_dashboard', group_id=group_id)
@@ -139,7 +139,7 @@ def accept_group_request(request, group_id):
 
     # Create GroupMembership for the user
     GroupMembership.objects.create(user=request.user, group=group)
-    Notification.objects.create(notification_type="info", message=f"{request.user} has joined your group named {group}", user=group_request.sender)
+    Notification.objects.create(notification_type="group", message=f"{request.user} has joined your group named {group}", user=group_request.sender)
     Points.objects.create(user=group_request.sender, points=40, description=f"{request.user} has joined your group named {group}")
 
     group_request.delete()
@@ -155,7 +155,7 @@ def reject_group_request(request, group_id):
     group_request = get_object_or_404(GroupRequest, group=group, recipient=request.user)
     group_request.status = 'rejected'
 
-    Notification.objects.create(notification_type="info", message=f"{request.user} has rejected your group named {group}", user=group_request.sender)
+    Notification.objects.create(notification_type="group", message=f"{request.user} has rejected your invite to group {group}", user=group_request.sender)
 
     group_request.delete()
     #invitation.delete()
@@ -182,7 +182,7 @@ def delete_group(request, group_id):
             memberships = GroupMembership.objects.filter(group=group)
             for member in memberships:
                 notif_message = f"Group '{to_del.name}' has been deleted."
-                Notification.objects.create(notification_type="info", message=notif_message, user=member.user)
+                Notification.objects.create(notification_type="group", message=notif_message, user=member.user)
             
             to_del.delete()    
             return redirect('dashboard')
@@ -254,7 +254,7 @@ def select_new_owner(request, group_id):
             new_owner_membership.is_owner = True
             new_owner_membership.save()
             messages.success(request, "New owner selected successfully.")
-            Notification.objects.create(notification_type='info', message=f"You are the new owner for {group.name}", user=new_owner)
+            Notification.objects.create(notification_type='group', message=f"You are the new owner for {group.name}", user=new_owner)
             return redirect('dashboard')
 
     return render(request, 'select_new_owner.html', {'form': form, 'group': group, 'user': request.user})

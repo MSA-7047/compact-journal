@@ -12,6 +12,8 @@ from django.utils.translation import gettext as _
 from django_ckeditor_5.forms import UploadFileForm
 from django_ckeditor_5.views import image_verify, handle_uploaded_file, NoImageException
 
+from django.shortcuts import render
+
 @login_required
 def create_journal(request):
     if request.method == 'POST':
@@ -154,12 +156,13 @@ def view_entry(request, entry_id):
 
     try:
         entry = Entry.objects.get(id=entry_id)
+        referer_url = request.META.get('HTTP_REFERER', f'/journal_dashboard/{entry.id}/')
     except ObjectDoesNotExist:
         messages.warning(request, "You have attempted to access an invalid URL, redirected to dashboard")
         return redirect(reverse('dashboard'))
 
     
-    return render(request, 'view_entry.html', {'user': current_user, 'entry': entry})
+    return render(request, 'view_entry.html', {'user': current_user, 'entry': entry, 'referer_url': referer_url,})
 
 
 @login_required

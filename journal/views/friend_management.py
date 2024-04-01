@@ -19,10 +19,6 @@ def view_friend_requests(request):
      sent_accepted_invitations, sent_rejected_invitations) = get_friend_requests_and_sent_invitations(request.user)
     form = SendFriendRequestForm(user=request.user)
 
-    """Notification Creation"""
-    notif_message = "This is a testing notification message. It can be changed whenever I want it to."
-    create_notification(request, notif_message, "info")
-
     return render(
         request,
         template_name='friend_requests.html',
@@ -73,6 +69,10 @@ def send_friend_request(request, user_id):
         if form.is_valid():
             recipient = form.cleaned_data['recipient']
             FriendRequest.objects.get_or_create(recipient=recipient, sender=request.user, status='pending')
+
+            notif_message = f"You have received a friend request from {request.user}."
+            Notification.objects.create(notification_type="friend", message=notif_message, user=recipient)
+
             return redirect('send_request', user_id=user_id)
     else:
         form = SendFriendRequestForm(user=request.user)
@@ -103,6 +103,12 @@ def accept_invitation(request, friend_request_id):
     friend_request.is_accepted = True
     friend_request.status = 'accepted'
 
+    sender_message = f"{friend_request.recipient} has accepted your friend request."
+    receiver_message = f"You are now friends with {friend_request.sender}"
+    Notification.objects.create(notification_type="friend", message=sender_message, user=friend_request.sender)
+    Notification.objects.create(notification_type="friend", message=receiver_message, user=friend_request.recipient)
+    Points.objects.create(user=friend_request.sender, points=30, description=f"{friend_request.recipient} has accepted your friend request.")
+
     friend_request.save()
 
     return redirect('view_friend_requests')
@@ -112,6 +118,10 @@ def accept_invitation(request, friend_request_id):
 def reject_invitation(request, friend_request_id):
     friend_request = get_object_or_404(FriendRequest, id=friend_request_id, recipient=request.user, is_accepted=False)
     friend_request.status = 'rejected'
+
+    notif_message = f"Your friend request to {friend_request.recipient} has been rejected."
+    Notification.objects.create(notification_type="friend", message=notif_message, user=friend_request.sender)
+
     friend_request.save()
     return redirect('view_friend_requests')
 
@@ -127,6 +137,12 @@ def delete_sent_request(request, friend_request_id):
 def remove_friend(request, user_id):
     friend = get_object_or_404(User, id=user_id)
     request.user.friends.remove(friend)
+
+    sender_message = f"You have removed {friend} as a friend."
+    receiver_message = f"{request.user} has removed you as a friend."
+    Notification.objects.create(notification_type="friend", message=sender_message, user=request.user)
+    Notification.objects.create(notification_type="friend", message=receiver_message, user=friend)
+
     friend.friends.remove(request.user)
     return redirect('view_friends')
 
