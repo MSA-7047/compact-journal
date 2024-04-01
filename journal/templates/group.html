@@ -3,10 +3,10 @@
 {% load static %}
 
 <section class="container">
-    <div class="row pb-4 px-4 justify-content-between">
+    <div class="row pb-4 px-4 justify-content-between ">
   
       <div class="col-xxl-8 border bg-light rounded justify-content-center align-items-center position-relative pt-2 pb-3 mx-auto my-2"> <!-- Added mx-auto and my-2 here -->
-        <div class="row mx-2"> <!-- Added mx-2 here for gap between boxes -->
+        <div class="row"> <!-- Added mx-2 here for gap between boxes -->
 
           <div class="col-12">
             <div class="small-buttons position-relative">
@@ -27,7 +27,7 @@
             </div>
                 
             {% if groups %}
-              <ul class="list-group px-1" style="height:500px; overflow-y: auto;">
+              <ul class="list-group px-1" style="height:350px; overflow-y: auto;">
                   {% for group in groups.all %}
                       <li class="list-group-item mb-2 border">
                           <div class="d-flex flex-column justify-content-center">
