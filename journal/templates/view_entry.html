@@ -11,7 +11,7 @@
                 <div class="card-header">
                     <div class="small-buttons position-relative">
                         <a class="btn btn-left"
-                            href="{% url 'journal_entries' user_id=entry.owner.id journal_id=entry.journal.id %}">
+                            href="{{ referer_url }}">
                             <i class="bi bi-arrow-left me-2"></i>
                             <span>Back</span>
                         </a>

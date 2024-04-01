@@ -14,6 +14,8 @@ from django.utils.translation import gettext as _
 from django_ckeditor_5.forms import UploadFileForm
 from django_ckeditor_5.views import image_verify, handle_uploaded_file, NoImageException
 
+from django.shortcuts import render
+
 @login_required
 def create_journal(request):
     if request.method == 'POST':
@@ -138,13 +140,14 @@ def view_entry(request, entry_id):
 
     try:
         entry = Entry.objects.get(id=entry_id)
+        referer_url = request.META.get('HTTP_REFERER', f'/journal_dashboard/{entry.id}/')
     except ObjectDoesNotExist:
         return render(request, 'permission_denied.html',)
     
     if entry.owner != current_user:
         return render(request, 'permission_denied.html', {'reason': "You do not own this journal"} )
     
-    return render(request, 'view_entry.html', {'user': current_user, 'entry': entry})
+    return render(request, 'view_entry.html', {'user': current_user, 'entry': entry, 'referer_url': referer_url,})
 
 
 @login_required
