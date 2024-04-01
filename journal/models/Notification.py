@@ -8,6 +8,8 @@ class Notification(models.Model):
         ('info', 'Information'),
         ('reminder', 'Reminder'),
         ('points', 'Points'),
+        ('friend', 'Friend'),
+        ('group', 'Group')
     ]
 
     notification_type = models.CharField(max_length=15, choices=NOTIFICATION_TYPES, default='info')
