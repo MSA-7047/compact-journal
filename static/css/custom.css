@@ -106,6 +106,7 @@ section {
 }
 
 .right-buttons .btn {
+  margin-top:0px;
   margin-left: 5px; /* Add margin between buttons if necessary */
 }
 
