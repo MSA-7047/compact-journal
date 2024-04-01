@@ -44,11 +44,10 @@ def create_journal(request):
 def create_first_journal(current_user):
     Journal.objects.create(
         title="Welcome To Compact Journals",
-        summary="""This is your first Compact Journal.
-         With each compact journal you can create a daily entry to keep track of ur activites and productivity as well as ur mood
-         You can create as many journals as you want to keep track of all the different aspects of your life
-         Journals can be edited from the journal dashboard (press view button to access) as well as deleted
-         The journal dashboard is where youy can create your daily entry and keep track of all your previous ones
+        summary="""This is your first Compact Journal!
+         With each Compact Journal you can create a daily entry to keep track of your activites, productivity as well as your mood.
+         Create as many Journals as you like!
+         The Journal Dashboard is where you create your daily entry, edit, delete and store your previous entries (press the button below to access).
         """,
         owner=current_user
     )

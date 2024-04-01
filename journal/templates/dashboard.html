@@ -26,7 +26,7 @@
         <h1>Your Journals:</h1>
           <div class="content">
             {% if my_journals is None %}
-              <p>You have no Journals! Press below to create your first journal</p>
+              <p>There are no Journals here currently. Press the button below to create your first journal!</p>
             {% else %}
                 {% for journal in my_journals%}
                         <hr>
@@ -57,7 +57,7 @@
         <h1>Your Groups:</h1>
         <div class="content">
           {% if not groups %}
-            Get some friends
+            You are not a part of any Groups currently, let's create some!
           {% endif %}
           {% if groups %}
             <div class="btn-group-vertical container-fluid" role="group">
@@ -79,7 +79,7 @@
           {% endfor %}
         {% else %}
           You currently have no Friends, <br>
-          View requests to add some you lonely guy
+          To add more friends, send some requests!
           <br>
         {% endif %}
       </div>
