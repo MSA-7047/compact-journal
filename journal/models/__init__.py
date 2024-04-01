@@ -14,3 +14,4 @@ from .Entry import Entry
 from .Points import Points
 from .Level import Level
 from .Cooldown import ActionCooldown
+from .Friendship import Friendship

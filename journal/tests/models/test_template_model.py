@@ -41,14 +41,14 @@ class TemplateModelTest(TestCase):
         self.template.title = 'a'*30
         self._assert_template_is_valid(
             self.template,
-            "Title length was 50, which is supposed to be valid"
+            "Title length was 30, which is supposed to be valid"
         )
 
-    def test_title_cant_be_more_than_50_long(self) -> None:
-        self.template.title = 'a'*51
+    def test_title_cant_be_more_than_30_long(self) -> None:
+        self.template.title = 'a'*31
         self._assert_template_is_invalid(
             self.template,
-            "Title length was 51, which is supposed to be invalid"
+            "Title length was 31, which is supposed to be invalid"
         )
 
     def test_title_cant_be_blank(self) -> None:
@@ -58,8 +58,8 @@ class TemplateModelTest(TestCase):
             "Title was blank, which is supposed to be invalid"
         )
 
-    def test_description_can_be_1000_long(self) -> None:
-        self.template.description = 'a'*10000
+    def test_description_can_be_150_long(self) -> None:
+        self.template.description = 'a'*150
         self._assert_template_is_valid(
             self.template,
             "Desctiption length was 1.000, which is supposed to be valid"
@@ -73,7 +73,7 @@ class TemplateModelTest(TestCase):
         )
 
     def test_bio_can_be_10000_long(self) -> None:
-        self.template.bio = 'a'*10000
+        self.template.bio = 'a'*10_000
         self._assert_template_is_valid(
             self.template,
             "'Bio' length was 10000, which is supposed to be valid"
