@@ -1,15 +1,26 @@
 {% extends 'base_content.html' %}
 {% block content %}
 <section class="container">
-  <div class="row">
-    <h1>Delete account</h1>
-    <p> Are you sure you would like to delete your account?</p>
-    <form method="post" action="{% url 'delete_account' %}">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <input type="submit" value="Delete Account" class="btn btn-md btn-primary ">
-    </form>
-    <a href="{% url 'dashboard' %}">Back to dashboard</a>
+  <div class="row py-4 px-4 justify-content-center text-center">
+    
+    <div class="col-md-6 row border bg-light justify-content-center align-items-center rounded pt-2 position-relative">
+      
+      <div class="small-buttons position-relative">
+        <a class="btn btn-left" href="{% url 'edit_profile' %}">
+          <i class="bi bi-arrow-left me-2"></i>
+          <span>Back</span>
+        </a>
+      </div>
+
+      <h1>Delete account</h1>
+      <b> Are you sure you would like to delete your account?</b>
+      <form method="post" action="{% url 'delete_account' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input class="btn btn-delete" type="submit" value="Delete Account">
+      </form>
+
+    </div>
 
   </div>
 </section>

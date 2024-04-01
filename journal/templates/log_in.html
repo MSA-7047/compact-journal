@@ -1,16 +1,33 @@
 {% extends 'base_content.html' %}
 {% block content %}
 <section class="container">
-  <div class="row">
-    <div class="col-sm-12 col-md-6 offset-md-3">
+  <div class="row py-4 px-4 justify-content-center">
+
+    <div class="col-lg-6 row border bg-light justify-content-center align-items-center">
       <h1>Log in</h1>
       <form action="{% url 'log_in' %}" method="post">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ next }}">
         {% include 'partials/bootstrap_form.html' with form=form %}
-        <input type="submit" value="Log in" class="btn">
+
+        <div class="row">
+          <div class="col-6">
+            <input type="submit" value="Log in" class="btn">
+          </div>
+
+          <div class="col-6 text-center d-flex flex-column align-items-center">
+            <b>Don't have an account?</b>
+            <a class="text-decoration-none" href="{% url 'sign_up' %}">
+              Click here to sign up
+              <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+
       </form>
-      <a href="{% url 'sign_up' %}">Don't have an account? Click here to sign up.</a>
+
+      
+
     </div>
   </div>
 </section>

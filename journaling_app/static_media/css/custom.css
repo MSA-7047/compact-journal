@@ -1,0 +1,171 @@
+input#id_journal_title {
+  width: 100%;
+}
+
+textarea#id_journal_description {
+  width: 100%;
+  resize: none; /* Disable resizing */
+}
+
+.container .row h1 {
+  -webkit-text-stroke: 1px black;
+  color: #ffffff;
+  text-shadow:
+    3px 2px 0 #000000;
+  font-family: "Tilt-Warp", sans-serif;
+  font-size: 25px;
+  font-weight: 800;
+  word-wrap: break-word; /* Allows long words to be broken and wrapped onto the next line */
+  max-width: 100%; /* Sets maximum width of the box to 100% of its container */
+  padding: 5px 0px;
+  width: fit-content;
+} 
+
+@media (max-width: 768px) {
+  .container .row h1 {
+    font-size: 20px; /* Adjust font size for smaller screens */
+  }
+}
+
+.btn, .btn:focus {
+  color: #ffffff;
+  background: #26363e;
+  padding: 10px 20px;
+  margin: 25px 0px;
+  display: inline-flex;
+  border-radius: 1000px;
+  font-family: "Tilt-Warp", sans-serif;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.btn:hover, .btn:focus:hover {
+  color: #ffffff;
+  background: #93c9f7;
+  transition: 0.5s;
+}
+/*-- ==================== Sections ==================== --*/
+section {
+    padding-top: 90px;
+    height: 100vh;
+  }
+/* =======================================================*/
+
+/*
+ * Alerts
+ */
+
+.alert {
+  border-radius: 0px;
+}
+
+
+/*
+ * Cover page
+ */
+
+.content {
+  padding-top: 10px;
+}
+
+.h-100 {
+  min-height: 100vh;
+  height: 100vh;
+}
+
+.vcenter-item{
+    display: flex;
+    align-items: center;
+}
+
+/*
+ * Cover page
+ */
+h1.cover-heading {
+  font-size: 4rem;
+}
+
+p.cover-text {
+  font-size: 1.7rem;
+}
+
+.cover-card {
+  background-color: rgba(245, 245, 245, 0.6);
+  max-width: 30rem;
+  padding-top: 30px;
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-bottom: 30px;
+  border-radius: 15%;
+}
+.cover-card-block {
+  opacity: 1
+}
+
+
+/*
+ * forms
+ */
+.nolabel label {
+  display: none;
+}
+
+ul.errorlist {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+/*
+ * Typefaces
+ */
+
+.low-key {
+  color: #777777;
+  font-weight: 300;
+}
+
+.list-title {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+/*
+ * Profile
+ */
+.profile-image {
+  width: 120px;
+  clear:both;
+  float:left;
+}
+
+.profile-text {
+  overflow:hidden;
+  padding-left:20px
+}
+
+h3.profile-title {
+  margin-bottom: 0px;
+}
+
+.profile-username {
+  color: #777777;
+  font-weight: 300;
+  font-style: italic;
+}
+
+/**
+ * Buttons
+ */
+.create-button {
+    /* Your styles here */
+    background-color: #4CAF50; /* Green */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+

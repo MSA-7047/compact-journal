@@ -1,0 +1,51 @@
+.todays-journal, .your-groups, .friends-list {
+  height: 300px;
+  position: relative; /* Set position to relative */ 
+}
+
+.content {
+  height: calc(100% - 40px);
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden;
+  overflow-wrap:break-word
+}
+
+.create-journal-button, .create-journal-button:focus {
+  color: #ffffff;
+  background: #26363e;
+  padding: 10px 20px;
+  margin: 50px 0px;
+  display: inline-flex;
+  border-radius: 1000px;
+  font-family: "Tilt-Warp", sans-serif;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.create-journal-button:hover, .create-journal-button:focus:hover {
+  color: #ffffff;
+  background: #93c9f7;
+  transition: 0.5s;
+}
+
+
+.content .edit-button, .content .edit-button:focus {
+  color: #ffffff;
+  background: #26363e;
+  padding: 5px 20px;
+  margin-left: 50px;
+  border-radius: 1000px;
+  font-family: "Tilt-Warp", sans-serif;
+  font-weight: 800;
+  text-decoration: none;
+  position: absolute; /* Set position to absolute */
+  top: 5px; /* Adjust top position as needed */
+  right: 5px; /* Adjust right position as needed */
+}
+
+.edit-button:hover, .edit-button:focus:hover {
+  color: #ffffff;
+  background: #93c9f7;
+  transition: 0.5s;
+}
+  

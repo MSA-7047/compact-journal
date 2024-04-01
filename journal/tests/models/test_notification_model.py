@@ -35,6 +35,10 @@ class NotificationModelTest(TestCase):
             "Failed default test"
         )
 
+    def test_str_method(self):
+        expected_str = f"Notification for {self.user.username} - Test"
+        self.assertEqual(str(self.notif), expected_str)
+
     def test_user_cannot_be_null(self) -> None:
         self.notif.user = None
         self._assert_notification_is_invalid(

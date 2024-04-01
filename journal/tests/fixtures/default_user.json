@@ -11,7 +11,8 @@
       "bio": "This is the default user's bio.",
       "location": "London",
       "nationality": "US",
-      "date_joined": "2022-01-01T00:00:00Z"
+      "date_joined": "2022-01-01T00:00:00Z",
+      "password": "pbkdf2_sha256$260000$4BNvFuAWoTT1XVU8D6hCay$KqDCG+bHl8TwYcvA60SGhOMluAheVOnF1PMz0wClilc="
     }
   }
 ]

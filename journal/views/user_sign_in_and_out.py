@@ -7,9 +7,11 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic.edit import FormView
 from .template_management import generate_generic_templates
+from .user_journal_management import create_first_journal
 from .mixins import LoginProhibitedMixin
 from journal.forms import *
-
+from journal.views.notifications import *
+from journal.views.user_management import *
 
 
 class LogInView(LoginProhibitedMixin, View):
@@ -80,11 +82,20 @@ class SignUpView(LoginProhibitedMixin, FormView):
     def form_valid(self, form):
         self.object = form.save()
         generate_generic_templates(self.object)
+        create_first_journal(self.object)
         login(self.request, self.object)
+
+        """Notification & Points Creation"""
+        notif_message = f"Welcome to Compact Journals! {self.object.first_name} {self.object.last_name}."
+        create_notification(self.request, notif_message, "info")
+        give_points(self.request, 20, "Signing up bonus. Welcome to Compact Journals.")
+
         return super().form_valid(form)
 
     def get_success_url(self):
         return reverse(settings.REDIRECT_URL_WHEN_LOGGED_IN)
+    
+    
 
 
 def log_out(request):

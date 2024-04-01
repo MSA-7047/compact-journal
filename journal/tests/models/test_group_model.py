@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from journal.models import User, Group, GroupMembership
+from django.core.exceptions import ValidationError
 
 class GroupMembershipTestCase(TestCase):
     def setUp(self):
@@ -11,21 +12,21 @@ class GroupMembershipTestCase(TestCase):
         self.membership2 = GroupMembership.objects.create(user=self.user2, group=self.group)
 
     def test_group_is_valid(self):
-        self.assertTrue(self.group._assert_group_is_valid())
+        self.group.full_clean()
     
     def test_invalid_group_is_rejected(self):
         self.group.name = "asdmoafnsakfajsf aj3j412j12nj312 1"
-        with self.assertRaises(AssertionError):
-            self.group._assert_group_is_valid()
+        with self.assertRaises(ValidationError):
+            self.group.full_clean()
 
     def test_group_name_accepted_with_30_characters(self):
         self.group.name = 'x' * 30
-        self.assertTrue(self.group._assert_group_is_valid())
+        self.group.full_clean()
 
     def test_group_name_rejected_with_more_than_30_characters(self):
         self.group.name = 'x' * 31
-        with self.assertRaises(AssertionError):
-            self.group._assert_group_is_valid()
+        with self.assertRaises(ValidationError):
+            self.group.full_clean()
     
     def test_is_user_member(self):
         self.assertTrue(self.group.is_user_member(self.user))

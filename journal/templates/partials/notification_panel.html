@@ -19,8 +19,14 @@
     <ul class="notifications-list d-flex flex-column align-items-center">
       {% for notification in notifications %}
         <li class="notification">
+          {% if  notification.notification_type == 'info' %}
           <i class="bi bi-info-circle"></i>
-
+          {% elif  notification.notification_type == 'reminder' %}
+          <i class="bi bi-alarm-fill"></i>
+          {% elif  notification.notification_type == 'points' %}
+          <i class="bi bi-star-fill"></i>
+          {% endif %}
+          
           <div class="notification-message">
             <p>{{notification.message}}</p>
             <h6>{{notification.time_created}}</h6>

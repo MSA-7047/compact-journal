@@ -1,9 +1,9 @@
 from .confirm_account_delete_form import ConfirmAccountDeleteForm
-from .create_journal_form import CreateJournalForm
+from .create_entry_form import CreateEntryForm
 from .create_group_journal_form import CreateGroupJournalForm
-from .edit_group_journal_form import EditGroupJournalForm
+from .create_journal_form import CreateJournalForm
 from .group_form import GroupForm
-from .journal_filter_form import JournalFilterForm
+from .entry_filter_form import EntryFilterForm
 from .journal_sort_form import JournalSortForm
 from .log_in_form import LogInForm
 from .password_form import PasswordForm
@@ -12,4 +12,5 @@ from .send_friend_request_form import SendFriendRequestForm
 from .sign_up_form import SignUpForm
 from .user_form import UserForm
 from .template_form import CreateTemplateForm
-
+from .select_new_owner_form import SelectNewOwnerForm
+from .confirm_group_deletion import ConfirmGroupDeleteForm
