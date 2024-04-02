@@ -1,7 +1,7 @@
 from django import forms
 
 
-class JournalSortForm(forms.Form):
+class EntrySortForm(forms.Form):
 
     ORDER_CHOICES = [
         ('ascending', 'Ascending'),
