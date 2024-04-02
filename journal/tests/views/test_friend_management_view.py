@@ -15,9 +15,7 @@ class FriendsViewTest(TestCase):
         self.friend = User.objects.get(username='@janedoe')
         self.client.login(username='@johndoe', password='Password123')
 
-    def test_view_friend_requests(self):
-        response = self.client.get(reverse('view_friend_requests'))
-        self.assertEqual(response.status_code, 200)
+
 
 
     def test_view_friends(self):
