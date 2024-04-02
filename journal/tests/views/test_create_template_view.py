@@ -25,12 +25,12 @@ class CreateTemplateViewTestCase(TestCase):
             'bio': 'Test bio',
         }
         response = self.client.post(reverse('create_template'), data)
-        self.assertEqual(response.status_code, 302)  # Redirects after successful creation
+        self.assertEqual(response.status_code, 302)
         self.assertTrue(Template.objects.filter(title='Test Template').exists())
 
     def test_post_request_invalid_data(self):
-        data = {}  # Empty data should result in invalid form
+        data = {} 
         response = self.client.post(reverse('create_template'), data)
-        self.assertEqual(response.status_code, 200)  # Form should be re-rendered with errors
-        self.assertFormError(response, 'form', 'title', 'This field is required.')  # Check for specific form errors
-        # Add assertions for other form errors as needed
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(response, 'form', 'title', 'This field is required.')
+

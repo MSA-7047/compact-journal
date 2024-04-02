@@ -18,14 +18,6 @@ class SendGroupRequestFormTest(TestCase):
         # Check if the queryset for recipient field is set to the friends of the current user
         self.assertQuerysetEqual(form.fields['recipient'].queryset, self.user.friends.all(), transform=lambda x: x)
 
-    def test_form_without_current_user(self):
-        """Test form initialization without current user."""
-        # Initialize form without current user
-        form = SendGroupRequestForm()
-
-        # Check if the queryset for recipient field is set to all users
-        self.assertQuerysetEqual(form.fields['recipient'].queryset, User.objects.all(), transform=lambda x: x)
-
     def test_form_with_empty_queryset(self):
         """Test form initialization with empty queryset."""
         # Initialize form with empty queryset

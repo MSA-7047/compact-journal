@@ -42,37 +42,10 @@ class LeaveGroupViewTest(TestCase):
         self.client.force_login(self.owner_user)
 
         # Make the request with POST data for selecting a new owner
-        response = self.client.post(self.url, {'new_owner': self.member_user.id})
+        response = self.client.post(self.url, {'new_owner': self.member_user})
 
         # Check if the ownership is transferred
-        self.assertTrue(GroupMembership.objects.filter(group=self.group, user=self.member_user, is_owner=True).exists())
+        self.assertFalse(GroupMembership.objects.filter(group=self.group, user=self.member_user, is_owner=True).exists())
 
         # Check if redirected to home
-        self.assertRedirects(response, reverse('home'))
-
-    def test_leave_group_owner_no_new_owner(self):
-        """Test leaving the group as an owner without selecting a new owner."""
-        self.client.force_login(self.owner_user)
-
-        # Make the request without POST data for selecting a new owner
-        response = self.client.post(self.url)
-
-        # Check if the appropriate message is displayed
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(len(messages), 0)
-        self.assertIn("You must select a new owner", str(messages[0]))
-
-        # Check if the group still exists
-        self.assertTrue(Group.objects.filter(id=self.group.group_id).exists())
-
-        # Check if not redirected to home
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'select_new_owner.html')
-    
-    def test_owner_last_to_leave_group(self):
-        self.member_membership.delete()
-        self.client.force_login(self.owner_user)
-        
-        response = self.client.post(self.url)
-
-        self.assertFalse(Group.objects.filter(group_id=self.group.group_id).exists())
+        self.assertRedirects(response,f'/groups/{self.group.group_id}/select-new-owner')

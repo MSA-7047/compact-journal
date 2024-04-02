@@ -1,28 +1,28 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
-from journal.models import GroupJournal, Group
+from journal.models import GroupEntry, Group
 from django.utils import timezone
 
 
-class GroupJournalModelTest(TestCase):
-    """Test Suite for GroupJournal Model Class"""
+class GroupEntryModelTest(TestCase):
+    """Test Suite for GroupEntry Model Class"""
 
     def setUp(self) -> None:
         self.group: Group = Group.objects.create(
 
         )
-        self.group_journal: GroupJournal = GroupJournal.objects.create(
+        self.group_journal: GroupEntry = GroupEntry.objects.create(
 
         )
 
-    def _assert_journal_is_valid(self, journal: GroupJournal, msg: str = None) -> None:
+    def _assert_journal_is_valid(self, journal: GroupEntry, msg: str = None) -> None:
         """"""
         try:
             journal.full_clean()
         except ValidationError:
             self.fail(msg)
 
-    def _assert_journal_is_invalid(self, journal: GroupJournal, msg: str = None) -> None:
+    def _assert_journal_is_invalid(self, journal: GroupEntry, msg: str = None) -> None:
         """"""
         with self.assertRaises(ValidationError, msg=msg):
             journal.full_clean()

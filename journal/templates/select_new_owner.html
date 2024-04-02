@@ -4,20 +4,23 @@
 
 {% block content %}
 <section class="container">
-    <div class="row">
-        <div class="col-12">
+    <div class="row py-4 px-4 justify-content-center">
+        <div class="col-lg-6 row border bg-light justify-content-center align-items-center">
+
+            <div class="small-buttons position-relative">
+                <a class="btn btn-left" href="{% url 'group_dashboard' group_id=group.group_id %}">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    <span>Back</span>
+                </a>
+            </div>
+
             <h1>Select New Owner for "{{ group.name }}"</h1>
-            {% if messages %}
-                <ul class="messages">
-                {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
-                </ul>
-            {% endif %}
             <form method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <button type="submit" class="btn btn-primary">Select New Owner</button>
+                <div class="col-12 justify-content-center text-center">
+                    <button class="btn" type="submit">Select New Owner</button>
+                </div>
             </form>
         </div>
     </div>

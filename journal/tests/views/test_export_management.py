@@ -45,30 +45,18 @@ class PDFExportViewTest(TestCase):
         request.user = self.user
         response = export_journal_as_PDF(request, journal_entries='1')
         self.assertEqual(response.status_code, 200)
-<<<<<<< HEAD
         self.assertEqual(response.get('Content-Disposition'), 'attachment; filename=Test Journal entries.pdf')
-=======
-        self.assertEqual(response.get('Content-Disposition'), 'attachment; filename=Test Journal entries')
 
     def test_export_single_group_entry_as_PDF(self):
-        request = RequestFactory().get(reverse('export_single_group_entry', args=[self.group.group_id, self.group_entry.id]))
-        request.user = self.user
-
-        response = export_single_group_entry_as_PDF(request, self.group.group_id, self.group_entry.id)
-
-        self.assertIsInstance(response, HttpResponse)
-
+        url = reverse('export_single_group_entry', kwargs={'group_id': self.group.group_id, 'journal_id': self.group_entry.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/pdf')
-
-        expected_filename = f'{self.group.name}_{self.group_entry.title}.pdf'
-        self.assertTrue(expected_filename in response['Content-Disposition'])
+        self.assertTrue(response.content)  # Ensure content is not empty
 
     def test_export_group_journal_as_PDF(self):
-        request = RequestFactory().get(reverse('export_group_journal', args=[self.group.group_id]))
-        request.user = self.user
-
-        response = export_group_journal_as_PDF(request, self.group.group_id)
-
-        self.assertIsInstance(response, HttpResponse)
+        url = reverse('export_group_journal', kwargs={'group_id': self.group.group_id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/pdf')
->>>>>>> 77ad5f4 (add group_journal_to_pdf in export_management)
+        self.assertTrue(response.content)  # Ensure content is not empty

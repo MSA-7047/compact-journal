@@ -57,3 +57,10 @@ class EditGroupViewTest(TestCase):
         # Ensure the group name remains unchanged
         refreshed_group = Group.objects.get(group_id=self.group.group_id)
         self.assertEqual(refreshed_group.name, 'Test Group')
+    
+    def test_edit_group_GET(self):
+        self.client.force_login(self.user)
+        
+        response = self.client.get(reverse('edit_group', kwargs={'group_id': self.group.group_id}))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'edit_group.html')

@@ -124,8 +124,8 @@ def dashboard(request):
 @login_required
 def delete_account(request):
     if request.method == 'POST':
-        form = ConfirmAccountDeleteForm(request.POST)
-        if form.is_valid() and form.cleaned_data['confirmation'].upper() == "YES":
+        form = ConfirmDeletionForm(request.POST)
+        if form.is_valid() and form.clean_confirmation():
             to_del = request.user
 
             with transaction.atomic():
@@ -136,9 +136,9 @@ def delete_account(request):
         else:
             form.add_error('confirmation', 'Please enter "YES" to confirm deletion.')
     else:
-        form = ConfirmAccountDeleteForm()
+        form = ConfirmDeletionForm()
 
-    return render(request, 'delete_account.html', {'form': form})
+    return render(request, 'delete_account.html', {'form': form, 'is_account': True})
 
 from django.db.models import Sum
 from journal.models import Points

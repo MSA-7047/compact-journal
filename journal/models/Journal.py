@@ -3,7 +3,7 @@ from django.conf import settings
 
 class Journal(models.Model):
     title = models.CharField('Title', max_length=30, blank=False)
-    summary = models.TextField('Description', max_length=350)
+    summary = models.TextField('Description', max_length=500)
     entry_date = models.DateTimeField(auto_now_add=True)
     last_entry_date = models.DateTimeField(auto_now_add=False, null=True)
     private = models.BooleanField(blank=False, default = False)

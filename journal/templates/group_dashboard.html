@@ -73,7 +73,7 @@
     <div class="col-xl-7 d-flex flex-column">
       <div class="your-groups p-2 border bg-light flex-grow-1 d-flex flex-column">
         <div class="d-flex justify-content-center">
-          <h1>All Journal Entries</h1>
+          <h1>All Group Entries</h1>
         </div>
 
         {% if journal_entries %}
@@ -94,7 +94,7 @@
           {%endfor%}
           {% else %}
           <div class="d-flex justify-content-center text-center">
-            <p>You have no entries for this journal.</p>
+            <p>There are no entries for this group.</p>
               <a role="button" class="btn btn-info" href="{% url 'view_group_journals' group_id=group.group_id%}">View All Group Journals</a>
           </div>
           {% endif %}

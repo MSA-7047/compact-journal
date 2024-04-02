@@ -29,7 +29,8 @@ class GroupViewTest(TestCase):
         self.assertEqual(response.context['user'], self.user1)
         
         # Check if the group request is in the response context
-        self.assertQuerysetEqual(response.context['group_requests'], [repr(self.group_request)])
+        self.assertQuerysetEqual(response.context['group_requests'], [self.group_request])
+
 
     def test_group_view_with_unauthenticated_user(self):
         # Log out the user
@@ -39,4 +40,4 @@ class GroupViewTest(TestCase):
         response = self.client.get(reverse('groups'))
         
         # Check if the user is redirected to the login page
-        self.assertRedirects(response, '/accounts/login/?next=/groups/')  # Adjust the redirect URL if needed
+        self.assertRedirects(response, '/log_in/?next=/groups/')  # Adjust the redirect URL if needed

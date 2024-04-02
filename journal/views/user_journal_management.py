@@ -278,7 +278,7 @@ def view_journal_entries(request, user_id, journal_id):
     
     # Initialize forms outside the condition to avoid repetition
     filter_form = EntryFilterForm(current_user, request.POST or None)
-    sort_form = JournalSortForm(request.POST or None)
+    sort_form = EntrySortForm(request.POST or None)
 
     if request.method == 'POST' and filter_form.is_valid() and sort_form.is_valid():
         journal_entries = filter_form.filter_entries(current_journal)

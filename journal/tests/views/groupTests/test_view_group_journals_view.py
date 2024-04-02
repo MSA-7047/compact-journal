@@ -1,13 +1,13 @@
 from django.test import TestCase
 from django.urls import reverse
-from journal.models import Group, GroupMembership, GroupJournal, User
+from journal.models import Group, GroupMembership, GroupEntry, User
 
-class ViewGroupJournalsViewTest(TestCase):
+class ViewGroupEntryViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.create(username='@testuser', password='testpassword', email='test@example.com')
         self.group = Group.objects.create(name='Test Group')
-        self.journal1 = GroupJournal.objects.create(journal_title='Journal 1', journal_description='Description 1', journal_bio='Bio 1', journal_mood='Happy', owner=self.group)
-        self.journal2 = GroupJournal.objects.create(journal_title='Journal 2', journal_description='Description 2', journal_bio='Bio 2', journal_mood='Sad', owner=self.group)
+        self.journal1 = GroupEntry.objects.create(title='Journal 1', summary='Description 1', content='Bio 1', mood='Happy', owner=self.group)
+        self.journal2 = GroupEntry.objects.create(title='Journal 2', summary='Description 2', content='Bio 2', mood='Sad', owner=self.group)
         self.url = reverse('view_group_journals', kwargs={'group_id': self.group.pk})
         self.membership = GroupMembership.objects.create(user=self.user, group=self.group)
 
