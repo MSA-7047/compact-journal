@@ -12,7 +12,7 @@
   <div class="first-row row pb-4 px-4 gy-4">
     <div class="col-xl-12 d-flex flex-column justify-content-center">
       <div class="welcome-message p-2 border bg-light ">
-        
+
         <div class="small-buttons position-relative">
           <a class="btn btn-left" href="{% url 'dashboard' %}">
             <i class="bi bi-arrow-left me-2"></i>
@@ -30,7 +30,7 @@
         <div class="d-flex flex-column justify-content-center align-items-center text-center">
           <h1>Group Dashboard: {{group.name}}</h1>
           <p> {{ group.description }}</p>
-        </div>        
+        </div>
       </div>
     </div>
   </div>
@@ -40,29 +40,31 @@
       <div class="todays-journal p-2 border bg-light flex-grow-1">
         <h1>Members:</h1>
         <div class="content list-group py-3">
-            {% if members %}
-            {% for member in members %}
-            <div class="list-group-item rounded py-3 mb-2 d-flex justify-content-between align-items-center">
-                {{ member.username }}
-                <div class="small-buttons position-relative">
-                    <div class="right-buttons">
-                        {% if user.username != member.username %}
-                            {% if is_owner %}
-                                <a class="btn btn-delete" href="{% url 'remove_player_from_group' group_id=group.group_id player_id=member.id %}">Kick Member</a>
-                            {% endif %}
-                        {% else %}
-                          {% if members|length > 1 %}
-                            <a class="btn btn-delete" href="{% url 'leave_group' group_id=group.group_id %}">Leave Group</a>
-                          {% endif %}
-                        {% endif %}
-                    </div>
-                </div>
+          {% if members %}
+          {% for member in members %}
+          <div class="list-group-item rounded py-3 mb-2 d-flex justify-content-between align-items-center">
+            {{ member.username }}
+            <div class="small-buttons position-relative">
+              <div class="right-buttons">
+                {% if user.username != member.username %}
+                {% if is_owner %}
+                <a class="btn btn-delete"
+                  href="{% url 'remove_player_from_group' group_id=group.group_id player_id=member.id %}">Kick
+                  Member</a>
+                {% endif %}
+                {% else %}
+                {% if members|length > 1 %}
+                <a class="btn btn-delete" href="{% url 'leave_group' group_id=group.group_id %}">Leave Group</a>
+                {% endif %}
+                {% endif %}
+              </div>
             </div>
-            {% endfor %}
-            {% endif %}
-            {% if not members %}
-                <div class="list-group-item">There are no members.</div>
-            {% endif %}
+          </div>
+          {% endfor %}
+          {% endif %}
+          {% if not members %}
+          <div class="list-group-item">There are no members.</div>
+          {% endif %}
         </div>
 
       </div>
@@ -72,32 +74,60 @@
 
     <div class="col-xl-7 d-flex flex-column">
       <div class="your-groups p-2 border bg-light flex-grow-1 d-flex flex-column">
+
+        <div class="small-buttons position-relative">
+          {% if is_owner %}
+          <div class="right-buttons ms-auto">
+            <a role="button" class="btn" href="{% url 'create_group_journal' group_id=group.group_id %}">Create Journal</a>
+          </div>
+          {% endif %}
+        </div>
+
         <div class="d-flex justify-content-center">
           <h1>All Group Entries</h1>
         </div>
 
-        {% if journal_entries %}
+        {% if journals %}
         <div class="d-flex justify-content-center">
-          <a class="btn" href="{% url 'journal_entries' user_id=user.id journal_id=journal.id %}">View all entries </a>
+          <a class="btn" href="{% url 'view_group_journals' group_id=group.group_id %}">View All Group Entries</a>
         </div>
-        <ul class="list-group mt-3 flex-grow-1">
-          {% for entry in journal_entries %}
-          <li class="list-group-item">
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <h2><a href="{% url 'view_entry' entry_id=entry.id %}">{{ entry.title }}</a></h2>
-                <p>Summary: {{ entry.summary }}</p>
-                <p><b>Entry Date: {{ entry.entry_date }}</b></p>
+
+        <ul class="list-group mt-0 flex-grow-1">
+          {% for journal in journals %}
+            <li class="list-group-item rounded border mt-2 flex-grow-1">
+
+              <div class="small-buttons position-relative">
+                
+                <div class="right-buttons ms-auto">
+                  <a class="btn" href="{% url 'edit_group_journal' group_id=group.group_id journal_id=journal.id%}">Edit Journal</a>
+                  <a class="btn" href="{% url 'export_single_group_entry'  group_id=group.group_id journal_id=journal.id %}"> Export </a>
+                  {% if is_owner %}
+                  <form method="post" action="{% url 'delete_group_journal' group_id=group.group_id journal_id=journal.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-delete">Delete Journal</button>
+                  {% endif %}
+                </div>
+                
               </div>
-            </div>
-          </li>
-          {%endfor%}
-          {% else %}
-          <div class="d-flex justify-content-center text-center">
-            <p>There are no entries for this group.</p>
-              <a role="button" class="btn btn-info" href="{% url 'view_group_journals' group_id=group.group_id%}">View All Group Journals</a>
+
+              <h2><a href="{% url 'edit_group_journal' group_id=group.group_id journal_id=journal.id %}">{{ journal.title }}</a></h2>
+              <p><b>Summary:</b> {{ journal.summary }}</p>
+              <p><b>Entry Date:</b> {{ journal.entry_date }}</p>
+              <p><b>Last Edited By:</b> {{ journal.last_edited_by }}</p>
+            </li>
+          {% endfor %}
+          {% endif %}
+          {% if not journals %}
+          <div class="list-group-item d-flex flex-column justify-content-center align-items-center py-5">
+            <p>Your group has no entries at the moment.</p>
+            <br>
+            <p>Your group owner should make one!</p>
           </div>
           {% endif %}
+        </ul>
+
+
+          
       </div>
     </div>
   </div>
@@ -107,59 +137,42 @@
 
 
 <section class="container">
-    <div class="row">
-        <div class="col-12 border bg-light">
-            <h1>Group Dashboard: {{ group.name }}</h1>
-            <div class="group-list">
-                {% if journals %}
-                    {% for journal in journals %}
-                        <div class="list-group-item">
-                            {{ journal.journal_title }}
-                            {{ journal.journal_description }}
-                            {{ journal.entry_date }}
-                            {{ journal.last_edited_by }}
-                            {{ journal.journal_mood }}
-                            <a role="button" class="btn btn-info" href="{% url 'edit_group_journal' group_id=group.group_id journal_id=journal.id%}">Edit Journal</a>
-                            <a href="{% url 'export_single_group_entry'  group_id=group.group_id journal_id=journal.id %}" class="btn btn-lg btn-secondary"> Export </a>
-                            {% if is_owner %}
-                                <form method="post" action="{% url 'delete_group_journal' group_id=group.group_id journal_id=journal.id %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger">Delete Journal</button>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-                {% if not journals %}
-                    <div class="list-group-item">
-                        Your group has no journals
-                    </div>
-                {% endif %}
-            </div>
-            <a role="button" class="btn btn-info" href="{% url 'create_group_journal' group_id=group.group_id%}">Create Journal</a>
-
-            <div class="list-group">
-                {% if members %}
-                    {% for member in members %}
-                        <div class="list-group-item">
-                            {{ member.username }}
-                            {% if is_owner %}
-                                <a
-                                        role="button"
-                                        class="btn btn-info"
-                                        href="{% url 'remove_player_from_group' group_id=group.group_id player_id=member.id %}"
-                                >Kick Member
-                                </a>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-                {% if not members %}
-                    <div class="list-group-item">There are no members</div>
-                {% endif %}
-            </div>
-            
-            
+  <div class="row">
+    <div class="col-12 border bg-light">
+      <h1>Group Dashboard: {{ group.name }}</h1>
+      <div class="group-list">
+        {% if journals %}
+        {% for journal in journals %}
+        <div class="list-group-item">
+          {{ journal.journal_title }}
+          {{ journal.journal_description }}
+          {{ journal.entry_date }}
+          {{ journal.last_edited_by }}
+          {{ journal.journal_mood }}
+          <a role="button" class="btn btn-info"
+            href="{% url 'edit_group_journal' group_id=group.group_id journal_id=journal.id%}">Edit Journal</a>
+          <a href="{% url 'export_single_group_entry' group_id=group.group_id journal_id=journal.id %}"
+            class="btn btn-lg btn-secondary"> Export </a>
+          {% if is_owner %}
+          <form method="post" action="{% url 'delete_group_journal' group_id=group.group_id journal_id=journal.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete Journal</button>
+            {% endif %}
         </div>
+        {% endfor %}
+        {% endif %}
+        {% if not journals %}
+        <div class="list-group-item">
+          Your group has no journals
+        </div>
+        {% endif %}
+      </div>
+      <a role="button" class="btn" href="{% url 'create_group_journal' group_id=group.group_id %}">Create Journal</a>
+
+
+
+
     </div>
+  </div>
 </section>
 {% endblock %}
