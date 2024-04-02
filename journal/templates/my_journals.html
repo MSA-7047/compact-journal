@@ -9,12 +9,19 @@
       <div class="small-buttons position-relative">
         {% if not is_logged_in %}
         <a class="btn btn-left" href="{% url 'view_friends' %}">
-        {% else %}
-        <a class="btn btn-left" href="{% url 'dashboard' %}">
-        {% endif %}  
           <i class="bi bi-arrow-left me-2"></i>
           <span>Back</span>
         </a>
+        {% else %}
+        <a class="btn btn-left" href="{% url 'dashboard' %}">
+          <i class="bi bi-arrow-left me-2"></i>
+          <span>Back</span>
+        </a>
+
+        <div class="right-buttons ms-auto">
+          <a class="btn" href="{% url 'create_journal' %}"> Create Journal </a>
+        </div>
+        {% endif %}
       </div>
 
       <div class="d-flex justify-content-center text-center">

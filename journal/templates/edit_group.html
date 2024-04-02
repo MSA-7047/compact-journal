@@ -1,18 +1,19 @@
 {% extends 'base_content.html' %}
 {% block content %}
+
 <section class="container">
-    <div class="row">
-        <div class="col-12">
+    <div class="row py-4 px-4 justify-content-center">
+        <div class="col-lg-6 row border bg-light justify-content-center align-items-center">
+            <h1>Edit Group</h1>
             <form action="{% url 'edit_group' group_id=group_id%}" method="post">
                 {% csrf_token %}
-                <h1>Edit Group</h1>
                 <form action="{% url 'create_group' %}" method="post">
                     {% csrf_token %}
     
                     {% include 'partials/bootstrap_form.html' with form=form %}
     
                     <div class="col-12 justify-content-center text-center">
-                        <input class="btn" type="submit" value="Create Group +">
+                        <input class="btn" type="submit" value="Edit Group">
                     </div>
             </form>
         </div>
