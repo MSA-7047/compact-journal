@@ -29,8 +29,7 @@
 
         <div class="d-flex flex-column justify-content-center align-items-center text-center">
           <h1>Group Dashboard: {{group.name}}</h1>
-
-          <!--Group bio (?)-->
+          <p> {{ group.description }}</p>
         </div>        
       </div>
     </div>
@@ -52,7 +51,9 @@
                                 <a class="btn btn-delete" href="{% url 'remove_player_from_group' group_id=group.group_id player_id=member.id %}">Kick Member</a>
                             {% endif %}
                         {% else %}
+                          {% if members|length > 1 %}
                             <a class="btn btn-delete" href="{% url 'leave_group' group_id=group.group_id %}">Leave Group</a>
+                          {% endif %}
                         {% endif %}
                     </div>
                 </div>
