@@ -118,15 +118,15 @@ def send_group_request(request, group_id):
         form = SendGroupRequestForm(request.POST, currentUser=request.user)
         if form.is_valid():
             recipient = form.cleaned_data['recipient']
-            existing_member = GroupMembership.objects.filter(user=recipient, group=group_)
+            existing_member = GroupMembership.objects.filter(user=recipient, group=group_).first()
             if existing_member:
                 messages.error(request, f"{recipient} is already a member.")
-                return render(request, 'send_group_request.html', {'form': form})
+                return render(request, 'send_group_request.html', {'form': form, 'group_id': group_id})
             # Check if a request from this sender to the recipient for this group already exists
             existing_request = GroupRequest.objects.filter(sender=request.user, recipient=recipient, group=group_).first()
             if existing_request:
                 messages.error(request, f"{recipient} has already been invited.")
-                return render(request, 'send_group_request.html', {'form': form})
+                return render(request, 'send_group_request.html', {'form': form, 'group_id': group_id})
 
             # Create the group request
             GroupRequest.objects.create(sender=request.user, recipient=recipient, group=group_)
