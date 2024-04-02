@@ -118,6 +118,10 @@ def send_group_request(request, group_id):
         form = SendGroupRequestForm(request.POST, currentUser=request.user)
         if form.is_valid():
             recipient = form.cleaned_data['recipient']
+            existing_member = GroupMembership.objects.filter(user=recipient, group=group_)
+            if existing_member:
+                messages.error(request, f"{recipient} is already a member.")
+                return render(request, 'send_group_request.html', {'form': form})
             # Check if a request from this sender to the recipient for this group already exists
             existing_request = GroupRequest.objects.filter(sender=request.user, recipient=recipient, group=group_).first()
             if existing_request:
@@ -222,11 +226,7 @@ def remove_player_from_group(request, group_id, player_id):
         messages.error(request, "The owner cannot be removed from the group.")
         return redirect('group_dashboard', group_id=group_.group_id)
 
-    try:
-        membership = GroupMembership.objects.get(group=group_, user=player)
-    except GroupMembership.DoesNotExist:
-        messages.error(request, f"{player.username} is not a member of the group.")
-        return redirect('group_dashboard', group_id=group_.group_id)
+    membership = GroupMembership.objects.get(group=group_, user=player)
 
     membership.delete()
     messages.success(request, f"Successfully removed {player.username} from the group.")

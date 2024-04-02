@@ -48,12 +48,12 @@ class SelectNewOwnerViewTest(TestCase):
         self.assertTrue(GroupMembership.objects.filter(group=self.group, user=self.user2, is_owner=True).exists())
         self.assertTrue(Notification.objects.filter(user=self.user2, notification_type="group"))
 
-    def test_select_new_owner(self):
+    def test_select_new_owner_invalid(self):
         self.client.force_login(self.user)
 
         # Post form data
         form_data = {
-            'new_owner': 'Deez nuts',
+            'new_owner': '@User1',
         }
         
         response = self.client.post(self.url, form_data)

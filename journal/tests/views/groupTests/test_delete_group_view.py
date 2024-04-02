@@ -61,7 +61,7 @@ class DeleteGroupViewTest(TestCase):
         # Check if the group is not deleted and user redirected
         self.assertEqual(response.status_code, 200)  # Redirect status code
     
-    def test_delete_account_GET(self):
+    def test_delete_group_GET(self):
         self.client.force_login(self.user)
         response = self.client.get(reverse('delete_group', kwargs={'group_id': self.group.group_id}))
         self.assertEqual(response.status_code, 200)
