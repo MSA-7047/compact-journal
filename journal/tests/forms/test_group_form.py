@@ -25,6 +25,16 @@ class GroupFormTestCase(TestCase):
         self.form_data = {'name': 'x' * 31}
         form = GroupForm(self.form_data)
         self.assertFalse(form.is_valid())
+    
+    def test_description_of_50_char_acceoted(self):
+        self.form_data = {'description': 'x' * 50}
+        form = GroupForm(self.form_data)
+        self.assertTrue(form.is_valid)
+
+    def test_description_of_51_char_is_rejected(self):
+        self.form_data = {'description': 'x' * 51}
+        form = GroupForm(self.form_data)
+        self.assertFalse(form.is_valid())
 
     def test_form_is_saved_correctly(self):
         form = GroupForm(data=self.form_data)

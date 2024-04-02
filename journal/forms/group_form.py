@@ -7,7 +7,7 @@ class GroupForm(forms.ModelForm):
 
     class Meta:
         model = Group
-        fields = ['name']
+        fields = ['name', 'description']
 
     def save(self, commit=True, creator=None):
         group_instance = super().save(commit=False)

@@ -13,6 +13,7 @@
                         {{ journal.last_edited_by }}
                     {% endfor %}
             </div>
+            <a href="{% url 'export_group_journal'  group_id=group_id %}" class="btn btn-lg btn-secondary"> Export </a>
         </div>
     {% else %}
         <div class="row">

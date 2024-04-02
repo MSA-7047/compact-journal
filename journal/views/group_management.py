@@ -14,8 +14,13 @@ def group(request) -> HttpResponse:
     """Display the list of groups the current user is in"""
     current_user = request.user
     current_user_groups = current_user.groups.all()
+    group_members = []
+    for group in current_user_groups:
+        num_members = GroupMembership.objects.filter(group=group).count()
+        group_members.append(num_members)
+    groups_and_members = zip(current_user_groups, group_members)
     group_request = GroupRequest.objects.filter(recipient=current_user, status="Pending")
-    return render(request, 'group.html', {'user': current_user, 'groups': current_user_groups, 'group_requests': group_request})
+    return render(request, 'group.html', {'user': current_user, 'groups': current_user_groups, 'group_requests': group_request, 'groups_and_members': groups_and_members})
 
 
 @login_required

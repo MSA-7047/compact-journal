@@ -28,7 +28,7 @@
                 
             {% if groups %}
               <ul class="list-group px-1" style="height:400px;">
-                  {% for group in groups.all %}
+                  {% for group, num_members in groups_and_members %}
                       <li class="list-group-item mb-2 border">
                           <div class="d-flex flex-column justify-content-center">
           
@@ -40,9 +40,9 @@
                             
                             <h2>{{ group.name }}</h2>
                             <hr>
-                            <p>Group Bio: ...</p>
+                            <p>Description: {{ group.description }}</p>
                             <br>
-                            <p>Number of members: </p>
+                            <p>Number of members: {{num_members}}</p>
                             
                             
                           </div>
@@ -74,11 +74,11 @@
                             <div class="right-buttons ms-auto">
                                 <form action="{% url 'accept_group_request' group_id=group_request.group.group_id %}" method="post">
                                     {% csrf_token %}
-                                    <a type="submit" class="btn">Accept</a>
+                                    <input class="btn" type="submit" value="Accept">
                                 </form>
                                 <form action="{% url 'reject_group_request' group_id=group_request.group.group_id %}" method="post">
                                     {% csrf_token %}
-                                    <a type="submit" class="btn btn-delete">Reject</a>
+                                    <input class="btn btn-delete" type="submit" value="Reject">
                                 </form>
                             </div>
                           </div>
