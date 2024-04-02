@@ -46,4 +46,4 @@ class SelectNewOwnerViewTest(TestCase):
         # Check if the group membership is updated correctly
         self.assertFalse(GroupMembership.objects.filter(group=self.group, user=self.user, is_owner=True).exists())
         self.assertTrue(GroupMembership.objects.filter(group=self.group, user=self.user2, is_owner=True).exists())
-        self.assertTrue(Notification.objects.filter(user=self.user2, notification_type="info"))
+        self.assertTrue(Notification.objects.filter(user=self.user2, notification_type="group"))

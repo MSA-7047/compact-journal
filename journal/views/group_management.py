@@ -118,7 +118,6 @@ def send_group_request(request, group_id):
         form = SendGroupRequestForm(request.POST, currentUser=request.user)
         if form.is_valid():
             recipient = form.cleaned_data['recipient']
-            print(recipient)
             # Check if a request from this sender to the recipient for this group already exists
             existing_request = GroupRequest.objects.filter(sender=request.user, recipient=recipient, group=group_).first()
             if existing_request:
