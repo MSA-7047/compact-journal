@@ -3,7 +3,7 @@ from journal.models import User, GroupRequest
 
 
 class SendGroupRequestForm(forms.Form):
-    recipient = forms.ModelChoiceField(queryset=User.objects.all(), label='Select User')
+    recipient = forms.ModelChoiceField(queryset=User.objects.none(), label='Select User')
 
     class Meta:
         model = GroupRequest
@@ -12,6 +12,4 @@ class SendGroupRequestForm(forms.Form):
     def __init__(self, *args, currentUser=None, **kwargs):
         super().__init__(*args, **kwargs)
         if currentUser is not None:
-            self.fields['recipient'].queryset = User.objects.exclude(
-                username=currentUser.username
-            )
+            self.fields['recipient'].queryset = currentUser.friends.all()

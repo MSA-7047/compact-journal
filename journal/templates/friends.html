@@ -71,7 +71,7 @@
           <form method="post" action="{% url 'send_request' user.id %}">
             {% csrf_token %}
             {% include 'partials/bootstrap_form.html' with form=form %}
-            <button type="submit" class="btn btn-primary">Send Friend Request</button>
+            <button type="submit" class="btn">Send Friend Request</button>
           </form>
 
         </div>
@@ -90,12 +90,16 @@
             {% for request in requests %}
                 {% if request.status == 'pending' %}
                     <li class="list-group-item mb-2 border px-0 bg-white">
-                        <div class="d-flex justify-content-between align-items-center w-200">
+                        <div class="d-flex justify-content-between align-items-center w-200 py-2 mx-1">
                             <span>{{ request }}</span>
-                            <div>
-                                <a href="{% url 'accept_friend_request' friend_request_id=request.id %}" class="btn btn-primary btn-sm friends-button me-1">Accept</a>
-                                <a href="{% url 'reject_friend_request' friend_request_id=request.id %}" class="btn btn-primary btn-sm friends-button">Reject</a>
+                            
+                            <div class="small-buttons position-relative">
+                              <div class="right-buttons ms-auto">
+                                <a class="btn" href="{% url 'accept_friend_request' friend_request_id=request.id %}">Accept</a>
+                                <a class="btn btn-delete" href="{% url 'reject_friend_request' friend_request_id=request.id %}">Reject</a>
+                              </div>
                             </div>
+                            
                         </div>
                     </li>
                 {% endif %}
@@ -111,11 +115,14 @@
                     <li class="list-group-item mb-2 border px-0 bg-white">
                         <div class="d-flex justify-content-between align-items-center w-200">
                             <span>{{ request }}</span>
-                            <div>
-                                <span class="badge badge-warning text-dark">Pending</span>
-                                <a href="{% url 'delete_sent_request' friend_request_id=request.id %}"
-                                  class="btn btn-danger btn-sm friends-button">Delete</a>
+
+                            <div class="small-buttons position-relative">
+                              <div class="right-buttons ms-auto me-1">
+                                <span class="badge badge-warning text-dark align-self-center">Pending</span>
+                                <a class="btn btn-delete" href="{% url 'delete_sent_request' friend_request_id=request.id %}">Delete</a>
+                              </div>
                             </div>
+
                         </div>
                     </li>
                 {% endfor %}
@@ -131,11 +138,14 @@
                     <li class="list-group-item mb-2 border px-0 bg-white">
                         <div class="d-flex justify-content-between align-items-center w-200">
                             <span>{{ request }}</span>
-                            <div>
-                                <span class="text-danger">Rejected</span>
-                                <a href="{% url 'delete_sent_request' friend_request_id=request.id %}"
-                                  class="btn btn-danger friends-button btn-sm">Delete</a>
+
+                            <div class="small-buttons position-relative">
+                              <div class="right-buttons ms-auto me-1">
+                                <span class="badge badge-warning text-danger align-self-center">Rejected</span>
+                                <a class="btn btn-delete" href="{% url 'delete_sent_request' friend_request_id=request.id %}">Delete</a>
+                              </div>
                             </div>
+
                         </div>
                     </li>
                 {% endfor %}
@@ -156,15 +166,5 @@
 
   </div>
 </section>
-
-
-<style>
-  .friends-button {
-  transform: translateY(6px);
-  padding: 5px 10px;
-  font-size: 12px;
-  margin-right: 5px;
-}
-</style>
 
 {% endblock %}

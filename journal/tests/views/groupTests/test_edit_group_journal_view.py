@@ -1,13 +1,13 @@
 from django.test import TestCase
 from django.urls import reverse
-from journal.models import Group, GroupJournal, GroupMembership, User
+from journal.models import Group, GroupEntry, GroupMembership, User
 
 class EditGroupJournalViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.create(username='@testuser', password='testpassword', email='test@example.com')
         self.group = Group.objects.create(name='Test Group')
         self.group_membership = GroupMembership.objects.create(user=self.user, group=self.group, is_owner=True)
-        self.group_journal = GroupJournal.objects.create(journal_title='Test Journal', journal_description='This is a test journal', journal_bio='Test journal bio', journal_mood='Happy', last_edited_by=self.user, owner=self.group)
+        self.group_journal = GroupEntry.objects.create(title='Test Journal', summary='This is a test journal', content='Test journal bio', mood='Happy', last_edited_by=self.user, owner=self.group)
         self.url = reverse('edit_group_journal', kwargs={'group_id': self.group.pk, 'journal_id': self.group_journal.pk})
 
     def test_edit_group_journal_authenticated_owner(self):
@@ -16,17 +16,17 @@ class EditGroupJournalViewTest(TestCase):
         
         # Post valid form data
         form_data = {
-            'journal_title': 'Updated Test Journal',
-            'journal_description': 'This is a new test journal',
-            'journal_bio': 'Test journal bio part 2',
-            'journal_mood': 'Angry',
+            'title': 'Updated Test Journal',
+            'summary': 'This is a new test journal',
+            'content': 'Test journal bio part 2',
+            'mood': 'Angry',
         }
         response = self.client.post(self.url, data=form_data)
 
         # Check if the journal is created and the user is redirected to the group dashboard
         self.assertEqual(response.status_code, 302)  # Redirect status code
-        self.assertEqual(GroupJournal.objects.first().journal_title, 'Updated Test Journal')
-        self.assertEqual(GroupJournal.objects.first().last_edited_by, self.user)
+        self.assertEqual(GroupEntry.objects.first().title, 'Updated Test Journal')
+        self.assertEqual(GroupEntry.objects.first().last_edited_by, self.user)
 
     def test_edit_group_journal_authenticated_non_owner(self):
         # Create another user who is not the owner of the group
@@ -38,27 +38,27 @@ class EditGroupJournalViewTest(TestCase):
 
         # Post form data
         form_data = {
-            'journal_title': 'Updated Test Journal',
-            'journal_description': 'This is a new test journal',
-            'journal_bio': 'Test journal bio part 2',
-            'journal_mood': 'Angry',
+            'title': 'Updated Test Journal',
+            'summary': 'This is a new test journal',
+            'content': 'Test journal bio part 2',
+            'mood': 'Angry',
         }
         
         response = self.client.post(self.url, data=form_data)
 
         # Check if the non-owner user is redirected and receives an error message
         self.assertEqual(response.status_code, 302)  # Redirect status code
-        self.assertEqual(GroupJournal.objects.first().journal_title, 'Updated Test Journal')
-        self.assertEqual(GroupJournal.objects.first().last_edited_by, non_owner_user)
+        self.assertEqual(GroupEntry.objects.first().title, 'Updated Test Journal')
+        self.assertEqual(GroupEntry.objects.first().last_edited_by, non_owner_user)
 
     def test_edit_group_journal_unauthenticated_user(self):
         login_url = reverse('log_in')
         # Post form data without authenticating the user
         form_data = {
-            'journal_title': 'Test Journal',
-            'journal_description': 'This is a test journal',
-            'journal_bio': 'Test journal bio',
-            'journal_mood': 'Happy',
+            'title': 'Updated Test Journal',
+            'summary': 'This is a new test journal',
+            'content': 'Test journal bio part 2',
+            'mood': 'Angry',
         }
         response = self.client.post(self.url, data=form_data)
 
@@ -72,10 +72,10 @@ class EditGroupJournalViewTest(TestCase):
         
         # Post valid form data
         form_data = {
-            'journal_title': '',
-            'journal_description': '',
-            'journal_bio': 'Test journal bio',
-            'journal_mood': 'Happy',
+            'title': '',
+            'summary': '',
+            'content': 'Test journal bio',
+            'mood': 'Angry',
         }
         response = self.client.post(self.url, data=form_data)
 

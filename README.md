@@ -4,7 +4,7 @@
 The members of the team are:
 - Mohammed (Miqdaad) Al-Hassan
 - MD (Rahat) Hussein
-- Ibramin Ahmed
+- Ibrahim Ahmed
 - Mohammed (Sameen) Ahmed
 - Javed Hussain
 - Adil Kassam
@@ -41,6 +41,13 @@ Seed the development database with:
 
 ```
 $ python3 manage.py seed
+```
+
+Run Celery and Celery beat:
+
+```
+celery -A journaling_app worker 
+celery -A journaling_app beat
 ```
 
 Run all tests with:

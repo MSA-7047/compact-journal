@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from journal.forms import GroupForm
 from journal.models import Group, GroupMembership, User
+from django.contrib.messages import get_messages
 
 class CreateGroupViewTest(TestCase):
     def setUp(self):
@@ -36,3 +37,23 @@ class CreateGroupViewTest(TestCase):
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, 200)  # Form should not redirect
         self.assertFormError(response, 'form', 'name', 'This field is required.')
+    
+    def test_multiple_group_create_gives_correct_response(self):
+
+        self.client.login(username='@testuser', password='testpassword')
+        url = reverse('create_group')
+        data = {'name': 'Test Group', 'description': 'This is a test group'}
+        self.client.post(url, data)
+
+        data2 = {'name': 'Second Test Group', 'description': 'This is a Second test group'}
+        response = self.client.post(url, data2)
+        messages = list(get_messages(response.wsgi_request))
+        found_message = ""
+        expected_message = "New group created! However, you must wait before getting points again."
+
+        for message in messages:
+            if str(message) == expected_message:
+                found_message = str(message)
+                break
+
+        self.assertTrue(found_message, expected_message)

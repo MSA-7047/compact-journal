@@ -46,4 +46,21 @@ class SelectNewOwnerViewTest(TestCase):
         # Check if the group membership is updated correctly
         self.assertFalse(GroupMembership.objects.filter(group=self.group, user=self.user, is_owner=True).exists())
         self.assertTrue(GroupMembership.objects.filter(group=self.group, user=self.user2, is_owner=True).exists())
-        self.assertTrue(Notification.objects.filter(user=self.user2, notification_type="info"))
+        self.assertTrue(Notification.objects.filter(user=self.user2, notification_type="group"))
+
+    def test_select_new_owner_invalid(self):
+        self.client.force_login(self.user)
+
+        # Post form data
+        form_data = {
+            'new_owner': '@User1',
+        }
+        
+        response = self.client.post(self.url, form_data)
+
+        # Check if the view redirects to the dashboard after selecting new owner
+        self.assertEqual(response.status_code, 200)
+
+        # Check if the form errors are present in the response context
+        form_errors = response.context['form'].errors
+        self.assertTrue(form_errors)  # Assert that form errors are not empty

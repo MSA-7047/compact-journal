@@ -16,3 +16,7 @@ six==1.16.0
 sqlparse==0.4.4
 typing_extensions==4.8.0
 xhtml2pdf==0.2.15
+celery==5.3.6
+kombu==5.3.6
+redis==5.0.3
+django-celery-beat==2.6.0
