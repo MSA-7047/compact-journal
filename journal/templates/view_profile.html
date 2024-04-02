@@ -35,7 +35,7 @@
     <div class="col-xl-12">
       
       <div class="p-2 border bg-light">
-        {% if user.username == user_username %}
+        
         <div class="small-buttons position-relative">
           <a class="btn btn-left" href="{% url 'dashboard' %}">
             <i class="bi bi-arrow-left me-2"></i>
@@ -43,10 +43,12 @@
           </a>
         
           <div class="right-buttons">
+            {% if user.username == user_username %}
             <a class="btn" href="{% url 'edit_profile' %}">Manage Profile</a>
+            {% endif %}
           </div>
         </div>
-        {% endif %}
+        
 
         <div class="d-flex align-items-center justify-content-center">
           <img class="px-2 rounded-circle me-3" src="{{ user.gravatar }}" alt="Current profile picture">

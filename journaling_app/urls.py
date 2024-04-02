@@ -58,7 +58,7 @@ urlpatterns = [
 
 
     
-    path('friend_requests/', view_friend_requests, name='view_friend_requests'),
+    #path('friend_requests/', view_friend_requests, name='view_friend_requests'),
     path('friends/', view_friends, name='view_friends'),
     path('send_friend_request/<int:user_id>', send_friend_request, name='send_request'),
     path('friend_request/accept/<int:friend_request_id>', accept_invitation, name='accept_friend_request'),

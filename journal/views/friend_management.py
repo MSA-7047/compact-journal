@@ -13,29 +13,46 @@ def get_friend_requests_and_sent_invitations(user):
     return requests, sent_pending_invitations, sent_accepted_invitations, sent_rejected_invitations
 
 
-@login_required
-def view_friend_requests(request):
-    (requests, sent_pending_invitations,
-     sent_accepted_invitations, sent_rejected_invitations) = get_friend_requests_and_sent_invitations(request.user)
-    form = SendFriendRequestForm(user=request.user)
+# @login_required
+# def view_friend_requests(request):
+#     (requests, sent_pending_invitations,
+#      sent_accepted_invitations, sent_rejected_invitations) = get_friend_requests_and_sent_invitations(request.user)
+#     form = SendFriendRequestForm(user=request.user)
 
-    return render(
-        request,
-        template_name='friend_requests.html',
-        context={
-            'form': form,
-            'requests': requests,
-            'sent_pending_invitations': sent_pending_invitations,
-            'sent_accepted_invitations': sent_accepted_invitations,
-            'sent_rejected_invitations': sent_rejected_invitations
-        }
-    )
+#     return render(
+#         request,
+#         template_name='friends.html',
+#         context={
+#             'form': form,
+#             'requests': requests,
+#             'sent_pending_invitations': sent_pending_invitations,
+#             'sent_accepted_invitations': sent_accepted_invitations,
+#             'sent_rejected_invitations': sent_rejected_invitations
+#         }
+#     )
 
 
 @login_required
 def view_friends(request):
     friends = request.user.friends.all()
-    return render(request, 'friends.html', {"friends": friends})
+    (requests, sent_pending_invitations,
+     sent_accepted_invitations, sent_rejected_invitations) = get_friend_requests_and_sent_invitations(request.user)
+    form = SendFriendRequestForm(user=request.user)
+
+    has_pending_requests = requests.filter(status='pending').exists()
+
+    return render(
+        request,
+        template_name='friends.html',
+        context={
+            'form': form,
+            'requests': requests,
+            'sent_pending_invitations': sent_pending_invitations,
+            'sent_accepted_invitations': sent_accepted_invitations,
+            'sent_rejected_invitations': sent_rejected_invitations,
+            'friends':friends,
+            'has_pending_requests': has_pending_requests
+        })
 
 @login_required
 def view_friends_profile(request, friendID):
@@ -82,7 +99,7 @@ def send_friend_request(request, user_id):
 
     return render(
         request,
-        template_name='friend_requests.html',
+        template_name='friends.html',
         context={
             'form': form,
             'requests': requests,
@@ -109,9 +126,10 @@ def accept_invitation(request, friend_request_id):
     Notification.objects.create(notification_type="friend", message=receiver_message, user=friend_request.recipient)
     Points.objects.create(user=friend_request.sender, points=30, description=f"{friend_request.recipient} has accepted your friend request.")
 
-    friend_request.save()
+    friend_request.delete()
+    print("friend request deleted")
 
-    return redirect('view_friend_requests')
+    return redirect('view_friends')
 
 
 @login_required
@@ -123,14 +141,14 @@ def reject_invitation(request, friend_request_id):
     Notification.objects.create(notification_type="friend", message=notif_message, user=friend_request.sender)
 
     friend_request.save()
-    return redirect('view_friend_requests')
+    return redirect('view_friends')
 
 
 @login_required
 def delete_sent_request(request, friend_request_id):
     friend_request = get_object_or_404(FriendRequest, id=friend_request_id, sender=request.user)
     friend_request.delete()
-    return redirect('view_friend_requests')
+    return redirect('view_friends')
 
 
 @login_required
