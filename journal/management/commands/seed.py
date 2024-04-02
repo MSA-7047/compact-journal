@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.forms import ValidationError
 
 
-from journal.models import User, Group, GroupMembership, Points, Level
+from journal.models import User, Group, GroupMembership, Points, Level, Friendship, Journal
 
 import pytz
 from faker import Faker
@@ -91,6 +91,12 @@ class Command(BaseCommand):
         )
         Points.objects.create(user=created_user)
         Level.objects.create(user=created_user)
+        journal = Journal.objects.create(
+            title="Default Journal",
+            summary="Lorem Ipsum",
+            last_entry_date=None,
+            owner=created_user
+        )
         return created_user
 
 
@@ -106,6 +112,12 @@ class Command(BaseCommand):
         user = User.objects.create(**fixture)
         points = Points.objects.create(user=user)
         level = Level.objects.create(user=user)
+        journal = Journal.objects.create(
+            title="Default Journal",
+            summary="Lorem Ipsum",
+            last_entry_date=None,
+            owner=user
+        )
         return user
     
     @staticmethod
@@ -151,6 +163,7 @@ class Command(BaseCommand):
 
         :return: GroupMembership object that represents user membership to group"""
         return GroupMembership.objects.create(user=user, group=group, is_owner=is_owner)
+    
 
     def try_to_bind_group_to_user(
         self, user: User, group: Group, is_owner: bool
@@ -179,6 +192,15 @@ class Command(BaseCommand):
             self.try_to_bind_group_to_user(user, group, False) for user in user_list[1:]
         ]
 
+    def try_to_create_friendships(self, user_list: list[User]) -> None:
+        owner: User = user_list[0]
+        for user in user_list[1:]:
+            try:
+                Friendship.objects.create(user=owner, friend=user)
+            except Exception:
+                pass
+
+
     def create_users_for_groups(self, group: Group) -> None:
         """Creates and binds the users to the given group
         
@@ -186,7 +208,7 @@ class Command(BaseCommand):
         group_users = [
             self.try_to_create_user() for _ in range(Command.USER_COUNT_PER_GROUP)
         ]
-
+        self.try_to_create_friendships(group_users)
         self.try_and_bind_multiple_users_to_empty_group(group, group_users)
 
     def generate_groups(self) -> None:
@@ -203,6 +225,7 @@ class Command(BaseCommand):
             current_group_count = Group.objects.count()
         print("Seeding complete")
 
+
     def generate_fixtures(
         self, user_fixtures: list[list[dict]], group_fixtures: list[dict]
     ) -> None:
@@ -216,6 +239,7 @@ class Command(BaseCommand):
             users_in_group: list[User] = [
                 Command.try_to_create_user_from_fixture(user_details) for user_details in user_list
             ]
+            self.try_to_create_friendships(users_in_group)
             self.try_and_bind_multiple_users_to_empty_group(
                 created_group, users_in_group
             )

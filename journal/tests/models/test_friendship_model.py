@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from django.test import TestCase
 from journal.models import Friendship, User
 from django.core.exceptions import ValidationError
@@ -23,9 +24,8 @@ class FriendshipModelTest(TestCase):
         friendship = Friendship.objects.create(user=self.user1, friend=self.user2)
         friendship.clean()
         # Try to create another friendship with the same user and friend
-        with self.assertRaises(Exception) as context:
+        with self.assertRaises(IntegrityError):
             Friendship.objects.create(user=self.user1, friend=self.user2)
-        self.assertTrue('UNIQUE constraint failed' in str(context.exception))
 
     def test_clean_method(self):
         # Attempt to create a friendship with the same user and friend
