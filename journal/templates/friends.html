@@ -1,37 +1,170 @@
 {% extends 'base_content.html' %}
 {% block content %}
-<section class="container">
-  <div class="row">
-    <a class="btn" href="{% url 'view_friend_requests' %}">Friend Requests</a>
-    <div class="col-12">
-      <h1>Your Friends:</h1>
-        {% if user.friends.all %}
-          <ul class="list-group mt-3">
-              {% for friend in user.friends.all %}
-                <li class="list-group-item">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                      <h4>{{ friend.username }}
-                        <a href="{% url 'view_friends_profile' friendID=friend.id %}" class="btn btn-sm btn-secondary">
-                          View Profile
-                        </a>
-                        <a href="{% url 'remove_friend' user_id=friend.id %}" class="btn btn-sm btn-outline-danger">
-                          Remove friend
-                        </a>
-                        <a href="{% url 'view_journals' user_id=friend.id %}" class="btn btn-sm btn-outline-danger">
-                          view journals
-                        </a>
-                      </h4>
-                    </div>
-                  </div>
-                </li>
-              {% endfor %}
-          {% else %}
-              You currently have no Friends, send a request!    
-          {% endif %}
-      <br>
-      <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+
+
+<section class="container d-flex flex-column h-100">
+  <div class="first-row row pb-4 px-4 gy-4">
+    <div class="col-xl-12">
+
+      <div class="p-2 border bg-light">
+        <div class="small-buttons position-relative">
+          <a class="btn btn-left" href="{% url 'dashboard' %}">
+            <i class="bi bi-arrow-left me-2"></i>
+            <span>Back</span>
+          </a>
+        </div>
+
+        <div class="d-flex flex-column align-items-center justify-content-center">
+          <h1 style="font-size: 36px;"> Friends Dashboard</h1>
+          <p>This is where you can view your friends and manage friend requests.</p>
+        </div>
+      </div>
+
     </div>
   </div>
+
+
+  <div class="second-row row px-4 gy-4 pb-4 flex-fill">
+    <div class="col-xl-6 d-flex flex-column overflow-y" style="height: 700px">
+      <div class="p-2 border bg-light flex-grow-1 d-flex flex-column">
+
+        <div class="d-flex justify-content-center mb-2 w-100">
+          <h1 style="font-size: 36px;">My Friends</h1>
+        </div>
+
+        {% if user.friends.all %}
+        <ul class="list-group mt-1">
+          {% for friend in user.friends.all %}
+          <li class="list-group-item mb-2 border">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h4>{{ friend.username }}</h4>
+
+                <div class="small-buttons position-relative">
+                  <div class="right-buttons ms-auto">
+                    <a class="btn" href="{% url 'view_friends_profile' friendID=friend.id %}">View Profile</a>
+                    <a class="btn" href="{% url 'view_journals' user_id=friend.id %}">View Journals</a>
+                    <a class="btn btn-delete" href="{% url 'remove_friend' user_id=friend.id %}">Remove Friend</a>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </li>
+          {% endfor %}
+          {% else %}
+          You currently have no Friends, send a request!
+          {% endif %}
+
+      </div>
+    </div>
+
+    <div class="col-xl-6 d-flex flex-column align-items-center">
+      <div class="your-groups p-2 border bg-light w-100 d-flex flex-column" style="height: 700px">
+
+        <div class="d-flex flex-column justify-content-center align-items-center mb-2 w-100">
+          <h1 style="font-size: 36px;">Add a Friend</h1>
+
+          <form method="post" action="{% url 'send_request' user.id %}">
+            {% csrf_token %}
+            {% include 'partials/bootstrap_form.html' with form=form %}
+            <button type="submit" class="btn btn-primary">Send Friend Request</button>
+          </form>
+
+        </div>
+
+
+
+        <div class="d-flex justify-content-center mb-2 w-100">
+          <h1 style="font-size: 36px;">Friend Requests</h1>
+        </div>
+
+        <h4>Pending Friend Requests:</h4>
+
+        {% if not has_pending_requests %}
+            <p>No pending friend requests.</p>
+        {% else %}
+            {% for request in requests %}
+                {% if request.status == 'pending' %}
+                    <li class="list-group-item mb-2 border px-0 bg-white">
+                        <div class="d-flex justify-content-between align-items-center w-200">
+                            <span>{{ request }}</span>
+                            <div>
+                                <a href="{% url 'accept_friend_request' friend_request_id=request.id %}" class="btn btn-primary btn-sm friends-button me-1">Accept</a>
+                                <a href="{% url 'reject_friend_request' friend_request_id=request.id %}" class="btn btn-primary btn-sm friends-button">Reject</a>
+                            </div>
+                        </div>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+
+
+        <h4>Sent requests:</h4>
+        {% if sent_pending_invitations %}
+            <ul class="list-group">
+                {% for request in sent_pending_invitations %}
+                    <li class="list-group-item mb-2 border px-0 bg-white">
+                        <div class="d-flex justify-content-between align-items-center w-200">
+                            <span>{{ request }}</span>
+                            <div>
+                                <span class="badge badge-warning text-dark">Pending</span>
+                                <a href="{% url 'delete_sent_request' friend_request_id=request.id %}"
+                                  class="btn btn-danger btn-sm friends-button">Delete</a>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No pending sent friend requests.</p>
+        {% endif %}
+
+        <h4>Rejected Friend Requests:</h4>
+        {% if sent_rejected_invitations %}
+            <ul class="list-group">
+                {% for request in sent_rejected_invitations %}
+                    <li class="list-group-item mb-2 border px-0 bg-white">
+                        <div class="d-flex justify-content-between align-items-center w-200">
+                            <span>{{ request }}</span>
+                            <div>
+                                <span class="text-danger">Rejected</span>
+                                <a href="{% url 'delete_sent_request' friend_request_id=request.id %}"
+                                  class="btn btn-danger friends-button btn-sm">Delete</a>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No rejected sent friend requests.</p>
+        {% endif %}
+
+      </div>
+
+    </div>
+
+  </div>
+  </div>
+  </div>
+
+
+
+  </div>
 </section>
+
+
+<style>
+  .friends-button {
+  transform: translateY(6px);
+  padding: 5px 10px;
+  font-size: 12px;
+  margin-right: 5px;
+}
+</style>
+
 {% endblock %}
