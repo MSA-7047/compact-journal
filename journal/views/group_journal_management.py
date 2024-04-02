@@ -92,4 +92,4 @@ def view_group_journals(request, group_id):
     """Used to allow members of a group to see all journals written by that group."""
     group = Group.objects.get(pk=group_id)
     group_journals = GroupEntry.objects.filter(owner=group)
-    return render(request, 'group_journals.html', {'group_id': group_id, 'group_journals': group_journals})
+    return render(request, 'group_journals.html', {'group': group, 'group_id': group_id, 'group_journals': group_journals})
