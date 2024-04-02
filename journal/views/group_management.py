@@ -259,3 +259,5 @@ def select_new_owner(request, group_id):
             return redirect('dashboard')
 
     return render(request, 'select_new_owner.html', {'form': form, 'group': group, 'user': request.user})
+
+
