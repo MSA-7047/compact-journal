@@ -114,6 +114,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=30, verbose_name='Title')),
                 ('summary', models.TextField(max_length=500, verbose_name='Description')),
                 ('entry_date', models.DateTimeField(auto_now_add=True)),
+                ('last_entry_date', models.DateTimeField(blank=True)),
                 ('private', models.BooleanField(default=False)),
                 ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='journals', to=settings.AUTH_USER_MODEL)),
             ],

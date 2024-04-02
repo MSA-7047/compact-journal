@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
@@ -194,6 +194,11 @@ def create_entry(request, journal_id):
             entry.journal = journal_instance
             entry.save()
 
+            entry.journal.last_entry_date = today
+            entry.journal.save()
+            print("new entry, so the updated last entry date is: ",entry.journal.last_entry_date)
+            
+            
 
             notif_message = f"New entry {entry.title} created in {entry.journal.title} journal."
             give_points(request, 50, notif_message)
@@ -252,6 +257,13 @@ def delete_entry(request, entry_id):
         return redirect(reverse('dashboard'))
     
     journal = entry_instance.journal
+
+    yesterday = datetime.now() - timedelta(days=1)
+    journal.last_entry_date = yesterday
+    print("the last entry date is noW",journal.last_entry_date)
+
+    journal.save()
+
     entry_instance.delete()
     return redirect(f'/journal_dashboard/{journal.id}')
 

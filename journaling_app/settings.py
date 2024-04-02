@@ -19,6 +19,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 PROJECT_DIR = os.path.dirname(__file__)
 
 
+CELERY_BROKER_URL = 'redis://:c1zPOpZkO1WTnnPg6ZzAgr63EvejJGDr@redis-12609.c72.eu-west-1-2.ec2.cloud.redislabs.com:12609/0' 
+CELERY_BROKER_BACKEND = 'redis://:c1zPOpZkO1WTnnPg6ZzAgr63EvejJGDr@redis-12609.c72.eu-west-1-2.ec2.cloud.redislabs.com:12609/1'
+
+from celery.schedules import crontab
+
+CELERY_BEAT_SCHEDULE = {
+    'send_reminders_to_all_users_everyday': {
+        'task': 'journal.tasks.send_reminders_to_all_users',
+        'schedule': crontab(hour=6, minute=0),  # Adjust the time as needed
+    },
+}
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -43,7 +56,8 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'journal',
     'django_countries',
-    'django_ckeditor_5'
+    'django_ckeditor_5',
+    'django_celery_beat'
 ]
 
 MIDDLEWARE = [
@@ -114,7 +128,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/London'
 
 USE_I18N = True
 
@@ -316,3 +330,4 @@ CKEDITOR_5_CONFIGS = {
 
 
 CKEDITOR_5_FILE_STORAGE = "journal.storage.CustomStorage"
+
