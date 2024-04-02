@@ -176,25 +176,22 @@ def delete_group(request, group_id):
         messages.error(request, "You are not authorized to delete the group")
         return redirect('group_dashboard', group_id=group_id)
 
-    form = ConfirmGroupDeleteForm()
+    form = ConfirmDeletionForm()
     if request.method == 'POST':
-        form = ConfirmGroupDeleteForm(request.POST)
-        if form.is_valid() and form.cleaned_data['confirmation'].upper() == "YES":
+        form = ConfirmDeletionForm(request.POST)
+        if form.is_valid() and form.clean_confirmation():
             to_del = Group.objects.filter(group_id=group_id).first()
-            
             messages.success(request, f"The group has been deleted.")
-
             memberships = GroupMembership.objects.filter(group=group)
             for member in memberships:
                 notif_message = f"Group '{to_del.name}' has been deleted."
                 Notification.objects.create(notification_type="group", message=notif_message, user=member.user)
-            
             to_del.delete()    
             return redirect('dashboard')
         else:
             form.add_error('confirmation', 'Please enter "YES" to confirm deletion.')
 
-    return render(request, 'delete_group.html', {'form': form, 'group_id': group.group_id})
+    return render(request, 'delete_account.html', {'form': form, 'group_id': group.group_id, 'is_group': True})
 
 
 @login_required

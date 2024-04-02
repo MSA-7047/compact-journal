@@ -34,8 +34,6 @@ class GroupRequestTestCase(TestCase):
             )
             request.clean()
 
-    
-
     def test_sender_owner_of_group(self):
         # Attempt to create a group request where the sender is not the owner of the group
         with self.assertRaises(ValidationError):

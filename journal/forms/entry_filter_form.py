@@ -21,10 +21,19 @@ class EntryFilterForm(forms.Form):
     mood = forms.ChoiceField(
         choices=(
             ('', '---------'),
-            ('Happy', 'Happy'),
-            ('Sad', 'Sad'),
-            ('Angry', 'Angry'),
-            ('Neutral', 'Neutral'),
+            ("Sad", "Sad"),
+            ("Happy", "Happy"),
+            ("Angry", "Angry"),
+            ("Neutral", "Neutral"),
+            ("Excited", "Excited"),
+            ("Confused", "Confused"),
+            ("Surprised", "Surprised"),
+            ("Hopeful", "Hopeful"),
+            ("Frustrated", "Frustrated"),
+            ("Grateful", "Grateful"),
+            ("Relaxed", "Relaxed"),
+            ("Optimistic", "Optimistic"),
+            ("Anxious", "Anxious"),
         ), 
         required=False
     )

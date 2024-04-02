@@ -15,17 +15,17 @@ class CreateGroupEntryViewTest(TestCase):
         
         # Post valid form data
         form_data = {
-            'journal_title': 'Test Journal',
-            'journal_description': 'This is a test journal',
-            'journal_bio': 'Test journal bio',
-            'journal_mood': 'Happy',
+            'title': 'Test Journal',
+            'summary': 'This is a test journal',
+            'content': 'Test journal bio',
+            'mood': 'Happy',
         }
         response = self.client.post(self.url, data=form_data)
 
         # Check if the journal is created and the user is redirected to the group dashboard
         self.assertEqual(response.status_code, 302)  # Redirect status code
         self.assertEqual(GroupEntry.objects.count(), 1)
-        self.assertEqual(GroupEntry.objects.first().journal_title, 'Test Journal')
+        self.assertEqual(GroupEntry.objects.first().title, 'Test Journal')
         self.assertEqual(GroupEntry.objects.first().last_edited_by, self.user)
 
     def test_create_group_journal_authenticated_non_owner(self):
@@ -38,10 +38,10 @@ class CreateGroupEntryViewTest(TestCase):
 
         # Post form data
         form_data = {
-            'journal_title': 'Test Journal',
-            'journal_description': 'This is a test journal',
-            'journal_bio': 'Test journal bio',
-            'journal_mood': 'Happy',
+            'title': 'Test Journal',
+            'summary': 'This is a test journal',
+            'content': 'Test journal bio',
+            'mood': 'Happy',
         }
         response = self.client.post(self.url, data=form_data)
 
@@ -54,10 +54,10 @@ class CreateGroupEntryViewTest(TestCase):
         login_url = reverse('log_in')
         # Post form data without authenticating the user
         form_data = {
-            'journal_title': 'Test Journal',
-            'journal_description': 'This is a test journal',
-            'journal_bio': 'Test journal bio',
-            'journal_mood': 'Happy',
+            'jtitle': 'Test Journal',
+            'description': 'This is a test journal',
+            'content': 'Test journal bio',
+            'mood': 'Happy',
         }
         response = self.client.post(self.url, data=form_data)
 
@@ -71,10 +71,10 @@ class CreateGroupEntryViewTest(TestCase):
         
         # Post valid form data
         form_data = {
-            'journal_title': '',
-            'journal_description': '',
-            'journal_bio': 'Test journal bio',
-            'journal_mood': 'Happy',
+            'title': '',
+            'summary': '',
+            'content': 'Test journal bio',
+            'mood': 'Happy',
             'private': False, 
         }
         response = self.client.post(self.url, data=form_data)

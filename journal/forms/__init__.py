@@ -1,4 +1,4 @@
-from .confirm_account_delete_form import ConfirmAccountDeleteForm
+from .confirm_account_delete_form import ConfirmDeletionForm
 from .create_entry_form import CreateEntryForm
 from .create_group_journal_form import CreateGroupJournalForm
 from .create_journal_form import CreateJournalForm

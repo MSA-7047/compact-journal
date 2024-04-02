@@ -16,18 +16,13 @@ class AbstractEntry(models.Model):
         ("Neutral", "Neutral"),
         ("Excited", "Excited"),
         ("Confused", "Confused"),
-        ("Content", "Content"),
         ("Surprised", "Surprised"),
-        ("Calm", "Calm"),
         ("Hopeful", "Hopeful"),
         ("Frustrated", "Frustrated"),
         ("Grateful", "Grateful"),
-        ("Inspired", "Inspired"),
         ("Relaxed", "Relaxed"),
         ("Optimistic", "Optimistic"),
-        ("Proud", "Proud"),
         ("Anxious", "Anxious"),
-        ("Enthusiastic", "Enthusiastic"),
     ]
     mood = models.CharField('Mood', choices=MOOD_OPTIONS, blank=False, max_length=20)
 
