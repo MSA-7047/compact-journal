@@ -104,7 +104,7 @@ def dashboard(request):
     my_journals = current_user.journals.all()
     print(my_journals)
     notifications = Notification.objects.filter(user=request.user, is_read=False).order_by('-time_created')
-
+    level_data = points_to_next_level(request.user)
     level_up_message(request)
 
     return render(
@@ -115,7 +115,9 @@ def dashboard(request):
             'groups': user_groups,
             'current_year': current_year, 'current_month': current_month,
             'my_journals': my_journals or None,
-            'notifications': notifications
+            'notifications': notifications,
+            'total_points': calculate_user_points(request.user),
+            'points_needed': level_data['points_needed'] 
         }
     )
 
@@ -153,9 +155,6 @@ def points_to_next_level(user):
     user_level, _ = Level.objects.get_or_create(user=user)
     level_data = user_level.calculate_level(total_points)
     return level_data
-
-# def give_points(user, ):
-#     Points.objects.create(user, points=600, description="test")
 
 @login_required
 def give_points(request, points, description):
