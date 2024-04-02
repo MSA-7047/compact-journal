@@ -1,3 +1,5 @@
+from sqlite3 import IntegrityError as SqIntegrityError
+from django.db import IntegrityError
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from journal.models import Group, GroupMembership, User
@@ -30,7 +32,7 @@ class GroupMembershipModelTest(TestCase):
     def _assert_group_membership_is_invalid(self, 
                                             membership: GroupMembership,
                                             msg: str = None) -> None:
-        with self.assertRaises(ValidationError, msg=msg):
+        with self.assertRaises((ValidationError, IntegrityError, SqIntegrityError), msg=msg):
             membership.full_clean()
 
     def test_group_membership_is_valid(self) -> None:
@@ -61,19 +63,15 @@ class GroupMembershipModelTest(TestCase):
         )
 
     def test_membership_is_unique(self) -> None:
-        group_membership_2: GroupMembership = GroupMembership.objects.create(
-            user=self.user,
-            group=self.group,
-            is_owner=True
-        )
-        self._assert_group_membership_is_invalid(
-            self.group_membership,
-            "Membership is no longer unique, and thus invalid"
-        )
-        self._assert_group_membership_is_invalid(
-            group_membership_2,
-            "New membership has same values as an existing record, and thus is invalid"
-        )
+        with self.assertRaises(
+                IntegrityError, 
+                msg="Membership is no longer unique, and thus invalid"
+            ):
+            group_membership_2: GroupMembership = GroupMembership.objects.create(
+                user=self.user,
+                group=self.group,
+                is_owner=True
+            )
 
     
 
