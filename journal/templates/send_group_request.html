@@ -5,6 +5,14 @@
 <section class="container">
     <div class="row py-4 px-4 justify-content-center">
         <div class="col-lg-6 row border bg-light justify-content-center align-items-center">
+
+            <div class="small-buttons position-relative">
+                <a class="btn btn-left" href="{% url 'group_dashboard' group_id=group_id %}">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    <span>Back</span>
+                </a>
+            </div>
+
             <h1>Invite User to Join Group</h1>
             <form method="post">
                 {% csrf_token %}

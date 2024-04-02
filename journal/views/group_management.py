@@ -135,7 +135,7 @@ def send_group_request(request, group_id):
             messages.success(request, f"{recipient} has now been invited.")
             return redirect('group_dashboard', group_id=group_id)
         
-    return render(request, 'send_group_request.html', {'form': form})
+    return render(request, 'send_group_request.html', {'form': form, 'group_id': group_.group_id})
 
 @login_required
 def accept_group_request(request, group_id):

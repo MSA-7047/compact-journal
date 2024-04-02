@@ -21,7 +21,17 @@
         <input class="btn btn-delete" type="submit" value="Delete Account">
       </form>
       {% endif %}
+
+
       {% if is_group %}
+      <div class="small-buttons position-relative">
+        <a class="btn btn-left" href="{% url 'group_dashboard' group_id=group_id %}">
+            <i class="bi bi-arrow-left me-2"></i>
+            <span>Back</span>
+        </a>
+      </div>
+
+
       <h1>Delete group</h1>
       <p> Are you sure you would like to delete your group?</p>
       <form method="post" action="{% url 'delete_group' group_id=group_id %}">
@@ -29,7 +39,6 @@
         {{ form.as_p }}
         <input type="submit" value="Delete group" class="btn btn-delete">
       </form>
-      <a href="{% url 'group_dashboard' group_id=group_id%}">Back to group dashboard</a>
       {% endif %}
 
     </div>
