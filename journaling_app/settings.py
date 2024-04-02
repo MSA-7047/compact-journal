@@ -19,8 +19,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 PROJECT_DIR = os.path.dirname(__file__)
 
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = 'redis://:c1zPOpZkO1WTnnPg6ZzAgr63EvejJGDr@redis-12609.c72.eu-west-1-2.ec2.cloud.redislabs.com:12609/0' 
+CELERY_BROKER_BACKEND = 'redis://:c1zPOpZkO1WTnnPg6ZzAgr63EvejJGDr@redis-12609.c72.eu-west-1-2.ec2.cloud.redislabs.com:12609/1'
 
 from celery.schedules import crontab
 
