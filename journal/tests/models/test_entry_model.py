@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from journal.models import Journal, User, Entry
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 class EntryTestCase(TestCase):
 
@@ -32,10 +33,44 @@ class EntryTestCase(TestCase):
         self.assertEqual(retrieved_entry.private, True)
         self.assertEqual(retrieved_entry.journal, self.journal)
 
+        retrieved_entry.full_clean()
+
     def test_entry_fields(self):
 
         # Assert that the fields have the expected attributes
         self.assertEqual(self.entry._meta.get_field('title').verbose_name, 'Title')
         self.assertEqual(self.entry._meta.get_field('summary').max_length, 200)
+        self.assertEqual(self.entry._meta.get_field('content').max_length, 10000)
         # Add assertions for other fields as needed
+    
+    def test_valid_entry_title_at_max_length(self):
+        self.entry.title = 'A' * 30  # At max length
+        self.entry.full_clean()  # This should not raise a error
+
+    def test_invalid_entry_title_above_max_length(self):
+        # Try to create a Entry instance with a title exceeding max length
+        with self.assertRaises(ValidationError):
+            self.entry.title = 'A' * 31  # Exceeds max length
+            self.entry.full_clean()  # This should raise a ValueError
+
+    def test_invalid_entry_title_empty(self):
+        # Try to create a Entry instance with an empty title
+        with self.assertRaises(ValidationError):
+            self.entry.title = ''
+            self.entry.full_clean()  # This should raise a ValueError
+            
+    def test_valid_entry_summary_at_max_length(self):
+        self.entry.summary = 'A' * 200  # Exceeds max length
+        self.entry.full_clean()  # This should raise a ValueError
+
+
+    def test_valid_entry_content_at_max_length(self):
+        self.entry.content = 'A' * 10000  # At max length
+        self.entry.full_clean()  # This should not raise an error
+    
+    def test_mood_cant_be_empty(self):
+         # Try to create a Entry instance with a empty mood
+        with self.assertRaises(ValidationError):
+            self.entry.mood = ''
+            self.entry.full_clean()  # This should raise a ValueError
 
