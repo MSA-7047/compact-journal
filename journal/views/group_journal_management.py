@@ -106,16 +106,5 @@ def view_group_journals(request, group_id):
     group = Group.objects.get(pk=group_id)
     journal_entries = GroupEntry.objects.filter(owner=group)
     membership = GroupMembership.objects.filter(group=group, user=request.user).first()
-
-    # Initialize forms outside the condition to avoid repetition
-    filter_form = EntryFilterForm(request.user, request.POST or None)
-    sort_form = EntrySortForm(request.POST or None)
-
-    if request.method == 'POST' and filter_form.is_valid() and sort_form.is_valid():
-        journal_entries = filter_form.filter_entries(journal_entries)
-        sort_order = sort_form.cleaned_data['sort_by_entry_date']
-        journal_entries = journal_entries.order_by('-entry_date' if sort_order == 'descending' else 'entry_date')
-    else:
-        journal_entries = journal_entries.all()
     
     return render(request, 'group_journals.html', {'group': group, 'group_id': group_id, 'group_journals': journal_entries, 'is_owner': membership.is_owner})
