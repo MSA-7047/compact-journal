@@ -1,4 +1,4 @@
-.todays-journal, .your-groups, .friends-list {
+.content-box {
   height: 300px;
   position: relative; /* Set position to relative */ 
 }
@@ -62,3 +62,7 @@
   margin-right: 5px;
 }
 
+.hoverable-group-name:hover {
+  color: #93c9f7;
+  transition: 0.5s;
+}
