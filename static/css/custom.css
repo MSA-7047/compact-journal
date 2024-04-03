@@ -1,19 +1,6 @@
-/*-- ==================== Templates ==================== --*/
-.template-item {
-  height: 400px;
-  overflow-y: auto;
-}
-
-/*-- ==================== Journal Dashboard ==================== --*/
-.list-group {
-  overflow-y: auto; /* Enable vertical scrolling if content exceeds the height */
-}
-
-
-/*-- ==================== CK Editor Container ==================== --*/
-.ck-editor__main div {
-  resize: none;
-  height: 100px;
+/*-- ==================== Body Default Font ==================== --*/
+body {
+  font-family: "Ubuntu", sans-serif;
 }
 
 /*-- ==================== Input Boxes ==================== --*/
@@ -23,7 +10,7 @@ input#id_title {
 
 textarea {
   width: 100%;
-  resize: none; /* Disable resizing */
+  resize: none;
 }
 
 textarea#id_bio.form-control {
@@ -40,16 +27,22 @@ textarea#id_bio.form-control {
   font-family: "Tilt-Warp", sans-serif;
   font-size: 25px;
   font-weight: 800;
-  word-wrap: break-word; /* Allows long words to be broken and wrapped onto the next line */
-  max-width: 100%; /* Sets maximum width of the box to 100% of its container */
+  word-wrap: break-word; 
+  max-width: 100%; 
   padding: 5px 0px;
   width: fit-content;
 } 
 
 @media (max-width: 768px) {
   .container .row h1 {
-    font-size: 20px; /* Adjust font size for smaller screens */
+    font-size: 20px; 
   }
+}
+
+/*-- ==================== CK Editor Container ==================== --*/
+.ck-editor__main div {
+  resize: none;
+  height: 100px;
 }
 
 /*-- ==================== Sections ==================== --*/
@@ -98,7 +91,7 @@ section {
 }
 
 .small-buttons .btn-left {
-  margin-right: auto; /* Keeps the "Back" button on the left */
+  margin-right: auto; 
 }
 
 .right-buttons {
@@ -107,24 +100,15 @@ section {
 
 .right-buttons .btn {
   margin-top:0px;
-  margin-left: 5px; /* Add margin between buttons if necessary */
+  margin-left: 5px; 
 }
 
-
-/* =======================================================*/
-
-/*
- * Alerts
- */
-
-.alert {
-  border-radius: 0px;
+/*-- ==================== Scrolling Collections ==================== --*/
+.list-group {
+  overflow-y: auto; 
 }
 
-
-/*
- * Cover page
- */
+/* ==================== Misc. ==================== */
 
 .content {
   padding-top: 10px;
@@ -135,78 +119,9 @@ section {
   height: 100vh;
 }
 
-.vcenter-item{
-    display: flex;
-    align-items: center;
+/*-- ========== Templates ========== --*/
+.template-item {
+  height: 400px;
+  overflow-y: auto;
 }
 
-/*
- * Cover page
- */
-h1.cover-heading {
-  font-size: 4rem;
-}
-
-p.cover-text {
-  font-size: 1.7rem;
-}
-
-.cover-card {
-  background-color: rgba(245, 245, 245, 0.6);
-  max-width: 30rem;
-  padding-top: 30px;
-  padding-left: 50px;
-  padding-right: 50px;
-  padding-bottom: 30px;
-  border-radius: 15%;
-}
-.cover-card-block {
-  opacity: 1
-}
-
-
-/*
- * forms
- */
-.nolabel label {
-  display: none;
-}
-
-ul.errorlist {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-/*
- * Typefaces
- */
-
-.low-key {
-  color: #777777;
-  font-weight: 300;
-}
-
-.list-title {
-  margin-top: 10px;
-  margin-bottom: 20px;
-}
-
-
-/**
- * Buttons
- */
-.create-button {
-    /* Your styles here */
-    background-color: #4CAF50; /* Green */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-/*-- ==================== Body Default Font ==================== --*/
-body {
-  font-family: "Ubuntu", sans-serif;
-}
