@@ -22,6 +22,7 @@ class ProfileViewTest(TestCase):
             'last_name': 'Doe2',
             'username': '@johndoe2',
             'email': 'johndoe2@example.org',
+            'location': 'America'
         }
 
     def test_profile_url(self):
@@ -76,6 +77,23 @@ class ProfileViewTest(TestCase):
         self.assertEqual(self.user.first_name, 'Default')
         self.assertEqual(self.user.last_name, 'User')
         self.assertEqual(self.user.email, 'johndoe@example.com')
+
+    def test_succesful_profile_update(self):
+        self.client.login(username=self.user.username, password='Password123')
+        before_count = User.objects.count()
+        response = self.client.post(self.url, self.form_input, follow=True)
+        after_count = User.objects.count()
+        self.assertEqual(after_count, before_count)
+        response_url = reverse('view_profile')
+        self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
+        self.assertTemplateUsed(response, 'view_profile.html')
+        messages_list = list(response.context['messages'])
+        self.assertEqual(messages_list[0].level, messages.SUCCESS)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.username, '@johndoe2')
+        self.assertEqual(self.user.first_name, 'John2')
+        self.assertEqual(self.user.last_name, 'Doe2')
+        self.assertEqual(self.user.email, 'johndoe2@example.org')
 
     def test_post_profile_redirects_when_not_logged_in(self):
         redirect_url = reverse_with_next('log_in', self.url)

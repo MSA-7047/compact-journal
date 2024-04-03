@@ -48,6 +48,8 @@ class FriendsViewTest(TestCase):
         self.assertTrue(self.friend.friends.filter(username='@johndoe').exists())
         self.assertTrue(self.user.friends.filter(username='@janedoe').exists())
 
+        self.assertFalse(FriendRequest.objects.filter(recipient=self.user, sender=self.friend).exists())
+
     def test_reject_invitation(self):
         friend_request = FriendRequest.objects.create(recipient=self.user, sender=self.friend)
         response = self.client.post(reverse('reject_friend_request', args=[friend_request.id]))
