@@ -119,7 +119,13 @@ section {
   height: 100vh;
 }
 
-/*-- ========== Templates ========== --*/
+/* Groups display */
+.all-groups {
+  height:70vh;
+  overflow-y: auto;
+}
+
+/* Templates */
 .template-item {
   height: 400px;
   overflow-y: auto;
