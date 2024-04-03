@@ -48,9 +48,7 @@ class FriendsViewTest(TestCase):
         self.assertTrue(self.friend.friends.filter(username='@johndoe').exists())
         self.assertTrue(self.user.friends.filter(username='@janedoe').exists())
 
-        friend_request.refresh_from_db()
-        self.assertTrue(friend_request.is_accepted)
-        self.assertEqual(friend_request.status, 'accepted')
+        self.assertFalse(FriendRequest.objects.filter(recipient=self.user, sender=self.friend).exists())
 
     def test_reject_invitation(self):
         friend_request = FriendRequest.objects.create(recipient=self.user, sender=self.friend)

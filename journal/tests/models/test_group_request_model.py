@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
-from journal.models import Group, GroupRequest, User
+from journal.models import Group, GroupRequest, User, GroupMembership
 
 class GroupRequestTestCase(TestCase):
 
@@ -12,6 +12,8 @@ class GroupRequestTestCase(TestCase):
         self.sender = User.objects.get(username='@janedoe')
         self.recipient = User.objects.get(username='@petrapickles')
         self.group = Group.objects.create(name='Test Group')
+        self.ownership = GroupMembership.objects.create(user=self.sender, group=self.group, is_owner=True)
+        self.membership = GroupMembership.objects.create(user=self.user, group=self.group, is_owner=False)
         self.group_request = GroupRequest.objects.create(
             sender=self.sender,
             recipient=self.recipient,
@@ -46,8 +48,8 @@ class GroupRequestTestCase(TestCase):
 
     def test_status_cannot_be_blank(self):
         self.group_request.status = ""
-        self._assert_friend_request_is_invalid(self.group_request)
+        self._assert_group_request_is_invalid(self.group_request)
 
     def test_status_cannot_be_invalid(self):
         self.group_request.status = "Invalid Status"
-        self._assert_friend_request_is_invalid(self.group_request)
+        self._assert_group_request_is_invalid(self.group_request)

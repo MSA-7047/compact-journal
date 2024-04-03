@@ -109,7 +109,7 @@ class Command(BaseCommand):
 
     @staticmethod
     def create_user_from_fixture(fixture: dict) -> User:
-        user = User.objects.create(**fixture)
+        user = User.objects.create(**fixture, password=Command.DEFAULT_PASSWORD)
         points = Points.objects.create(user=user)
         level = Level.objects.create(user=user)
         journal = Journal.objects.create(
