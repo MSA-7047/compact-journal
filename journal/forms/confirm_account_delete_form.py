@@ -7,5 +7,6 @@ class ConfirmDeletionForm(forms.Form):
     def clean_confirmation(self):
         confirmation = self.cleaned_data.get('confirmation')
         if confirmation != 'YES':
-            raise forms.ValidationError('invalid input')
+            self.add_error('confirmation', 'invalid input')
+            return False
         return confirmation

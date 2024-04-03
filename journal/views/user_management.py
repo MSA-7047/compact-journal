@@ -133,8 +133,7 @@ def delete_account(request):
                 logout(request)
 
             return redirect('home')
-        else:
-            form.add_error('confirmation', 'Please enter "YES" to confirm deletion.')
+            
     else:
         form = ConfirmDeletionForm()
 

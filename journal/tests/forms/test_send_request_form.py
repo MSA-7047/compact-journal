@@ -13,52 +13,49 @@ class SendFriendRequestFormTest(TestCase):
         self.friend2 = User.objects.get(username="@petrapickles")
 
     def test_form_has_required_fields(self):
-        form = SendFriendRequestForm(user=self.user)
+        form = SendFriendRequestForm()
         self.assertTrue('recipient' in form.fields)
-
-    def test_form_validation_for_valid_data(self):
-        # Test the form validation for a valid recipient
-        recipient = User.objects.create_user(username='valid_recipient', password='password')
-        form_data = {'recipient': recipient.id}
-        form = SendFriendRequestForm(user=self.user, data=form_data)
-        self.assertTrue(form.is_valid())
-
-    def test_form_validation_for_same_user_as_recipient(self):
-        self.user.friends.set([self.friend1, self.friend2])
-        form_data = {'recipient': self.user.id}
-        form = SendFriendRequestForm(user=self.user, data=form_data)
+    
+    def test_form_doesnt_accept_blank(self):
+        form_data = {'recipient': ''}
+        form = SendFriendRequestForm(data=form_data)
         self.assertFalse(form.is_valid())
+
+    def test_form_with_existing_friend(self):
+        self.user.friends.set([self.friend2])
+        form_data = {'recipient': self.friend2.username}
+        form = SendFriendRequestForm(data=form_data)
+        form.is_valid()
+
+        self.assertFalse(form.check_user(user=self.user))
         self.assertIn('recipient', form.errors)
+        self.assertEqual(form.errors['recipient'], ['User is already your friend'])
 
-    def test_form_validation_for_friend_as_recipient(self):
-        self.user.friends.set([self.friend1, self.friend2])
-        form_data = {'recipient': self.friend1.id}
-        form = SendFriendRequestForm(user=self.user, data=form_data)
-        self.assertFalse(form.is_valid())
+    def test_form_with_self_request(self):
+        form_data = {'recipient': self.user.username}
+        form = SendFriendRequestForm(data=form_data)
+        form.is_valid()
+
+        self.assertFalse(form.check_user(user=self.user))
         self.assertIn('recipient', form.errors)
+        self.assertEqual(form.errors['recipient'], ['Cannot request yourself'])
 
-    def test_form_queryset_excludes_friends(self):
-        self.user.friends.set([self.friend1, self.friend2])
-        form = SendFriendRequestForm(user=self.user)
-        queryset = form.fields['recipient'].queryset
+    def test_form_with_non_existing_user(self):
+        form_data = {'recipient': 'non_existing_user'}
+        form = SendFriendRequestForm(data=form_data)
+        form.is_valid()
 
-        # Ensure that friends and user are excluded from the queryset
-        self.assertNotIn(self.user, queryset)
-        self.assertNotIn(self.friend1, queryset)
-        self.assertNotIn(self.friend2, queryset)
+        self.assertFalse(form.check_user(user=self.user))
+        self.assertIn('recipient', form.errors)
+        self.assertEqual(form.errors['recipient'], ['This user doesnt exists'])
 
-    def test_form_queryset_includes_other_users(self):
-        form = SendFriendRequestForm(user=self.user)
-        queryset = form.fields['recipient'].queryset
-        # Ensure that other users are included in the queryset
-        all_users_except_current = User.objects.exclude(id=self.user.id)
-        for other_user in all_users_except_current:
-            self.assertIn(other_user, queryset)
+    def test_valid_form(self):
+        form_data = {'recipient': self.friend2.username}
+        form = SendFriendRequestForm(data=form_data)
+        form.is_valid()
 
-    def test_form_invalid_user(self):
-        form = SendFriendRequestForm(user=None)
-        queryset = form.fields['recipient'].queryset
-        all_users_except_current = User.objects.exclude(id=self.user.id)
-        for other_user in all_users_except_current:
-            self.assertIn(other_user, queryset)
+        self.assertTrue(form.check_user(user=self.user))
+        self.assertEqual(len(form.errors), 0)
+    
+
 

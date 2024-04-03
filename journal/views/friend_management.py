@@ -37,7 +37,7 @@ def view_friends(request):
     friends = request.user.friends.all()
     (requests, sent_pending_invitations,
      sent_accepted_invitations, sent_rejected_invitations) = get_friend_requests_and_sent_invitations(request.user)
-    form = SendFriendRequestForm(user=request.user)
+    form = SendFriendRequestForm()
 
     has_pending_requests = requests.filter(status='pending').exists()
 
@@ -82,9 +82,10 @@ def view_friends_profile(request, friendID):
 @login_required
 def send_friend_request(request, user_id):
     if request.method == 'POST':
-        form = SendFriendRequestForm(request.POST, user=request.user)
-        if form.is_valid():
-            recipient = form.cleaned_data['recipient']
+        form = SendFriendRequestForm(request.POST)
+        if form.is_valid() and form.check_user(user=request.user):
+            recipient_username = form.cleaned_data['recipient']
+            recipient = User.objects.filter(username=recipient_username).all().first()
             FriendRequest.objects.get_or_create(recipient=recipient, sender=request.user, status='pending')
 
             notif_message = f"You have received a friend request from {request.user}."
@@ -92,7 +93,7 @@ def send_friend_request(request, user_id):
 
             return redirect('send_request', user_id=user_id)
     else:
-        form = SendFriendRequestForm(user=request.user)
+        form = SendFriendRequestForm()
 
     (requests, sent_pending_invitations,
      sent_accepted_invitations, sent_rejected_invitations) = get_friend_requests_and_sent_invitations(request.user)

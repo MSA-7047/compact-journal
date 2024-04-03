@@ -4,20 +4,27 @@ from journal.models import User, FriendRequest
 
 class SendFriendRequestForm(forms.Form):
 
-    recipient = forms.ModelChoiceField(
-        queryset=User.objects.all(),
-        label='Select User'
-    )
+    recipient = forms.CharField(label='Select User')
 
     class Meta:
         model = FriendRequest
         fields = ['recipient']
 
-    def __init__(self, *args, user=None, **kwargs):
-        super().__init__(*args, **kwargs)
-        if user is not None:
-            self.fields['recipient'].queryset = User.objects.exclude(id=user.id)
-            friends = user.friends.all()
-            if friends.exists():
-                self.fields['recipient'].queryset = User.objects.exclude(
-                    id__in=[friend.id for friend in friends]).exclude(id=user.id)
+    def check_user(self, user=None):
+        recipient = self.cleaned_data.get('recipient')
+        if user:
+            for friend in user.friends.all():
+                if friend.username == recipient:
+                    self.add_error("recipient", "User is already your friend")
+                    return False
+
+            if recipient == user.username:
+                self.add_error("recipient", "Cannot request yourself")
+                return False
+
+            elif not User.objects.filter(username=recipient).exists():
+                self.add_error("recipient", "This user doesnt exists")
+                return False
+
+            else: 
+                return True
