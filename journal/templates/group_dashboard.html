@@ -96,7 +96,7 @@
           {% for journal in journals %}
             <li class="list-group-item rounded border mt-2 flex-grow-1">
 
-              <div class="small-buttons position-relative">
+              <!-- <div class="small-buttons position-relative">
                 
                 <div class="right-buttons ms-auto">
                   <a class="btn" href="{% url 'edit_group_journal' group_id=group.group_id journal_id=journal.id%}">Edit Journal</a>
@@ -108,7 +108,7 @@
                   {% endif %}
                 </div>
                 
-              </div>
+              </div> -->
 
               <h2><a href="{% url 'edit_group_journal' group_id=group.group_id journal_id=journal.id %}">{{ journal.title }}</a></h2>
               <p><b>Summary:</b> {{ journal.summary }}</p>
