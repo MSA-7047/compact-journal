@@ -128,7 +128,7 @@ def accept_invitation(request, friend_request_id):
     Points.objects.create(user=friend_request.sender, points=30, description=f"{friend_request.recipient} has accepted your friend request.")
 
     friend_request.delete()
-    print("friend request deleted")
+
 
     return redirect('view_friends')
 

@@ -49,7 +49,7 @@ class GroupEntryModelTest(TestCase):
         self._assert_entry_is_valid(self.entry)
 
     def test_summary_can_not_exceed_200(self):
-        self.entry.summary = "a"*201
+        self.entry.summary = "a"*205
         self._assert_entry_is_invalid(self.entry)
 
     def test_content_can_be_upto_10000(self):

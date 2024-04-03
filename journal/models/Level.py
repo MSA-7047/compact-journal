@@ -28,7 +28,6 @@ class Level(models.Model):
             increment *= 1.5  
             points_needed += round(increment / 50) * 50
             points_to_next_level = points_needed - total_points
-            #print("points needed for level ",level,"is",points_needed)
 
         return {
             'current_level': level,

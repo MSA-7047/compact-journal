@@ -32,6 +32,7 @@ class SendFriendRequestFormTest(TestCase):
         self.assertEqual(form.errors['recipient'], ['User is already your friend'])
 
     def test_form_with_self_request(self):
+        self.user.friends.set([self.friend2])
         form_data = {'recipient': self.user.username}
         form = SendFriendRequestForm(data=form_data)
         form.is_valid()

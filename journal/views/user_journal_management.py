@@ -196,7 +196,6 @@ def create_entry(request, journal_id):
 
             entry.journal.last_entry_date = today
             entry.journal.save()
-            print("new entry, so the updated last entry date is: ",entry.journal.last_entry_date)
             
             
 
@@ -260,7 +259,7 @@ def delete_entry(request, entry_id):
 
     yesterday = datetime.now() - timedelta(days=1)
     journal.last_entry_date = yesterday
-    print("the last entry date is noW",journal.last_entry_date)
+
 
     journal.save()
 
