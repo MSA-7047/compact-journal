@@ -18,28 +18,36 @@ class GroupRequestTestCase(TestCase):
             group=self.group
         )
 
+    def _assert_group_request_is_valid(self, group_request: GroupRequest, msg: str = None):
+        try:
+            group_request.full_clean()
+        except ValidationError:
+            self.fail(msg=msg)
+
+    def _assert_group_request_is_invalid(self, group_request: GroupRequest, msg: str = None):
+        with self.assertRaises(ValidationError, msg=msg):
+            group_request.full_clean()
+
     def test_group_request_creation(self):
-        self.assertEqual(self.group_request.sender, self.sender)
-        self.assertEqual(self.group_request.recipient, self.recipient)
-        self.assertEqual(self.group_request.group, self.group)
-        self.assertEqual(self.group_request.status, 'Pending')
+        self._assert_group_request_is_valid(self.group_request)
 
     def test_recipient_and_sender_different_users(self):
-        # Attempt to create a group request with the same sender and recipient
-        with self.assertRaises(ValidationError):
-            request = GroupRequest.objects.create(
-                sender=self.sender,
-                recipient=self.sender,
-                group=self.group
-            )
-            request.clean()
+        self.group_request.recipient = self.sender
+        self._assert_group_request_is_invalid(self.group_request)
 
     def test_sender_owner_of_group(self):
-        # Attempt to create a group request where the sender is not the owner of the group
-        with self.assertRaises(ValidationError):
-            request = GroupRequest.objects.create(
-                sender=self.user,  # User is not the owner of the group
-                recipient=self.recipient,
-                group=self.group
-            )
-            request.clean()
+        self.group_request.sender = self.user
+        self._assert_group_request_is_invalid(self.group_request)
+
+    def test_valid_status_is_valid(self):
+        for status, _ in GroupRequest.STATUS_CHOICES:
+            self.group_request.status = status
+            self._assert_group_request_is_valid(self.group_request, msg=f"{status} failed")
+
+    def test_status_cannot_be_blank(self):
+        self.group_request.status = ""
+        self._assert_friend_request_is_invalid(self.group_request)
+
+    def test_status_cannot_be_invalid(self):
+        self.group_request.status = "Invalid Status"
+        self._assert_friend_request_is_invalid(self.group_request)

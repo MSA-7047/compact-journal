@@ -18,11 +18,9 @@ class ActionCooldownTestCase(TestCase):
             last_performed=past_time
         )
 
-        # Ensure the method returns True indicating the action can be performed
         self.assertTrue(ActionCooldown.can_perform_action(self.user, 'test_action'))
 
     def test_action_cannot_be_performed_within_cooldown(self):
-        # Set up a recent cooldown
         recent_time = timezone.now()
         cooldown = ActionCooldown.objects.create(
             user=self.user,
@@ -30,21 +28,16 @@ class ActionCooldownTestCase(TestCase):
             last_performed=recent_time
         )
 
-        # Ensure the method returns False indicating the action cannot be performed
         self.assertFalse(ActionCooldown.can_perform_action(self.user, 'test_action'))
 
     def test_action_can_be_performed_if_cooldown_expired(self):
-        # Set up a cooldown that expired just now
         past_time = timezone.now() - timezone.timedelta(hours=1)
         cooldown = ActionCooldown.objects.create(
             user=self.user,
             action_type='test_action',
             last_performed=past_time
         )
-
-        # Ensure the method returns True indicating the action can be performed
         self.assertTrue(ActionCooldown.can_perform_action(self.user, 'test_action'))
 
     def test_action_can_be_performed_if_no_previous_cooldown(self):
-        # Ensure the method returns True if there's no previous cooldown
         self.assertTrue(ActionCooldown.can_perform_action(self.user, 'test_action'))
