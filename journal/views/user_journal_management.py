@@ -196,7 +196,6 @@ def create_entry(request, journal_id):
 
             entry.journal.last_entry_date = today
             entry.journal.save()
-            print("new entry, so the updated last entry date is: ",entry.journal.last_entry_date)
             
             
 
@@ -260,7 +259,7 @@ def delete_entry(request, entry_id):
 
     yesterday = datetime.now() - timedelta(days=1)
     journal.last_entry_date = yesterday
-    print("the last entry date is noW",journal.last_entry_date)
+
 
     journal.save()
 
@@ -297,7 +296,7 @@ def view_journal_entries(request, user_id, journal_id):
         'journal_param': my_journals_to_journal_param(journal_entries),
         'user': current_user,
         'journal': current_journal,
-        'is_logged_in': is_user_logged_in
+        'is_logged_in': is_user_logged_in,
     }
 
     return render(request, 'view_all_journal_entries.html', context)

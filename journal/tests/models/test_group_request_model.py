@@ -49,7 +49,9 @@ class GroupRequestTestCase(TestCase):
     def test_status_cannot_be_blank(self):
         self.group_request.status = ""
         self._assert_group_request_is_invalid(self.group_request)
+        self._assert_group_request_is_invalid(self.group_request)
 
     def test_status_cannot_be_invalid(self):
         self.group_request.status = "Invalid Status"
+        self._assert_group_request_is_invalid(self.group_request)
         self._assert_group_request_is_invalid(self.group_request)

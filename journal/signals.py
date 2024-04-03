@@ -21,7 +21,6 @@ def update_level_on_points_change(sender, instance, created, **kwargs):
     if created:
         user_level, _ = Level.objects.get_or_create(user=instance.user)
         total_points = Points.objects.filter(user=instance.user).aggregate(Sum('points'))['points__sum'] or 0
-        print("Total points in the signals is read as:", total_points)
         calculated_level = user_level.calculate_level(total_points)['current_level']
 
         if calculated_level > user_level.current_level:

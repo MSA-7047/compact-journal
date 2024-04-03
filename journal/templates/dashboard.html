@@ -11,17 +11,17 @@
 
   <div class="first-row row pb-4 px-4 gy-4">
     <div class="col-xl-8 d-flex flex-column justify-content-center">
-        <div class="welcome-message p-2 border bg-light d-flex align-items-center justify-content-center" style="height: 75px;">
+        <div class="welcome-message p-2 border bg-light d-flex align-items-center justify-content-center flex-grow-1">
             <h1 class="mb-0">Welcome to your dashboard {{ user.username }}</h1>
         </div>
     </div>
     <div class="col-xl-4">
-        <div class="user-content p-2 border bg-light d-flex align-items-center justify-content-between" style="height: 75px;">
+        <div class="user-content p-2 border bg-light d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center">
-                <div class="circle-badge bg-primary text-white d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                    <p class="mb-0" style="font-size: 35px;">{{ user.level.current_level }}</p>
+                <div class="circle-badge bg-primary text-white d-flex align-items-center justify-content-center">
+                    <p class="mb-0 h4">{{ user.level.current_level }}</p>
                 </div>
-                <h3 class="ms-2 mb-0">{{ total_points }}/{{ points_needed }}</h3>
+                <h3 class="ms-2 mb-0 h3">{{ total_points }}/{{ points_needed }}</h3>
             </div>
               <a href="{% url 'view_profile' %}" class="btn view-button">View Profile</a>
         </div>
@@ -38,7 +38,7 @@
 
   <div class="second-row row px-4 gy-4 pb-4 flex-fill">
     <div class="col-xl-5 d-flex flex-column">
-      <div class="todays-journal p-2 border bg-light flex-grow-1">
+      <div class="content-box p-2 border bg-light flex-grow-1">
         <h1>Your Journals:</h1>
           <div class="content">
             {% if my_journals is None %}
@@ -69,25 +69,28 @@
 
 
     <div class="col-xl-4 d-flex flex-column">
-      <div class="your-groups p-2 border bg-light flex-grow-1">
+      <div class="content-box p-2 border bg-light flex-grow-1">
         <h1>Your Groups:</h1>
         <div class="content">
           {% if not groups %}
             You are not a part of any Groups currently, let's create some!
           {% endif %}
           {% if groups %}
-            <div class="btn-group-vertical container-fluid" role="group">
+            <ul class="list-group d-flex flex-column" role="group">
               {% for group in groups %}
-                <a role="button" href="{% url 'group_dashboard' group_id=group.group_id %}" class="btn justify-content-center">{{ group.name }}</a>
+                <li class="hoverable-group-name list-group-item mb-2 me-2 rounded">
+                  <a class="h2 text-decoration-none" href="{% url 'group_dashboard' group_id=group.group_id %}">{{ group.name }}</a>
+                  
+                </li>
               {% endfor %}
-          </div>
+            </ul>
         {% endif %}
         </div>
       </div>
     </div>
 
     <div class="col-xl-3 d-flex flex-column">
-      <div class="friends-list p-2 border bg-light flex-grow-1">
+      <div class="content-box p-2 border bg-light flex-grow-1">
         <h1>Friends List:</h1>
         
         

@@ -72,7 +72,6 @@ def create_template(request, journal_id):
             template.save()
             return redirect(f'/select_template/{journal_id}')
         else:
-            print("errors")
             return render(request, 'create_template.html', {'form': form, 'title': "Create Template"})
     else:
         return render(request, 'create_template.html', {'form': form, 'title': "Create Template"})

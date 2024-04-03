@@ -102,7 +102,6 @@ def dashboard(request):
     current_year = datetime.now().year
     current_month = datetime.now().strftime("%B")
     my_journals = current_user.journals.all()
-    print(my_journals)
     notifications = Notification.objects.filter(user=request.user, is_read=False).order_by('-time_created')
     level_data = points_to_next_level(request.user)
     level_up_message(request)
@@ -133,8 +132,7 @@ def delete_account(request):
                 logout(request)
 
             return redirect('home')
-        else:
-            form.add_error('confirmation', 'Please enter "YES" to confirm deletion.')
+            
     else:
         form = ConfirmDeletionForm()
 

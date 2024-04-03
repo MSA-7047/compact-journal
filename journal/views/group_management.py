@@ -191,8 +191,7 @@ def delete_group(request, group_id):
                 Notification.objects.create(notification_type="group", message=notif_message, user=member.user)
             to_del.delete()    
             return redirect('dashboard')
-        else:
-            form.add_error('confirmation', 'Please enter "YES" to confirm deletion.')
+
 
     return render(request, 'delete_account.html', {'form': form, 'group_id': group.group_id, 'is_group': True})
 

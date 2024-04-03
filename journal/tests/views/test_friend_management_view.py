@@ -36,7 +36,7 @@ class FriendsViewTest(TestCase):
         self.assertEqual(self.user.friends.count(), 0)  # Assuming friend was removed successfully
 
     def test_send_friend_request(self):
-        response = self.client.post(reverse('send_request', args=[self.friend.id]), {'recipient': self.friend.id})
+        response = self.client.post(reverse('send_request', args=[self.user.id]), {'recipient': self.friend.username})
         self.assertEqual(response.status_code, 302) 
         self.assertTrue(FriendRequest.objects.filter(sender=self.user, recipient=self.friend, status='pending').exists())
 

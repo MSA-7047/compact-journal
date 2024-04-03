@@ -4,7 +4,7 @@
 
 <!-- Static CSS Files -->
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-<link href="{% static 'django_ckeditor_5/dist/styles.css' %}" type="text/css" media="all" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'django_ckeditor_5/dist/styles.css' %}" type="text/css" media="all">
 
 <!-- ==================== Main Dashboard Section ==================== -->
 <section class="container d-flex flex-column h-100">
@@ -37,7 +37,7 @@
 
   <div class="second-row row px-4 gy-4 pb-4 flex-fill">
     <div class="col-xl-5 d-flex flex-column">
-      <div class="todays-journal p-2 border bg-light flex-grow-1">
+      <div class="content-box p-2 border bg-light flex-grow-1">
         <h1>Members:</h1>
         <div class="content list-group py-3">
           {% if members %}
@@ -73,7 +73,7 @@
 
 
     <div class="col-xl-7 d-flex flex-column">
-      <div class="your-groups p-2 border bg-light flex-grow-1 d-flex flex-column">
+      <div class="content-box p-2 border bg-light flex-grow-1 d-flex flex-column">
 
         <div class="small-buttons position-relative">
           {% if is_owner %}
@@ -95,21 +95,6 @@
         <ul class="list-group mt-0 flex-grow-1">
           {% for journal in journals %}
             <li class="list-group-item rounded border mt-2 flex-grow-1">
-
-              <div class="small-buttons position-relative">
-                
-                <div class="right-buttons ms-auto">
-                  <a class="btn" href="{% url 'edit_group_journal' group_id=group.group_id journal_id=journal.id%}">Edit Journal</a>
-                  <a class="btn" href="{% url 'export_single_group_entry'  group_id=group.group_id journal_id=journal.id %}"> Export </a>
-                  {% if is_owner %}
-                  <form method="post" action="{% url 'delete_group_journal' group_id=group.group_id journal_id=journal.id %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-delete">Delete Journal</button>
-                  {% endif %}
-                </div>
-                
-              </div>
-
               <h2><a href="{% url 'edit_group_journal' group_id=group.group_id journal_id=journal.id %}">{{ journal.title }}</a></h2>
               <p><b>Summary:</b> {{ journal.summary }}</p>
               <p><b>Entry Date:</b> {{ journal.entry_date }}</p>
@@ -135,44 +120,4 @@
 
 </section>
 
-
-<section class="container">
-  <div class="row">
-    <div class="col-12 border bg-light">
-      <h1>Group Dashboard: {{ group.name }}</h1>
-      <div class="group-list">
-        {% if journals %}
-        {% for journal in journals %}
-        <div class="list-group-item">
-          {{ journal.journal_title }}
-          {{ journal.journal_description }}
-          {{ journal.entry_date }}
-          {{ journal.last_edited_by }}
-          {{ journal.journal_mood }}
-          <a role="button" class="btn btn-info"
-            href="{% url 'edit_group_journal' group_id=group.group_id journal_id=journal.id%}">Edit Journal</a>
-          <a href="{% url 'export_single_group_entry' group_id=group.group_id journal_id=journal.id %}"
-            class="btn btn-lg btn-secondary"> Export </a>
-          {% if is_owner %}
-          <form method="post" action="{% url 'delete_group_journal' group_id=group.group_id journal_id=journal.id %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Delete Journal</button>
-            {% endif %}
-        </div>
-        {% endfor %}
-        {% endif %}
-        {% if not journals %}
-        <div class="list-group-item">
-          Your group has no journals
-        </div>
-        {% endif %}
-      </div>
-      <a role="button" class="btn" href="{% url 'create_group_journal' group_id=group.group_id %}">Create Journal</a>
-
-
-
-
-    </div>
-  </div>
-</section>
 {% endblock %}

@@ -1,12 +1,37 @@
 {% extends 'base_content.html' %}
 {% block content %}
 
-
-<!-- form -->
 <section class="container">
-    <div class="row py-4 px-4">
+    <div class="row pb-3 px-4">
         <form method="post" enctype="multipart/form-data">
-            <div class="row border bg-light justify-content-center">
+            <div class="row border bg-light justify-content-center py-1">
+
+                <div class="small-buttons position-relative">
+                    <a class="btn btn-left" href="{% url 'group_dashboard' group_id=group_id %}">
+                        <i class="bi bi-arrow-left me-2"></i>
+                        <span>Back</span>
+                    </a>
+
+                    <div class="right-buttons ms-auto">
+                        {% if is_edit %}
+                            <a class="btn" href="{% url 'export_single_group_entry' group_id=group_id journal_id=journal_id %}"> Export </a>
+                            {% if is_owner %}
+                                <form method="post" action="{% url 'delete_group_journal' group_id=group_id journal_id=journal_id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-delete">Delete Journal</button>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    {% if is_edit %}
+                    <h1>Edit Entry</h1>
+                    {% else %}
+                    <h1>Create Entry</h1>
+                    {% endif %}
+                </div>
+
                 <div class="col-lg-4">
                     <div class="form-group">
                         <h1>{{ form.title.label }}:</h1>
@@ -42,11 +67,5 @@
         </form>
     </div>
 </section>
-
-
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
-    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-    crossorigin="anonymous"></script>
-
 
 {% endblock %}

@@ -2,9 +2,6 @@
 {% block content %}
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'css/custom.css' %}">
-
-
 <section class="container d-flex flex-column h-100">
   <div class="first-row row pb-4 px-4 gy-4">
     <div class="col-xl-12">
@@ -18,7 +15,7 @@
         </div>
 
         <div class="d-flex flex-column align-items-center justify-content-center">
-          <h1 style="font-size: 36px;"> Friends Dashboard</h1>
+          <h1> Friends Dashboard</h1>
           <p>This is where you can view your friends and manage friend requests.</p>
         </div>
       </div>
@@ -28,11 +25,11 @@
 
 
   <div class="second-row row px-4 gy-4 pb-4 flex-fill">
-    <div class="col-xl-6 d-flex flex-column overflow-y" style="height: 700px">
+    <div class="col-xl-6 d-flex flex-column overflow-y">
       <div class="p-2 border bg-light flex-grow-1 d-flex flex-column">
 
         <div class="d-flex justify-content-center mb-2 w-100">
-          <h1 style="font-size: 36px;">My Friends</h1>
+          <h1>My Friends</h1>
         </div>
 
         {% if user.friends.all %}
@@ -63,10 +60,10 @@
     </div>
 
     <div class="col-xl-6 d-flex flex-column align-items-center">
-      <div class="your-groups p-2 border bg-light w-100 d-flex flex-column" style="height: 700px">
+      <div class="content-box p-2 border bg-light w-100 d-flex flex-column">
 
         <div class="d-flex flex-column justify-content-center align-items-center mb-2 w-100">
-          <h1 style="font-size: 36px;">Add a Friend</h1>
+          <h1>Add a Friend</h1>
 
           <form method="post" action="{% url 'send_request' user.id %}">
             {% csrf_token %}
@@ -79,7 +76,7 @@
 
 
         <div class="d-flex justify-content-center mb-2 w-100">
-          <h1 style="font-size: 36px;">Friend Requests</h1>
+          <h1>Friend Requests</h1>
         </div>
 
         <h4>Pending Friend Requests:</h4>
