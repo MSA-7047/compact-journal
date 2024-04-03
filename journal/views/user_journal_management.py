@@ -297,7 +297,7 @@ def view_journal_entries(request, user_id, journal_id):
         'journal_param': my_journals_to_journal_param(journal_entries),
         'user': current_user,
         'journal': current_journal,
-        'is_logged_in': is_user_logged_in
+        'is_logged_in': is_user_logged_in,
     }
 
     return render(request, 'view_all_journal_entries.html', context)
