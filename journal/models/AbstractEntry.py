@@ -7,7 +7,7 @@ from django_ckeditor_5.fields import CKEditor5Field
 
 class AbstractEntry(models.Model):
     title = models.CharField('Title', max_length=30, blank=False)
-    summary = models.CharField('Summary', max_length=200)
+    summary = models.TextField('Summary', max_length=200)
     content = CKEditor5Field('Entry Content', config_name='extends', max_length=10000)
     entry_date = models.DateTimeField(auto_now_add=True)
     last_edited = models.TimeField(auto_now=True)
@@ -34,5 +34,7 @@ class AbstractEntry(models.Model):
     def clean(self) -> None:
         if len(self.content) > 10_000:
             raise ValidationError("Content has exceeded allowable limit of 10,000")
+        if len(self.summary) > 200:
+            raise ValidationError("Summary must be less than 200 characters")
         return super().clean()
 
