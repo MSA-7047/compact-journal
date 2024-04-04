@@ -7,38 +7,23 @@ from journal.models import Group, GroupMembership, User
 
 class LeaveGroupViewTest(TestCase):
     def setUp(self):
-        # Create users
         self.owner_user = User.objects.create(username='@owner_user', password='ownerpass', email="owner@example.com")
         self.member_user = User.objects.create(username='@member_user', password='memberpass', email="member@example.com")
-
-        # Create a group
         self.group = Group.objects.create(name='Test Group')
-
-        # Create group memberships
         self.owner_membership = GroupMembership.objects.create(user=self.owner_user, group=self.group, is_owner=True)
         self.member_membership = GroupMembership.objects.create(user=self.member_user, group=self.group)
-
-        # URL for the view
         self.url = reverse('leave_group', args=[self.group.group_id])
 
     def test_leave_group_member(self):
-        """Test leaving the group as a member."""
         self.client.force_login(self.member_user)
-
-        # Make the request
         response = self.client.post(self.url)
 
         # Check if the membership is deleted
         self.assertFalse(GroupMembership.objects.filter(user=self.member_user, group=self.group).exists())
-
-        # Check if the group still exists
         self.assertTrue(Group.objects.filter(group_id=self.group.group_id).exists())
-
-        # Check if redirected to home
         self.assertRedirects(response, reverse('dashboard'))
 
     def test_leave_group_owner_select_new_owner(self):
-        """Test leaving the group as an owner and selecting a new owner."""
         self.client.force_login(self.owner_user)
 
         # Make the request with POST data for selecting a new owner
@@ -46,6 +31,4 @@ class LeaveGroupViewTest(TestCase):
 
         # Check if the ownership is transferred
         self.assertFalse(GroupMembership.objects.filter(group=self.group, user=self.member_user, is_owner=True).exists())
-
-        # Check if redirected to home
         self.assertRedirects(response,f'/groups/{self.group.group_id}/select-new-owner')

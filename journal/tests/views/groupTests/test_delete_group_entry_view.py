@@ -2,12 +2,13 @@ from django.test import TestCase
 from django.urls import reverse
 from journal.models import Group, GroupEntry, GroupMembership, User
 
-class DeleteGroupJournalViewTest(TestCase):
+class DeleteGroupEntryViewTest(TestCase):
+    """Test suite for the deleting group entry view"""
+
     def setUp(self):
         self.user = User.objects.create(username='@testuser', password='testpassword', email='test@example.com')
         self.group = Group.objects.create(name='Test Group')
         self.group_membership = GroupMembership.objects.create(user=self.user, group=self.group, is_owner=True)
-
         self.journal = GroupEntry.objects.create(
             title='Test Journal',
             summary='Description of the test journal',
@@ -43,12 +44,6 @@ class DeleteGroupJournalViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(GroupEntry.objects.filter(pk=self.journal.pk).exists())
         self.assertRedirects(response, f'/log_in/?next={self.url}')
-    
-    def test_delete_group_journal_GET(self):
-        response = self.client.get(self.url)
-
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(GroupEntry.objects.filter(pk=self.journal.pk).exists())
     
     def test_create_group_journal_get_request_redirection(self):
         self.client.force_login(self.user)
