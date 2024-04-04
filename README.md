@@ -60,12 +60,11 @@ $ python3 manage.py test
 ## Sources
 The packages used by this application are specified in `requirements.txt`
 
-## References
+## Usage of Generative AI
+
 ```
-** Usage of generative AI
+We generally used AI to help debug our code.
 
-        We generally used AI to help debug our code.
-
-        The only functionality generative AI was used for was for 
-        Celery which was used to help send reminders to each user
+The only functionality generative AI was used for was for Celery which
+was used to help send reminders to each user.
 ```
