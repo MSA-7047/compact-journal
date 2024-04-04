@@ -5,6 +5,8 @@ from journal.models import Group, GroupMembership, User
 from django.contrib.messages import get_messages
 
 class CreateGroupViewTest(TestCase):
+    """Test suite for the create group view"""
+    
     def setUp(self):
         self.user = User.objects.create_user(username='@testuser', password='testpassword', email="example@example.org")
 
@@ -18,9 +20,10 @@ class CreateGroupViewTest(TestCase):
         self.assertTrue(Group.objects.filter(name='Test Group').exists())
         self.assertTrue(GroupMembership.objects.filter(group=Group.objects.filter(name='Test Group').exists(), user=self.user, is_owner=True).exists())
     
-    def test_create_group_get(self):
+    def test_create_group_GET(self):
         self.client.login(username='@testuser', password='testpassword')
         response = self.client.get(reverse('create_group'))
+
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'create_group.html')
         self.assertIsInstance(response.context['form'], GroupForm)
@@ -28,13 +31,15 @@ class CreateGroupViewTest(TestCase):
     def test_create_group_unauthenticated_access(self):
         url = reverse('create_group')
         response = self.client.get(url)
+
         self.assertRedirects(response, '/log_in/?next=/create_group/')
 
     def test_create_group_invalid_form_data(self):
         self.client.login(username='@testuser', password='testpassword')
         url = reverse('create_group')
-        data = {'name': ''}  # Invalid data
+        data = {'name': ''}
         response = self.client.post(url, data)
+
         self.assertEqual(response.status_code, 200)  # Form should not redirect
         self.assertFormError(response, 'form', 'name', 'This field is required.')
     

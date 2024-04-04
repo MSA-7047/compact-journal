@@ -48,7 +48,7 @@ class SendFriendRequestFormTest(TestCase):
 
         self.assertFalse(form.check_user(user=self.user))
         self.assertIn('recipient', form.errors)
-        self.assertEqual(form.errors['recipient'], ['This user doesnt exists'])
+        self.assertEqual(form.errors['recipient'], ["This user doesn't exist"])
 
     def test_valid_form(self):
         form_data = {'recipient': self.friend2.username}
@@ -57,6 +57,11 @@ class SendFriendRequestFormTest(TestCase):
 
         self.assertTrue(form.check_user(user=self.user))
         self.assertEqual(len(form.errors), 0)
+    
+    def test_form_field_label(self):
+        """Test form field label."""
+        form = SendFriendRequestForm()
+        self.assertEqual(form.fields['recipient'].label, 'Select User')
     
 
 

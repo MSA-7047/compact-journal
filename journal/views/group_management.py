@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import redirect, render, get_object_or_404
 from journal.models import (
     GroupRequest,
@@ -51,6 +51,8 @@ def group_dashboard(request, group_id) -> HttpResponse:
     group_journals = GroupEntry.objects.filter(owner=given_group)
     user_membership = GroupMembership.objects.get(user=current_user, group=given_group)
     is_owner = user_membership.is_owner
+    owner_membership = GroupMembership.objects.filter(group=given_group, is_owner=True).first()
+    owner = owner_membership.user
     return render(
         request,
         "group_dashboard.html",
@@ -100,9 +102,7 @@ def edit_group(request, group_id):
     """Allows owner of the group to edit the group."""
     group = get_object_or_404(Group, pk=group_id)
     membership = get_object_or_404(GroupMembership, group=group, user=request.user)
-
     old_group_name = group.name
-
     form = GroupForm(instance=group)
 
     if not membership.is_owner:
@@ -113,12 +113,12 @@ def edit_group(request, group_id):
         form = GroupForm(request.POST, instance=group)
         if form.is_valid():
             cleaned_data = form.cleaned_data
-            group.name = cleaned_data["name"]
+            group.name = cleaned_data['name']
+            group.description = cleaned_data['description']
             group.save()
-
             messages.success(request, "Group name updated successfully.")
-
             memberships = GroupMembership.objects.filter(group=group)
+            # Send notification to every member in group
             for member in memberships:
                 notif_message = (
                     f"Group '{old_group_name}' has been changed to '{group.name}'."
@@ -234,6 +234,7 @@ def reject_group_request(request, group_id):
 
 @login_required
 def delete_group(request, group_id):
+    """Allows the user to delete the group"""
     group = Group.objects.get(pk=group_id)
     membership = GroupMembership.objects.filter(group=group, user=request.user).first()
 
@@ -280,7 +281,6 @@ def leave_group(request, group_id):
 @login_required
 def remove_player_from_group(request, group_id, player_id):
     """Allows the owner to remove a player from the group."""
-
     group_ = get_object_or_404(Group, pk=group_id)
     user_membership = get_object_or_404(
         GroupMembership, group=group_, user=request.user
@@ -298,7 +298,6 @@ def remove_player_from_group(request, group_id, player_id):
         return redirect("group_dashboard", group_id=group_.group_id)
 
     membership = GroupMembership.objects.get(group=group_, user=player)
-
     membership.delete()
     messages.success(request, f"Successfully removed {player.username} from the group.")
 
@@ -307,6 +306,7 @@ def remove_player_from_group(request, group_id, player_id):
 
 @login_required
 def select_new_owner(request, group_id):
+    """Allows an owner of a group to leave by selecting a new owner"""
     group = get_object_or_404(Group, pk=group_id)
     membership = get_object_or_404(GroupMembership, group=group, user=request.user)
 

@@ -43,7 +43,11 @@
           {% if members %}
           {% for member in members %}
           <div class="list-group-item rounded py-3 mb-2 d-flex justify-content-between align-items-center">
-            {{ member.username }}
+            {% if owner.id == member.id %}
+              {{ member.username }} (Owner)
+            {% else %}
+              {{ member.username }}
+            {% endif %}
             <div class="small-buttons position-relative">
               <div class="right-buttons">
                 {% if user.username != member.username %}

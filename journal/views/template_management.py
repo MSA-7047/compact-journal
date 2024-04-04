@@ -1,16 +1,16 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
-
-from django.urls import reverse, reverse_lazy
-from journal.models import *
-from journal.forms import *
-from journal.views.notifications import *
+from journal.models import Journal, Template, Entry, User
+from journal.forms import CreateTemplateForm
+from journal.views.notifications import create_notification
 from journal.models.Cooldown import ActionCooldown
-from journal.views.user_management import *
+from journal.views.user_management import give_points
+from django.contrib import messages
 
 
 def generate_generic_templates(currentUser: User) -> None:
+    """Creates 5 templates that are generated everytime a user signs up"""
     html_file_paths = [
         "journal/journal_templates/template1.html",
         "journal/journal_templates/template2.html",
@@ -55,19 +55,17 @@ def create_template(
     if request.method == "POST":
         form = CreateTemplateForm(request.POST)
         if form.is_valid():
-            template = Template.objects.create(
-                title=form.cleaned_data.get("title"),
-                description=form.cleaned_data.get("description"),
-                bio=form.cleaned_data.get("bio"),
-                owner=current_user,
-            )
+            template = form.save(commit=False)
+            template.owner = current_user
+            template.save()
 
-            if ActionCooldown.can_perform_action(
-                request.user, "create_template", cooldown_hours=1
-            ):
-                messages.success(
-                    request, "New Custom Template Created! Points awarded."
-                )
+            action_allowed = ActionCooldown.can_perform_action(
+                request.user, 
+                'create_template', 
+                cooldown_hours=1
+            )
+            if action_allowed:
+                messages.success(request, "New Custom Template Created! Points awarded.")
                 give_points(request, 20, "New Custom Template Created.")
             else:
                 messages.success(
@@ -78,22 +76,12 @@ def create_template(
             notif_message = f"New custom template {template.title} created!"
             create_notification(request, notif_message, "info")
 
-            template.save()
-            return redirect(f"/select_template/{journal_id}")
+            return redirect(f'/select_template/{journal_id}')
 
-        return render(
-            request,
-            "create_template.html",
-            {"form": form, "title": "Create Template"},
-        )
-
-    else:
-        return render(
-            request, "create_template.html", {"form": form, "title": "Create Template"}
-        )
-
-
-def select_template(request: HttpRequest, journal_id: int) -> HttpResponse:
+    return render(request, 'create_template.html', {'form': form, 'title': "Create Template"})
+    
+@login_required
+def select_template(request, journal_id):
     currentUser = request.user
     journal = Journal.objects.get(id=journal_id)
     templates = Template.objects.filter(owner=currentUser)
@@ -158,5 +146,5 @@ def edit_template(
     return render(
         request,
         "create_template.html",
-        {"form": form, "template": template, "title": "Update Template"},
+        {"form": form, "template": template, "title": "Edit Template"},
     )

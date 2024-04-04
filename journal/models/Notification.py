@@ -4,6 +4,7 @@ from django.urls import reverse
 from .User import User
 
 class Notification(models.Model):
+    """Model to enable User to receive updates and reminders about levels and other tasks"""
     NOTIFICATION_TYPES = [
         ('info', 'Information'),
         ('reminder', 'Reminder'),

@@ -12,13 +12,8 @@ class ViewGroupEntryViewTest(TestCase):
         self.membership = GroupMembership.objects.create(user=self.user, group=self.group)
 
     def test_view_group_journals_authenticated_user(self):
-        # Authenticate user
-        self.client.force_login(self.user)
-        
-        # Access the view
+        self.client.force_login(self.user)        
         response = self.client.get(self.url)
-
-        # Check response status code
         self.assertEqual(response.status_code, 200)
         
         # Check if both journals are present in the response context
@@ -29,8 +24,5 @@ class ViewGroupEntryViewTest(TestCase):
         # Access the view without authenticating the user
         response = self.client.get(self.url)
 
-        # Check response status code
-        self.assertEqual(response.status_code, 302)  # Redirect status code
-
-        # Check if the user is redirected to the login page
+        self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, f'/log_in/?next={self.url}')

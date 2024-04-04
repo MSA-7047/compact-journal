@@ -3,9 +3,13 @@ from journal.models import User, GroupRequest
 
 
 class SendGroupRequestForm(forms.Form):
+    """Form for sending an invitation to a group."""
+
     recipient = forms.ModelChoiceField(queryset=User.objects.none(), label='Select User')
 
     class Meta:
+        """Form options."""
+        
         model = GroupRequest
         fields = ['recipient']
 

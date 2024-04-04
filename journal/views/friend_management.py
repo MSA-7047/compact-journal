@@ -1,9 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
-from journal.views.notifications import *
-from journal.models import *
-from journal.forms import *
+from journal.models import User, FriendRequest, Notification, Points
+from journal.forms import SendFriendRequestForm
 from journal.views.user_management import calculate_user_points, points_to_next_level
 
 
@@ -26,12 +25,10 @@ def get_friend_requests_and_sent_invitations(user: User) -> tuple[FriendRequest,
     
     requests = FriendRequest.objects.filter(recipient=user, is_accepted=False)
     sent_pending_invitations = user.sent_invitations.filter(status="pending")
-    sent_accepted_invitations = user.sent_invitations.filter(status="accepted")
     sent_rejected_invitations = user.sent_invitations.filter(status="rejected")
     return (
         requests,
         sent_pending_invitations,
-        sent_accepted_invitations,
         sent_rejected_invitations
     )
 
@@ -49,7 +46,6 @@ def view_friends(request: HttpRequest) -> HttpResponse:
     (
         requests,
         sent_pending_invitations,
-        sent_accepted_invitations,
         sent_rejected_invitations
     ) = get_friend_requests_and_sent_invitations(request.user)
     form = SendFriendRequestForm()
@@ -60,16 +56,13 @@ def view_friends(request: HttpRequest) -> HttpResponse:
         request,
         template_name="friends.html",
         context={
-            "form": form,
-            "requests": requests,
-            "sent_pending_invitations": sent_pending_invitations,
-            "sent_accepted_invitations": sent_accepted_invitations,
-            "sent_rejected_invitations": sent_rejected_invitations,
-            "friends": friends,
-            "has_pending_requests": has_pending_requests,
-        },
-    )
-
+            'form': form,
+            'requests': requests,
+            'sent_pending_invitations': sent_pending_invitations,
+            'sent_rejected_invitations': sent_rejected_invitations,
+            'friends':friends,
+            'has_pending_requests': has_pending_requests
+        })
 
 @login_required
 def view_friends_profile(request: HttpRequest, friend_id: int) -> HttpResponse:
@@ -137,7 +130,6 @@ def send_friend_request(request: HttpRequest, user_id: int) -> HttpResponse:
     (
         requests,
         sent_pending_invitations,
-        sent_accepted_invitations,
         sent_rejected_invitations,
     ) = get_friend_requests_and_sent_invitations(request.user)
 
@@ -145,12 +137,11 @@ def send_friend_request(request: HttpRequest, user_id: int) -> HttpResponse:
         request,
         template_name="friends.html",
         context={
-            "form": form,
-            "requests": requests,
-            "sent_pending_invitations": sent_pending_invitations,
-            "sent_accepted_invitations": sent_accepted_invitations,
-            "sent_rejected_invitations": sent_rejected_invitations,
-        },
+            'form': form,
+            'requests': requests,
+            'sent_pending_invitations': sent_pending_invitations,
+            'sent_rejected_invitations': sent_rejected_invitations
+        }
     )
 
 

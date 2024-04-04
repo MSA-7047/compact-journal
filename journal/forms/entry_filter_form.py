@@ -5,6 +5,7 @@ from journal.models import Entry
 
 
 class EntryFilterForm(forms.Form):
+    """Form for filtering entries in a Journal."""
 
     entry_date = forms.ChoiceField(
         choices=(
@@ -54,7 +55,8 @@ class EntryFilterForm(forms.Form):
         }[interval]
 
     def filter_entries(self, journal):
-        
+        """Filters entries based on user-entered timeframe, mood and title."""
+
         myjournals = Entry.objects.filter(journal=journal)
         title_contains = self.cleaned_data.get('title_search')
         entry_date = self.cleaned_data.get('entry_date')

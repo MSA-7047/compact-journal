@@ -13,15 +13,13 @@ class SelectNewOwnerViewTest(TestCase):
         self.url = reverse('select_new_owner', kwargs={'group_id': self.group.pk})
     
     def test_view_redirect_non_owner(self):
-        # Create another user who is not the owner of the group
         self.client.force_login(self.user2)
-
         response = self.client.get(self.url)
 
         # Check if the view redirects to the group dashboard
         self.assertRedirects(response, reverse('group_dashboard', kwargs={'group_id': self.group.pk}))
 
-    def test_view_render_form(self):
+    def test_select_new_owner_GET(self):
         self.client.force_login(self.user)
 
         response = self.client.get(self.url)
@@ -31,18 +29,14 @@ class SelectNewOwnerViewTest(TestCase):
         self.assertEqual(response.context['group'], self.group)
         self.assertEqual(response.context['user'], self.user)
 
-    def test_select_new_owner(self):
+    def test_select_new_owner_authenticated_owner(self):
         self.client.force_login(self.user)
-
-        # Post form data
         form_data = {
             'new_owner': self.user2.pk,
         }
         response = self.client.post(self.url, form_data)
 
-        # Check if the view redirects to the dashboard after selecting new owner
         self.assertRedirects(response, reverse('dashboard'))
-
         # Check if the group membership is updated correctly
         self.assertFalse(GroupMembership.objects.filter(group=self.group, user=self.user, is_owner=True).exists())
         self.assertTrue(GroupMembership.objects.filter(group=self.group, user=self.user2, is_owner=True).exists())
@@ -51,16 +45,11 @@ class SelectNewOwnerViewTest(TestCase):
     def test_select_new_owner_invalid(self):
         self.client.force_login(self.user)
 
-        # Post form data
         form_data = {
-            'new_owner': '@User1',
+            'new_owner': '@User1', # Non-existent user
         }
-        
         response = self.client.post(self.url, form_data)
 
-        # Check if the view redirects to the dashboard after selecting new owner
         self.assertEqual(response.status_code, 200)
-
-        # Check if the form errors are present in the response context
         form_errors = response.context['form'].errors
-        self.assertTrue(form_errors)  # Assert that form errors are not empty
+        self.assertTrue(form_errors)  # Assert that form errors not empty

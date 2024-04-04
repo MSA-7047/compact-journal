@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
 from journal.models import AbstractEntry, Group
-from django_ckeditor_5.fields import CKEditor5Field
+
 
 
 

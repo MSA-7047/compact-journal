@@ -12,7 +12,7 @@
         {% if is_logged_in %}
         <a class="btn btn-left" href="{% url 'journal_dashboard' journal_id=journal.id %}">
         {% else %}
-        <a class="btn btn-left" href="{% url 'view_journals' user_id=user.id %}">
+        <a class="btn btn-left" href="{% url 'view_journals' user_id=viewing_user.id %}">
         {% endif %}
           <i class="bi bi-arrow-left me-2"></i>
           <span>Back</span>
@@ -21,7 +21,7 @@
         <div class="right-buttons">
           {% include 'partials/filter_partial.html' with filter_form=filter_form journal=journal %}
           {% if journal_param and is_logged_in %}
-            {% if journal.owner == user %}
+            {% if journal.owner == viewing_user %}
             <a class="btn" href="{% url 'export_journal' journal_entries=journal_param  %}">Export Entries As PDF</a>
             {% endif %}
           {% endif %}
@@ -32,7 +32,7 @@
         {% if is_logged_in %}
           <h1>All entries in: <br> {{journal.title}} </h1>
         {% else %}
-          <h1>All entries in: <br> {{journal.title}} (owned by {{user.username}}) :</h1>
+          <h1>All entries in: <br> {{journal.title}} (owned by {{viewing_user.username}}) :</h1>
         {% endif %}
       </div>
           

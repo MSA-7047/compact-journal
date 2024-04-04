@@ -9,9 +9,9 @@ from django.views.generic.edit import FormView
 from .template_management import generate_generic_templates
 from .user_journal_management import create_first_journal
 from .mixins import LoginProhibitedMixin
-from journal.forms import *
-from journal.views.notifications import *
-from journal.views.user_management import *
+from journal.forms import LogInForm, PasswordForm, SignUpForm
+from journal.views.notifications import create_notification
+from journal.views.user_management import give_points
 
 
 class LogInView(LoginProhibitedMixin, View):

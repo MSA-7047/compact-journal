@@ -7,8 +7,8 @@ from django.http import (
     HttpResponseRedirect,
 )
 from django.shortcuts import redirect, render, get_object_or_404
-from journal.models import Group, GroupMembership, User, GroupEntry, Notification
-from journal.forms import *
+from journal.models import Group, GroupMembership, GroupEntry, Notification
+from journal.forms import CreateGroupJournalForm
 from django.contrib import messages
 
 
@@ -17,6 +17,7 @@ def create_group_journal(request, group_id):
     """View used to allow the user to create a group journal."""
     group = get_object_or_404(Group, group_id=group_id)
     membership = get_object_or_404(GroupMembership, group=group, user=request.user)
+
 
     if not membership.is_owner:
         messages.error(request, "You are not authorized to create a journal.")
@@ -30,7 +31,6 @@ def create_group_journal(request, group_id):
             entry.last_edited_by = request.user
             entry.owner = group
             entry.save()
-
             memberships = GroupMembership.objects.filter(group=group)
             for member in memberships:
                 notif_message = f"A new group entry {entry.title} in '{group.name}' has been created."
@@ -63,7 +63,6 @@ def edit_group_journal(request, group_id, journal_id):
             entry = form.save(commit=False)
             entry.owner = group
             entry.last_edited_by = request.user
-
             memberships = GroupMembership.objects.filter(group=group)
             for member in memberships:
                 notif_message = f"The entry {entry.title} in group '{group.name}' has been edited by {entry.last_edited_by}."
@@ -92,6 +91,7 @@ def edit_group_journal(request, group_id, journal_id):
 
 @login_required
 def delete_group_journal(request, group_id, journal_id):
+    """Allows the owner of the group to be able to delete a group journal"""
     journal = get_object_or_404(GroupEntry, pk=journal_id)
     group = get_object_or_404(Group, group_id=group_id)
     group_membership = get_object_or_404(
@@ -141,25 +141,13 @@ def view_group_journals(request, group_id):
     journal_entries = GroupEntry.objects.filter(owner=group)
     membership = GroupMembership.objects.filter(group=group, user=request.user).first()
 
-    filter_form = EntryFilterForm(request.user, request.POST or None)
-    sort_form = EntrySortForm(request.POST or None)
-
-    if request.method == "POST" and filter_form.is_valid() and sort_form.is_valid():
-        journal_entries = filter_form.filter_entries(journal_entries)
-        sort_order = sort_form.cleaned_data["sort_by_entry_date"]
-        journal_entries = journal_entries.order_by(
-            "-entry_date" if sort_order == "descending" else "entry_date"
-        )
-    else:
-        journal_entries = journal_entries.all()
-
     return render(
-        request,
-        "group_journals.html",
+        request, 
+        'group_journals.html', 
         {
-            "group": group,
-            "group_id": group_id,
-            "group_journals": journal_entries,
-            "is_owner": membership.is_owner,
-        },
+            'group': group, 
+            'group_id': group_id, 
+            'group_journals': journal_entries, 
+            'is_owner': membership.is_owner
+        }
     )

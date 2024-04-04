@@ -2,8 +2,8 @@ from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
-from journal.models import *
-from journal.forms import *
+from journal.models import Journal, Entry, User
+from journal.forms import CreateEntryForm, CreateJournalForm, EntryFilterForm, EntrySortForm
 from django.contrib import messages
 from journal.views.notifications import *
 from journal.views.user_management import *
@@ -17,7 +17,6 @@ from django.http import (
 from django.utils.translation import gettext as _
 from django_ckeditor_5.forms import UploadFileForm
 from django_ckeditor_5.views import image_verify, handle_uploaded_file, NoImageException
-
 from django.shortcuts import render
 
 
@@ -46,7 +45,7 @@ def create_journal(request: HttpRequest) -> HttpResponseRedirect:
                 request, f"New journal {journal.title} created!", "info"
             )
 
-            return redirect(reverse("dashboard"))  # Redirect to the dashboard page
+            return redirect(reverse("dashboard")) 
     else:
         form = CreateJournalForm()
 
@@ -153,13 +152,14 @@ def all_journals_view(
     currently_logged_in = current_user == viewing_user
     journals = viewing_user.journals.all()
     return render(
-        request,
-        "my_journals.html",
+        request, 
+        'my_journals.html',
         {
-            "user": viewing_user,
-            "journals": journals,
-            "is_logged_in": currently_logged_in,
-        },
+            'viewing_user': viewing_user,
+            'user': request.user,
+            'journals': journals,
+            "is_logged_in": currently_logged_in
+        }
     )
 
 
@@ -269,7 +269,6 @@ def create_entry(
             entry.owner = current_user
             entry.journal = journal_instance
             entry.save()
-
             entry.journal.last_entry_date = today
             entry.journal.save()
 
@@ -283,9 +282,8 @@ def create_entry(
     else:
         form = CreateEntryForm()
 
-    context = {"form": form}
-    return render(request, "create_entry.html", context)
-
+    context = {'form': form, 'title': 'Create Entry'}
+    return render(request, 'create_entry.html', context)
 
 @login_required
 def edit_entry(
@@ -377,18 +375,19 @@ def view_journal_entries(
         journal_entries = journal_entries.filter(private=False)
 
     context = {
-        "filter_form": filter_form,
-        "sort_form": sort_form,
-        "journal_entries": journal_entries,
-        "journal_param": my_journals_to_journal_param(journal_entries),
-        "user": current_user,
-        "journal": current_journal,
-        "is_logged_in": is_user_logged_in,
+        'filter_form': filter_form,
+        'sort_form': sort_form,
+        'journal_entries': journal_entries,
+        'journal_param': my_journals_to_journal_param(journal_entries),
+        'viewing_user': current_user,
+        'user': request.user,
+        'journal': current_journal,
+        'is_logged_in': is_user_logged_in,
     }
 
     return render(request, "view_all_journal_entries.html", context)
 
-
+#returns a string comma seperated list of ID values representing the entries in a journal to be exported
 def my_journals_to_journal_param(journal_entries):
 
     journals = []
@@ -399,7 +398,7 @@ def my_journals_to_journal_param(journal_entries):
 
 
 def custom_upload_file(request: HttpRequest) -> JsonResponse:
-    """"""
+    """Allows the upload of images into a CKeditor field"""
     if request.method != "POST":
         raise Http404(_("Page not found."))
 

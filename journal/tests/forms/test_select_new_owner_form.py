@@ -4,10 +4,14 @@ from journal.models import User, Group, GroupMembership
 from journal.forms import SelectNewOwnerForm
 
 class SelectNewOwnerFormTest(TestCase):
+
+    fixtures = ['journal/tests/fixtures/default_user.json',
+                'journal/tests/fixtures/other_users.json']
+    
     def setUp(self):
-        self.user1 = User.objects.create(username='@user1', email='user1@example.com', password='password1')
-        self.user2 = User.objects.create(username='@user2', email='user2@example.com', password='password2')
-        self.user3 = User.objects.create(username='@user3', email='user3@example.com', password='password3')
+        self.user1 = User.objects.get(username='@johndoe')
+        self.user2 = User.objects.get(username='@janedoe')
+        self.user3 = User.objects.get(username='@petrapickles')
         self.group = Group.objects.create(name='Test Group')
 
         self.owner_membership = GroupMembership.objects.create(user=self.user1, group=self.group, is_owner=True)

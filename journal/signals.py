@@ -1,13 +1,10 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.contrib.auth import get_user_model
 from django.db.models import Sum
-from .models import Level, Points
+from .models import Level, Points, User
 from .views.notifications import Notification
-from django.contrib import messages
 from .models.Notification import UserMessage
 
-User = get_user_model()
 
 # Signal to create/update Level when a new user is created
 @receiver(post_save, sender=User)

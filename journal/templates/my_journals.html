@@ -28,7 +28,7 @@
         {% if is_logged_in %}
           <h1>My Journals :</h1>
         {% else %}
-          <h1> {{user.username}}'s Public Journals :</h1>
+          <h1> {{viewing_user.username}}'s Public Journals :</h1>
         {%endif%}
       </div>
           
@@ -45,7 +45,7 @@
                         <a class="btn" href="{% url 'journal_dashboard' journal_id=journal.id %}">View Journal Dashboard</a>
                         <a class="btn btn-delete" href="{% url 'delete_journal' journal_id=journal.id%}">Delete Journal</a>
                       {% else %}
-                        <a class="btn" href="{% url 'journal_entries' user_id=user.id journal_id=journal.id %}">View Journal Entries</a>
+                        <a class="btn" href="{% url 'journal_entries' user_id=viewing_user.id journal_id=journal.id %}">View Journal Entries</a>
                       {% endif %}
                     </div>
                   </div>
@@ -70,7 +70,7 @@
           {% if is_logged_in  %}
             <p>You have no journals</p>
           {% else %}
-            <p> {{user.username}} has no public journals</p>
+            <p> {{viewing_user.username}} has no public journals</p>
           {% endif %}
       {% endif %}
     </div>  
