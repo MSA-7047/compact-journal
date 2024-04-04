@@ -87,14 +87,11 @@ def delete_group_journal(request, group_id, journal_id):
 
         referer = request.META.get('HTTP_REFERER')
         if referer:
-            # Check if the previous page is the group dashboard
-            if 'group_dashboard' in referer:
-                return redirect('group_dashboard', group_id=group_id)
             # Check if the previous page is the view group journals page
-            elif 'view_group_journals' in referer:
+            if 'view_group_journals' in referer:
                 return redirect('view_group_journals', group_id=group_id)
             else:
-                return HttpResponseRedirect(referer)
+                return redirect('group_dashboard', group_id=group_id)
         
         return redirect('group_dashboard', group_id=group_id) 
     
@@ -106,5 +103,5 @@ def view_group_journals(request, group_id):
     group = Group.objects.get(pk=group_id)
     journal_entries = GroupEntry.objects.filter(owner=group)
     membership = GroupMembership.objects.filter(group=group, user=request.user).first()
-    
+
     return render(request, 'group_journals.html', {'group': group, 'group_id': group_id, 'group_journals': journal_entries, 'is_owner': membership.is_owner})
