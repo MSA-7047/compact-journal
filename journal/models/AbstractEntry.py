@@ -34,5 +34,7 @@ class AbstractEntry(models.Model):
     def clean(self) -> None:
         if len(self.content) > 10_000:
             raise ValidationError("Content has exceeded allowable limit of 10,000")
+        if len(self.summary) > 200:
+            raise ValidationError("Summary must be less than 200 characters")
         return super().clean()
 

@@ -31,6 +31,8 @@ def group_dashboard(request, group_id) -> HttpResponse:
     all_members_in_group = User.objects.filter(groupmembership__group=given_group)
     group_journals = GroupEntry.objects.filter(owner=given_group)
     user_membership = GroupMembership.objects.get(user=current_user, group=given_group)
+    owner_membership = GroupMembership.objects.filter(group=given_group, is_owner=True).first()
+    owner = owner_membership.user
     is_owner = user_membership.is_owner
     return render(
         request,
@@ -39,7 +41,8 @@ def group_dashboard(request, group_id) -> HttpResponse:
             'group': given_group,
             'members': all_members_in_group,
             'journals': group_journals,
-            'is_owner': is_owner
+            'is_owner': is_owner,
+            'owner': owner
         }
     )
 
