@@ -36,7 +36,7 @@ def mark_all_notification_as_read(request: HttpRequest) -> HttpResponseRedirect:
     return redirect("dashboard")
 
 
-def notification_context(request: HttpRequest) -> dict[str, Notification]:
+def get_all_unread_notifications(request: HttpRequest) -> dict[str, Notification]:
     if request.user.is_authenticated:
         notifications = Notification.objects.filter(user=request.user, is_read=False)
         return {"notifications": notifications}
