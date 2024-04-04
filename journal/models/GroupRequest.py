@@ -5,7 +5,8 @@ from journal.models import Group
 from journal.models.GroupMembership import GroupMembership
 
 class GroupRequest(models.Model):
-    """"""
+    """Model to represent requests to join a group"""
+
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
         ('Accepted', 'Accepted'),
@@ -19,11 +20,11 @@ class GroupRequest(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
     is_accepted = models.BooleanField(default=False)
     
-
     class Meta:
         app_label = 'journal'
         unique_together = 'recipient', 'sender', 'group'
 
+    #Validation check to ensure that the sender and recipient are not the same user
     def clean(self):
         super().clean()
         if self.recipient == self.sender:

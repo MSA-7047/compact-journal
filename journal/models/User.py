@@ -8,7 +8,7 @@ from .FriendRequest import FriendRequest
 
 
 class User(AbstractUser):
-    """"""
+    """Model for the abstract user"""
 
     username = models.CharField(
         max_length=30,
@@ -48,7 +48,7 @@ class User(AbstractUser):
     def send_friend_request(self, user):
         invitation, _ = FriendRequest.objects.get_or_create(recipient=user, sender=self)
         return invitation
-
+    
     def accept_request(self, user):
         request = self.invitations.filter(
             recipient=self, sender=user, status="Pending"
@@ -71,6 +71,9 @@ class User(AbstractUser):
         ).first()
         if not request:
             return False
+        
+        #Update the status of the friend request
         request.status = "Rejected"
         request.save()
+        
         return True

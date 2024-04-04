@@ -43,11 +43,11 @@ Seed the development database with:
 $ python3 manage.py seed
 ```
 
-Run Celery and Celery beat:
+Run Celery and Celery beat each on a separate terminal/bash:
 
 ```
-celery -A journaling_app worker 
-celery -A journaling_app beat
+$ celery -A journaling_app worker 
+$ celery -A journaling_app beat
 ```
 
 Run all tests with:

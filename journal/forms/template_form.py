@@ -3,7 +3,7 @@ from journal.models import Template
 
 
 class CreateTemplateForm(forms.ModelForm):
-    """Form for creating a new template for Entry in Journal""".
+    """Form for creating a new template for Entry in Journal"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

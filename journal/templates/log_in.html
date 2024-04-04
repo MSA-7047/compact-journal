@@ -4,9 +4,12 @@
   <div class="row py-4 px-4 justify-content-center">
 
     <div class="col-lg-6 row border bg-light justify-content-center align-items-center">
+
       <h1>Log in</h1>
+
       <form action="{% url 'log_in' %}" method="post">
         {% csrf_token %}
+        
         <input type="hidden" name="next" value="{{ next }}">
         {% include 'partials/bootstrap_form.html' with form=form %}
 
@@ -22,12 +25,9 @@
               <i class="bi bi-arrow-right"></i>
             </a>
           </div>
+
         </div>
-
       </form>
-
-      
-
     </div>
   </div>
 </section>

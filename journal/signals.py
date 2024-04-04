@@ -20,6 +20,7 @@ def update_level_on_points_change(sender, instance, created, **kwargs):
         total_points = Points.objects.filter(user=instance.user).aggregate(Sum('points'))['points__sum'] or 0
         calculated_level = user_level.calculate_level(total_points)['current_level']
 
+        #Send notification to user to inform that they have leveled up
         if calculated_level > user_level.current_level:
             Notification.objects.create(
                 user=instance.user,
@@ -28,5 +29,5 @@ def update_level_on_points_change(sender, instance, created, **kwargs):
             )
             UserMessage.objects.create(user=instance.user, message=f"Congratulations, you have leveled up to level {calculated_level}!")
             
-        user_level.current_level = calculated_level  # Update this line to use the correct field
+        user_level.current_level = calculated_level 
         user_level.save()

@@ -5,6 +5,8 @@ from .models import Journal, Notification, User
 
 @shared_task
 def send_journal_reminder(user_id):
+    """Function which executes the sending of the notification to user"""
+
     user = User.objects.get(pk=user_id)
     today = timezone.localdate()
     todays_entries = Journal.objects.filter(last_entry_date__date=today, owner=user)
@@ -20,6 +22,8 @@ def send_journal_reminder(user_id):
 
 @shared_task
 def send_reminders_to_all_users():
+    """Function which is used to loop through all users"""
+
     all_users = User.objects.all()
     
     for user in all_users:

@@ -27,7 +27,7 @@ from celery.schedules import crontab
 CELERY_BEAT_SCHEDULE = {
     'send_reminders_to_all_users_everyday': {
         'task': 'journal.tasks.send_reminders_to_all_users',
-        'schedule': crontab(hour=6, minute=0),  # Adjust the time as needed
+        'schedule': crontab(hour=6, minute=0), 
     },
 }
 

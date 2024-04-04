@@ -3,6 +3,8 @@ from django.db import models
 from .User import User
 
 class Points(models.Model):
+    """Model for an instance of points assigned to a user including details"""
+    
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='points')
     points = models.IntegerField()
     description = models.TextField()

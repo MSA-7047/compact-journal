@@ -20,15 +20,15 @@ def generate_generic_templates(currentUser):
         'General Wellbeing Template',
         'Study Plan Template',
         'Gym Tracking Template',
-        'Another Template',
-        'Last Template',
+        'Food Tracking Template',
+        'Financial Tracking Template',
     ]
     template_summaries = [
-        'This template is a general entry to track your wellbeing today',
+        'Use this template to keep track of your daily wellbeing and mood',
         'Use this template to keep track of your daily study plans and revision goals',
         'Use this template to keep track of workouts and progress in the gym',
-        'to be decided',
-        'to be decided',
+        'Use this template to keep track of your daily food and drink',
+        'Use this template to keep track of your daily income, expenditure and goals',
     ]
 
     for i, html_file_path in enumerate(html_file_paths, start=1):

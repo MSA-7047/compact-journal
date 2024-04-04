@@ -6,6 +6,7 @@ from django_ckeditor_5.fields import CKEditor5Field
 
 class AbstractEntry(models.Model):
     """Model to represent the Entries the User will be writing in."""
+    
     title = models.CharField('Title', max_length=30, blank=False)
     summary = models.TextField('Summary', max_length=200)
     content = CKEditor5Field('Entry Content', config_name='extends', max_length=10000)

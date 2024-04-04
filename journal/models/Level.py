@@ -6,6 +6,8 @@ from django.conf import settings
 
 
 class Level(models.Model):
+    """Class to represent level model. Each user is assigned to one level object"""
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='level')
     points = models.IntegerField(default=0)
     current_level = models.IntegerField(default=1)  
@@ -14,7 +16,7 @@ class Level(models.Model):
     def level(self):
         return self.current_level
 
-
+    #Function to calculate the level of the user, depending on the number of points
     def calculate_level(self, total_points=int(0)):
         level = 1
         points_needed = 100
