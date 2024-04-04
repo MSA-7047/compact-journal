@@ -3,6 +3,7 @@ from django import forms
 from journal.models import User, FriendRequest
 
 class SendFriendRequestForm(forms.Form):
+    """"""
 
     recipient = forms.CharField(label='Select User')
 
@@ -11,6 +12,7 @@ class SendFriendRequestForm(forms.Form):
         fields = ['recipient']
 
     def check_user(self, user=None):
+        """"""
         recipient = self.cleaned_data.get('recipient')
         if user:
             for friend in user.friends.all():
@@ -22,9 +24,8 @@ class SendFriendRequestForm(forms.Form):
                 self.add_error("recipient", "Cannot request yourself")
                 return False
 
-            elif not User.objects.filter(username=recipient).exists():
+            if not User.objects.filter(username=recipient).exists():
                 self.add_error("recipient", "This user doesnt exists")
                 return False
 
-            else: 
-                return True
+            return True
