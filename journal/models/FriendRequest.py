@@ -1,10 +1,10 @@
 from django.conf import settings
-from django.core.exceptions import ValidationError
+#from django.core.exceptions import ValidationError
 from django.db import models
 
 
 class FriendRequest(models.Model):
-    """"""
+    """Model to organise how a User sends and recieves friend requests"""
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
         ('Accepted', 'Accepted'),
