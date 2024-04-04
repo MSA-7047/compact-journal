@@ -33,8 +33,8 @@ def view_friends(request):
         })
 
 @login_required
-def view_friends_profile(request, friendID):
-    friend = get_object_or_404(User, id=friendID)
+def view_friends_profile(request, friend_id):
+    friend = get_object_or_404(User, id=friend_id)
     
 
     totalpoints = calculate_user_points(friend)

@@ -34,7 +34,7 @@ urlpatterns = [
     path('password/', PasswordView.as_view(), name='password'),
     path('edit_profile/', ProfileUpdateView.as_view(), name='edit_profile'),
     path('view_profile/', ProfileView.as_view(), name='view_profile'),
-    path('view_friends_profile/<int:friendID>', view_friends_profile, name='view_friends_profile'),
+    path('view_friends_profile/<int:friend_id>', view_friends_profile, name='view_friends_profile'),
     path('delete_account/', views.delete_account, name='delete_account'),
     path('sign_up/', SignUpView.as_view(), name='sign_up'),
 
@@ -75,7 +75,6 @@ urlpatterns = [
 
     path('notifications/<int:notification_id>/', mark_notification_as_read, name='mark_notification_as_read'),
     path('notifications/', mark_all_notification_as_read, name='mark_all_notification_as_read'),
-    #path('notifications/', views.notifications_panel, name='notifications_panel'),
 
     path('create_group/', create_group, name='create_group'),
     path('groups/<int:group_id>/', group_dashboard, name='group_dashboard'),

@@ -112,9 +112,9 @@ def all_journals_view(request, user_id):
     currently_logged_in = current_user == viewing_user
     journals = viewing_user.journals.all()
     return render(request, 'my_journals.html',
-                {'user': viewing_user,
+                {'viewing_user': viewing_user,
+                 'user': request.user,
                 'journals': journals,
-
                 "is_logged_in": currently_logged_in}
                 )
 
@@ -281,7 +281,8 @@ def view_journal_entries(request, user_id, journal_id):
         'sort_form': sort_form,
         'journal_entries': journal_entries,
         'journal_param': my_journals_to_journal_param(journal_entries),
-        'user': current_user,
+        'viewing_user': current_user,
+        'user': request.user,
         'journal': current_journal,
         'is_logged_in': is_user_logged_in,
     }
