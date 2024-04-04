@@ -48,7 +48,7 @@ class SendFriendRequestFormTest(TestCase):
 
         self.assertFalse(form.check_user(user=self.user))
         self.assertIn('recipient', form.errors)
-        self.assertEqual(form.errors['recipient'], ['This user doesnt exists'])
+        self.assertEqual(form.errors['recipient'], ["This user doesn't exist"])
 
     def test_valid_form(self):
         form_data = {'recipient': self.friend2.username}

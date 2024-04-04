@@ -1,11 +1,9 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
-from django.http import HttpResponse
 from xhtml2pdf import pisa
 from django.template.loader import get_template
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
-from django.conf import settings
 from django.contrib import messages
 from journal.models import Entry, GroupEntry, Group
 
@@ -39,8 +37,10 @@ def export_journal_as_PDF(request, journal_entries):
     )
 
 def export_single_group_entry_as_PDF(request, group_id, journal_id):
+
     entry = GroupEntry.objects.get(id=journal_id)
     group_ = get_object_or_404(Group, group_id=group_id)
+
     return export_to_pdf(
         template_src='group_entry_as_PDF.html',
         context_dict={"group": group_, "entry": entry},
@@ -48,13 +48,16 @@ def export_single_group_entry_as_PDF(request, group_id, journal_id):
     )
 
 def export_group_journal_as_PDF(request, group_id):
+
     group_ = get_object_or_404(Group, group_id=group_id)
     journal_entries = GroupEntry.objects.filter(owner=group_)
+
     return export_to_pdf(
         template_src='group_journal_as_PDF.html',
         context_dict={"journal_entries": journal_entries,"group": group_},
         title=f'{group_.name}_journals')
     
+    #method for actually generating the pdf document
 def export_to_pdf(template_src, context_dict,title):
     template = get_template(template_src)
     html = template.render(context_dict)
@@ -63,6 +66,8 @@ def export_to_pdf(template_src, context_dict,title):
     pisa.CreatePDF(html, dest=response)
     return response
 
+#takes a stringinput which is a comma seperated list of entry IDs and returns the corrosponding
+#entry objects in a list
 def unpack_journals(journal_entries):
     journals = journal_entries.split(',')
     journal_entries = []

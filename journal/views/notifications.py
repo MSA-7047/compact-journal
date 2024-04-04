@@ -40,8 +40,4 @@ def notification_context(request):
         return {'notifications': notifications}
     else:
         return {'notifications': []}
-    
-# @login_required
-# def notifications_panel(request):
-#     # Fetch notifications for the current user
-#     notifications = Notification.objects.filter(user=request.user)
+

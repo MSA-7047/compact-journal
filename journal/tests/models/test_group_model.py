@@ -5,11 +5,15 @@ from journal.models import User, Group, GroupMembership
 from django.core.exceptions import ValidationError
 
 class GroupMembershipTestCase(TestCase):
+
+    fixtures = ['journal/tests/fixtures/default_user.json',
+                'journal/tests/fixtures/other_users.json']
+    
     def setUp(self):
         self.group = Group.objects.create(name="Test Group", description="Test Description")
-        self.user = User.objects.create(username="@test_user", password='Password123', email="test@hotmail.com")
+        self.user = User.objects.get(username="@johndoe")
         self.membership = GroupMembership.objects.create(user=self.user, group=self.group, is_owner=True)
-        self.user2 = User.objects.create(username="@test_user2", password='Password123', email="test2@hotmail.com")
+        self.user2 = User.objects.get(username="@janedoe")
         self.membership2 = GroupMembership.objects.create(user=self.user2, group=self.group)
 
     def _assert_group_is_valid(self, group: Group, msg: str = None) -> None:
@@ -45,7 +49,7 @@ class GroupMembershipTestCase(TestCase):
         self.assertTrue(self.group.is_user_member(self.user))
 
     def test_is_non_member_false(self):
-        another_user = User.objects.create(username="@another_user", password='Password123', email="test3@hotmail.com")
+        another_user = User.objects.get(username="@petrapickles")
         self.assertFalse(self.group.is_user_member(another_user))
 
     def test_group_date_created(self):

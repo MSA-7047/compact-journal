@@ -1,10 +1,7 @@
 from celery import shared_task
 from django.utils import timezone
-from .models import Journal, Notification
-from django.contrib.auth import get_user_model
-from django.db.models import Count, Q
+from .models import Journal, Notification, User
 
-User = get_user_model()
 
 @shared_task
 def send_journal_reminder(user_id):
@@ -21,7 +18,6 @@ def send_journal_reminder(user_id):
 
 @shared_task
 def send_reminders_to_all_users():
-    today = timezone.localdate()
     all_users = User.objects.all()
     
     for user in all_users:

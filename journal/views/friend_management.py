@@ -1,42 +1,21 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
-from journal.views.notifications import *
-from journal.models import *
-from journal.forms import *
+from journal.models import User, FriendRequest, Notification, Points
+from journal.forms import SendFriendRequestForm
 from journal.views.user_management import calculate_user_points, points_to_next_level
 
-def get_friend_requests_and_sent_invitations(user):
+#method to retrieve a given users pending freind requests and sent requests to be passes as context data
+def get_friend_requests(user):
     requests = FriendRequest.objects.filter(recipient=user, is_accepted=False)
-    sent_pending_invitations = user.sent_invitations.filter(status='pending')
-    sent_accepted_invitations = user.sent_invitations.filter(status='accepted')
-    sent_rejected_invitations = user.sent_invitations.filter(status='rejected')
-    return requests, sent_pending_invitations, sent_accepted_invitations, sent_rejected_invitations
-
-
-# @login_required
-# def view_friend_requests(request):
-#     (requests, sent_pending_invitations,
-#      sent_accepted_invitations, sent_rejected_invitations) = get_friend_requests_and_sent_invitations(request.user)
-#     form = SendFriendRequestForm(user=request.user)
-
-#     return render(
-#         request,
-#         template_name='friends.html',
-#         context={
-#             'form': form,
-#             'requests': requests,
-#             'sent_pending_invitations': sent_pending_invitations,
-#             'sent_accepted_invitations': sent_accepted_invitations,
-#             'sent_rejected_invitations': sent_rejected_invitations
-#         }
-#     )
+    pending_sent_requests = user.sent_invitations.filter(status='pending')
+    rejected_sent_requests = user.sent_invitations.filter(status='rejected')
+    return requests, pending_sent_requests, rejected_sent_requests
 
 
 @login_required
 def view_friends(request):
     friends = request.user.friends.all()
-    (requests, sent_pending_invitations,
-     sent_accepted_invitations, sent_rejected_invitations) = get_friend_requests_and_sent_invitations(request.user)
+    (requests, pending_sent_requests, rejected_sent_requests) = get_friend_requests(request.user)
     form = SendFriendRequestForm()
 
     has_pending_requests = requests.filter(status='pending').exists()
@@ -47,9 +26,8 @@ def view_friends(request):
         context={
             'form': form,
             'requests': requests,
-            'sent_pending_invitations': sent_pending_invitations,
-            'sent_accepted_invitations': sent_accepted_invitations,
-            'sent_rejected_invitations': sent_rejected_invitations,
+            'sent_pending_invitations': pending_sent_requests,
+            'sent_rejected_invitations': rejected_sent_requests,
             'friends':friends,
             'has_pending_requests': has_pending_requests
         })
@@ -64,8 +42,6 @@ def view_friends_profile(request, friendID):
     points_next_level = level_data['points_to_next_level']
     points_needed = level_data['points_needed']
     recent_points = Points.objects.filter(user=friend).order_by('-id')[:5]
-
-
 
     return render(request, 'view_profile.html', 
                   {"user": friend, 
@@ -95,8 +71,7 @@ def send_friend_request(request, user_id):
     else:
         form = SendFriendRequestForm()
 
-    (requests, sent_pending_invitations,
-     sent_accepted_invitations, sent_rejected_invitations) = get_friend_requests_and_sent_invitations(request.user)
+    (requests, sent_pending_invitations, sent_rejected_invitations) = get_friend_requests(request.user)
 
     return render(
         request,
@@ -105,7 +80,6 @@ def send_friend_request(request, user_id):
             'form': form,
             'requests': requests,
             'sent_pending_invitations': sent_pending_invitations,
-            'sent_accepted_invitations': sent_accepted_invitations,
             'sent_rejected_invitations': sent_rejected_invitations
         }
     )
