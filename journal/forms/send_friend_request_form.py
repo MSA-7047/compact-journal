@@ -1,4 +1,3 @@
-
 from django import forms
 from journal.models import User, FriendRequest
 

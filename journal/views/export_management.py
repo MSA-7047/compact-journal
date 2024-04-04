@@ -57,7 +57,7 @@ def export_to_pdf(template_src, context_dict,title):
     pisa.CreatePDF(html, dest=response)
     return response
 
-#takes a stringinput which is a comma seperated list of entry IDs and returns the corrosponding
+#takes a string input which is a comma seperated list of entry IDs and returns the corrosponding
 #entry objects in a list
 def unpack_journals(journal_entries):
     journals = journal_entries.split(',')
