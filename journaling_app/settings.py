@@ -84,7 +84,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'journal.views.notifications.notification_context',
+                'journal.views.notifications.get_all_unread_notifications',
             ],
         },
     },

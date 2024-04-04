@@ -61,6 +61,7 @@ def group_dashboard(request, group_id) -> HttpResponse:
             "members": all_members_in_group,
             "journals": group_journals,
             "is_owner": is_owner,
+            "owner":owner
         },
     )
 

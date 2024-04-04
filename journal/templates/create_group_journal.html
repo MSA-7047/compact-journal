@@ -15,11 +15,6 @@
                     <div class="right-buttons ms-auto">
                         {% if is_edit %}
                             <a class="btn" href="{% url 'export_single_group_entry' group_id=group_id journal_id=journal_id %}"> Export </a>
-                            {% if is_owner %}
-                                <form method="post" action="{% url 'delete_group_journal' group_id=group_id journal_id=journal_id %}">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-delete">Delete Journal</button>
-                            {% endif %}
                         {% endif %}
                     </div>
                 </div>
