@@ -9,16 +9,7 @@ from journal.models import Entry, GroupEntry, Group
 
 def export_single_entry_as_PDF(request, entry_id):
 
-    try:
-        entry_instance = Entry.objects.get(id=entry_id)
-    except ObjectDoesNotExist:
-        messages.warning(request, "You have attempted to access an invalid URL, redirected to dashboard")
-        return redirect(reverse('dashboard'))
-
-    # Check if the current user has permission to edit the journal
-    if request.user != entry_instance.owner:
-        messages.warning(request, "You have attempted to export an entry that is not yours, redirected to dashboard")
-        return redirect(reverse('dashboard'))
+    entry_instance = Entry.objects.get(id=entry_id)
 
     return export_to_pdf(
         template_src='entry_as_PDF.html',

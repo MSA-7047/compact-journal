@@ -58,5 +58,10 @@ class SendFriendRequestFormTest(TestCase):
         self.assertTrue(form.check_user(user=self.user))
         self.assertEqual(len(form.errors), 0)
     
+    def test_form_field_label(self):
+        """Test form field label."""
+        form = SendFriendRequestForm()
+        self.assertEqual(form.fields['recipient'].label, 'Select User')
+    
 
 

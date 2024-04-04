@@ -1,4 +1,3 @@
-"""Forms for the journal app."""
 from django import forms
 from journal.models import Template
 
