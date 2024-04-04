@@ -3,9 +3,9 @@ from django.conf import settings
 from journal.models import UserMessage, User
 
 class UserMessageTestCase(TestCase):
+     """Unit tests for the User message model."""
 
     fixtures = ['journal/tests/fixtures/default_user.json']
-
 
     def setUp(self):
         # Create a test user

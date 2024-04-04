@@ -4,7 +4,8 @@ from journal.models import ActionCooldown, User
 
 
 class ActionCooldownTestCase(TestCase):
-
+     """Unit tests for the Action cooldown model."""
+     
     fixtures = ['journal/tests/fixtures/default_user.json']
 
     def setUp(self):

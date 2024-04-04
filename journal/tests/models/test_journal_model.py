@@ -3,7 +3,7 @@ from journal.models import Journal, User
 from django.utils import timezone
 
 class JournalModelTest(TestCase):
-
+     """Unit tests for the Journal model."""
     fixtures = ['journal/tests/fixtures/default_user.json']
                 
     def setUp(self):

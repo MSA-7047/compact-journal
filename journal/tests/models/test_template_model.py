@@ -4,8 +4,8 @@ from journal.models import Template, User
 
 
 class TemplateModelTest(TestCase):
-    """"""
-
+     """Unit tests for the template model."""
+     
     fixtures = [
         'journal/tests/fixtures/default_user.json',
         'journal/tests/fixtures/other_users.json'

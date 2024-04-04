@@ -33,13 +33,13 @@ class CreateGroupJournalFormTest(TestCase):
         self.assertEqual(form.errors['mood'], ['This field is required.'])
 
     def test_long_summary(self):
-        self.form_input['summary'] = 'x' * 1001  # exceeding the limit by 1
+        self.form_input['summary'] = 'x' * 1001  # Exceeding the limit by 1
         form = CreateGroupJournalForm(data=self.form_input)
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors['summary'], ['Ensure this value has at most 200 characters (it has 1001).'])
 
     def test_long_content(self):
-        self.form_input['content'] = 'x' * 10001  # exceeding the limit by 1
+        self.form_input['content'] = 'x' * 10001  # Exceeding the limit by 1
         form = CreateGroupJournalForm(data=self.form_input)
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors['content'], ['Ensure this value has at most 10000 characters (it has 10001).'])

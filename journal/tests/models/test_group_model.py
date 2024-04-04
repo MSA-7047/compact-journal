@@ -5,7 +5,8 @@ from journal.models import User, Group, GroupMembership
 from django.core.exceptions import ValidationError
 
 class GroupMembershipTestCase(TestCase):
-
+     """Unit tests for the Group membership model."""
+     
     fixtures = ['journal/tests/fixtures/default_user.json',
                 'journal/tests/fixtures/other_users.json']
     

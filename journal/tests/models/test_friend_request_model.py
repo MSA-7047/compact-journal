@@ -4,7 +4,8 @@ from django.core.exceptions import ValidationError
 
 
 class FriendRequestModelTest(TestCase):
-
+     """Unit tests for the friend request model."""
+     
     fixtures = ['journal/tests/fixtures/default_user.json',
                 'journal/tests/fixtures/other_users.json']
     
