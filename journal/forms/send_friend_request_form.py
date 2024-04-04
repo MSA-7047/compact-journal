@@ -2,14 +2,19 @@ from django import forms
 from journal.models import User, FriendRequest
 
 class SendFriendRequestForm(forms.Form):
+    """Form for sendning a friend request."""
 
     recipient = forms.CharField(label='Select User')
 
     class Meta:
+        """Form options."""
+
         model = FriendRequest
         fields = ['recipient']
 
     def check_user(self, user=None):
+        """Check if recipient of request is a valid user."""
+        
         recipient = self.cleaned_data.get('recipient')
         if user:
             for friend in user.friends.all():
