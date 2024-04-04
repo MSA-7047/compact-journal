@@ -82,7 +82,6 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
             messages.success(self.request, "Profile updated! However, you must wait before getting points again.")
         
         create_notification(self.request, "Profile was updated.", "info")
-        give_points(self.request, 200, "Profile Updated.")
 
         return super().form_valid(form)
 
