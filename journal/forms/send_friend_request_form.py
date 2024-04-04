@@ -26,9 +26,8 @@ class SendFriendRequestForm(forms.Form):
                 self.add_error("recipient", "Cannot request yourself")
                 return False
 
-            elif not User.objects.filter(username=recipient).exists():
+            if not User.objects.filter(username=recipient).exists():
                 self.add_error("recipient", "This user doesn't exist")
                 return False
 
-            else: 
-                return True
+            return True
