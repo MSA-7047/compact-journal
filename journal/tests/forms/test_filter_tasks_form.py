@@ -6,9 +6,12 @@ from django.utils import timezone
 
 class EntryFilterFormTest(TestCase):
 
+    fixtures = ['journal/tests/fixtures/default_user.json',
+                'journal/tests/fixtures/other_users.json']
+
     @classmethod
     def setUpTestData(cls):
-        cls.user = User.objects.create_user(username='test_user', email='test@example.com', password='test_password')
+        cls.user = User.objects.get(username='@johndoe')
         cls.journal = Journal.objects.create(title='Test Journal', summary='Test summary', private=False, owner=cls.user )
         cls.entry1 = Entry.objects.create(title='Entry 1', summary='Summary 1', content='Content 1', mood='Happy', owner=cls.user, journal=cls.journal)
         cls.entry2 = Entry.objects.create(title='Entry 2', summary='Summary 2', content='Content 2', mood='Sad', owner=cls.user, journal=cls.journal)

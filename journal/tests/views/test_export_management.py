@@ -8,15 +8,20 @@ class PDFExportViewTest(TestCase):
 
 
     fixtures = [
-        'journal/tests/fixtures/default_user.json']
+        'journal/tests/fixtures/default_user.json',
+        'journal/tests/fixtures/other_users.json'
+    ]
 
     def setUp(self):
         self.client = Client()
         self.factory = RequestFactory()
         self.user = User.objects.get(username='@johndoe')
+        self.user2 = User.objects.get(username='@johndoe')
         self.client.login(username='@johndoe', password='Password123')
         self.journal = Journal.objects.create(title='Test Journal', summary='Journal Summary', owner=self.user, private=True)
         self.journal_entry = Entry.objects.create(owner=self.user, title='Journal Entry 1', summary='Journal Summary 1', content='Journal Content 1', journal=self.journal, private=True)
+        self.journal2 = Journal.objects.create(title='Test Journal2', summary='Journal Summary2', owner=self.user2, private=True)
+        self.journal_entry2 = Entry.objects.create(owner=self.user2, title='Journal Entry 2', summary='Journal Summary 2', content='Journal Content 2', journal=self.journal2, private=True)
         self.group = Group.objects.create(name='Test Group')
         self.group_entry = GroupEntry.objects.create(
             title='Test Entry',
@@ -31,13 +36,6 @@ class PDFExportViewTest(TestCase):
         response = export_single_entry_as_PDF(request, entry_id=1)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.get('Content-Disposition'), 'attachment; filename=Journal Entry 1.pdf')
-
-    def test_export_single_entry_as_PDF_invalid_login(self):
-        self.client.logout()
-        request = self.factory.get('/export-entry-pdf/1/')
-        request.user = self.user
-        response = export_single_entry_as_PDF(request, entry_id=1)
-        self.assertEqual(response.status_code, 200)
 
     def test_export_journal_as_PDF(self):
         id = self.journal_entry.id

@@ -1,10 +1,7 @@
 from celery import shared_task
 from django.utils import timezone
-from .models import Journal, Notification
-from django.contrib.auth import get_user_model
-from django.db.models import Count, Q
+from .models import Journal, Notification, User
 
-User = get_user_model()
 
 @shared_task
 def send_journal_reminder(user_id):
@@ -17,11 +14,12 @@ def send_journal_reminder(user_id):
         Notification.objects.create(notification_type="reminder", message=f"{user.username}, you have one or more journals without an entry for today. Add one now!", user=user)   
     elif todays_entries.exists():
         Notification.objects.create(notification_type="reminder", message=f"Well done {user.username}! You have created an entry for all your journals today.", user=user)
-
+    else:
+        Notification.objects.create(notification_type="reminder", message=f"{user.username}, you have one or more journals without an entry for today. Add one now!", user=user)   
+    
 
 @shared_task
 def send_reminders_to_all_users():
-    today = timezone.localdate()
     all_users = User.objects.all()
     
     for user in all_users:

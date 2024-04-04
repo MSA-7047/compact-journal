@@ -2,16 +2,15 @@ from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
-from journal.models import *
-from journal.forms import *
+from journal.models import Journal, Entry, User
+from journal.forms import CreateEntryForm, CreateJournalForm, EntryFilterForm, EntrySortForm
 from django.contrib import messages
-from journal.views.notifications import *
-from journal.views.user_management import *
+from journal.views.notifications import create_notification
+from journal.views.user_management import give_points, reverse, ActionCooldown
 from django.http import JsonResponse, Http404
 from django.utils.translation import gettext as _
 from django_ckeditor_5.forms import UploadFileForm
 from django_ckeditor_5.views import image_verify, handle_uploaded_file, NoImageException
-
 from django.shortcuts import render
 
 @login_required
@@ -23,7 +22,7 @@ def create_journal(request):
             journal = form.save(commit=False)
             journal.owner = request.user
             journal.save()
-        
+            #ensures points for creating a journal are awarded at most once an hour
             if ActionCooldown.can_perform_action(request.user, 'create_journal', cooldown_hours=1):
                 messages.success(request, "New Journal Created! Points awarded.")
                 give_points(request, 20, "New Journal Created.")
@@ -32,15 +31,13 @@ def create_journal(request):
 
             create_notification(request, f"New journal {journal.title} created!", "info")
             
-            
-
-
-            return redirect(reverse('dashboard'))  # Redirect to the dashboard page
+            return redirect(reverse('dashboard'))
     else:
         form = CreateJournalForm()
 
     return render(request, 'create_journal.html', {'form': form})
 
+#creates a generic first journal everytime a user signs up
 def create_first_journal(current_user):
     Journal.objects.create(
         title="Welcome To Compact Journals",
@@ -61,7 +58,6 @@ def edit_journal(request, journal_id):
         messages.warning(request, "You have attempted to access an invalid URL, redirected to dashboard")
         return redirect(reverse('dashboard'))
 
-    # Check if the current user has permission to edit the journal
     if request.user != journal_instance.owner:
         messages.warning(request, "You have attempted to access a journal that is not yours, redirected to dashboard")
         return redirect(reverse('dashboard'))
@@ -93,7 +89,6 @@ def delete_journal(request, journal_id):
         messages.warning(request, "You have attempted to access an invalid URL, redirected to dashboard")
         return redirect(reverse('dashboard'))
 
-    # Check if the current user has permission to edit the journal
     if request.user != journal_instance.owner:
         messages.warning(request, "You have attempted to delete a journal that is not yours, redirected to dashboard")
         return redirect(reverse('dashboard'))
@@ -117,9 +112,9 @@ def all_journals_view(request, user_id):
     currently_logged_in = current_user == viewing_user
     journals = viewing_user.journals.all()
     return render(request, 'my_journals.html',
-                {'user': viewing_user,
+                {'viewing_user': viewing_user,
+                 'user': request.user,
                 'journals': journals,
-
                 "is_logged_in": currently_logged_in}
                 )
 
@@ -135,7 +130,6 @@ def journal_dashboard(request, journal_id):
         messages.warning(request, "You have attempted to access an invalid URL, redirected to dashboard")
         return redirect(reverse('dashboard'))
 
-    # Check if the current user has permission to edit the journal
     if request.user != journal_instance.owner:
         messages.warning(request, "You have attempted to access a journal that is not yours, redirected to dashboard")
         return redirect(reverse('dashboard'))
@@ -175,7 +169,6 @@ def create_entry(request, journal_id):
         messages.warning(request, "You have attempted to access an invalid URL, redirected to dashboard")
         return redirect(reverse('dashboard'))
 
-    # Check if the current user has permission to edit the journal
     if request.user != journal_instance.owner:
         messages.warning(request, "You have attempted to access a journal that is not yours, redirected to dashboard")
         return redirect(reverse('dashboard'))
@@ -188,16 +181,12 @@ def create_entry(request, journal_id):
     if request.method == 'POST':
         form = CreateEntryForm(request.POST)
         if form.is_valid():
-            # Create and save the entry instance
             entry = form.save(commit=False)
             entry.owner = current_user
             entry.journal = journal_instance
             entry.save()
-
             entry.journal.last_entry_date = today
             entry.journal.save()
-            
-            
 
             notif_message = f"New entry {entry.title} created in {entry.journal.title} journal."
             give_points(request, 50, notif_message)
@@ -207,7 +196,7 @@ def create_entry(request, journal_id):
     else:
         form = CreateEntryForm()
 
-    context = {'form': form}
+    context = {'form': form, 'title': 'Create Entry'}
     return render(request, 'create_entry.html', context)
 
 @login_required
@@ -218,7 +207,6 @@ def edit_entry(request, entry_id):
         messages.warning(request, "You have attempted to access an invalid URL, redirected to dashboard")
         return redirect(reverse('dashboard'))
 
-    # Check if the current user has permission to edit the journal
     if request.user != entry_instance.owner:
         messages.warning(request, "You have attempted to edit an entry that is not yours, redirected to dashboard")
         return redirect(reverse('dashboard'))
@@ -250,7 +238,6 @@ def delete_entry(request, entry_id):
         messages.warning(request, "You have attempted to access an invalid URL, redirected to dashboard")
         return redirect(reverse('dashboard'))
 
-    # Check if the current user has permission to edit the journal
     if request.user != entry_instance.owner:
         messages.warning(request, "You have attempted to edit an entry that is not yours, redirected to dashboard")
         return redirect(reverse('dashboard'))
@@ -270,7 +257,7 @@ def delete_entry(request, entry_id):
 
 @login_required
 def view_journal_entries(request, user_id, journal_id):
-    # Fetching objects directly and handling errors efficiently
+
     current_user = get_object_or_404(User, id=user_id)
     current_journal = get_object_or_404(Journal, id=journal_id)
     is_user_logged_in = request.user == current_user
@@ -294,14 +281,15 @@ def view_journal_entries(request, user_id, journal_id):
         'sort_form': sort_form,
         'journal_entries': journal_entries,
         'journal_param': my_journals_to_journal_param(journal_entries),
-        'user': current_user,
+        'viewing_user': current_user,
+        'user': request.user,
         'journal': current_journal,
         'is_logged_in': is_user_logged_in,
     }
 
     return render(request, 'view_all_journal_entries.html', context)
 
-
+#returns a string comma seperated list of ID values representing the entries in a journal to be exported
 def my_journals_to_journal_param(journal_entries):
     journals = []
     for journal in journal_entries:
@@ -309,7 +297,7 @@ def my_journals_to_journal_param(journal_entries):
     journal_param = ','.join(journals)
     return journal_param
 
-
+#allows the upload of images into a CKeditor field
 def custom_upload_file(request):
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)

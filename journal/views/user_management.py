@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import logout
@@ -9,10 +8,10 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
-from journal.forms import *
-from journal.models import *
+from journal.forms import UserForm, ConfirmDeletionForm
+from journal.models import Level, Notification
 from journal.models.Notification import UserMessage
-from journal.views.notifications import *
+from journal.views.notifications import create_notification
 from journal.models.Cooldown import ActionCooldown
 from django.db import transaction
 
@@ -83,7 +82,6 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
             messages.success(self.request, "Profile updated! However, you must wait before getting points again.")
         
         create_notification(self.request, "Profile was updated.", "info")
-        give_points(self.request, 200, "Profile Updated.")
 
         return super().form_valid(form)
 
@@ -94,7 +92,6 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 @login_required
 def dashboard(request):
     """Display the current user's dashboard."""
-    today = datetime.now().date()
 
     current_user = request.user
     user_groups = current_user.groups.all()

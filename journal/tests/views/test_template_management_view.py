@@ -32,6 +32,19 @@ class TemplateViewsTestCase(TestCase):
             'bio': 'New Template Content'
         })
         self.assertEqual(response.status_code, 302)  # Redirects after successful form submission
+        self.assertTrue(Template.objects.filter(title='New Template').exists())
+
+    def test_create_invalid_template_view(self):
+        response = self.client.get(reverse('create_template', args=[self.journal.id]))
+        self.assertEqual(response.status_code, 200)
+        
+        response = self.client.post(reverse('create_template', args=[self.journal.id]), {
+            'title': '',
+            'description': '',
+            'bio': ''
+        })
+        self.assertEqual(response.status_code, 200)  # Redirects after successful form submission
+        self.assertFalse(Template.objects.filter(title='').exists())
 
     def test_select_template_view(self):
         response = self.client.get(reverse('select_template', args=[self.journal.id]))

@@ -5,7 +5,6 @@ from libgravatar import Gravatar
 from django_countries.fields import CountryField
 from .Group import Group
 from .FriendRequest import FriendRequest
-from .Friendship import Friendship
 
 
 class User(AbstractUser):

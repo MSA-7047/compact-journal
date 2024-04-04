@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from journal.models import FriendRequest, Points, User
+from journal.models import FriendRequest, User
+from journal.forms import SendFriendRequestForm
 
 class FriendsViewTest(TestCase):
 
@@ -39,6 +40,18 @@ class FriendsViewTest(TestCase):
         response = self.client.post(reverse('send_request', args=[self.user.id]), {'recipient': self.friend.username})
         self.assertEqual(response.status_code, 302) 
         self.assertTrue(FriendRequest.objects.filter(sender=self.user, recipient=self.friend, status='pending').exists())
+
+    def test_send_invalid_friend_request(self):
+        response = self.client.post(reverse('send_request', args=[self.user.id]), {'recipient': self.user.username})
+        self.assertEqual(response.status_code, 200) 
+        self.assertFalse(FriendRequest.objects.filter(sender=self.user, recipient=self.friend, status='pending').exists())
+
+    def test_send_request_GET(self):
+        response = self.client.get(reverse('send_request', args=[self.user.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'friends.html')
+        form = response.context['form']
+        self.assertTrue(isinstance(form, SendFriendRequestForm))
 
     def test_accept_invitation(self):
         friend_request = FriendRequest.objects.create(recipient=self.user, sender=self.friend)

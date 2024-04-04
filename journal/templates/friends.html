@@ -42,7 +42,7 @@
 
                 <div class="small-buttons position-relative">
                   <div class="right-buttons ms-auto">
-                    <a class="btn" href="{% url 'view_friends_profile' friendID=friend.id %}">View Profile</a>
+                    <a class="btn" href="{% url 'view_friends_profile' friend_id=friend.id %}">View Profile</a>
                     <a class="btn" href="{% url 'view_journals' user_id=friend.id %}">View Journals</a>
                     <a class="btn btn-delete" href="{% url 'remove_friend' user_id=friend.id %}">Remove Friend</a>
                   </div>
