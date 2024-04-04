@@ -1,11 +1,10 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import redirect, render, get_object_or_404
-from journal.models import GroupRequest, Group, GroupMembership, User, GroupEntry, Notification
-from journal.forms import *
-from journal.views import *
-from journal.models.Cooldown import ActionCooldown
+from journal.models import GroupRequest, Group, GroupMembership, User, GroupEntry, Notification, Points, ActionCooldown
+from journal.forms import GroupForm, SelectNewOwnerForm, SendGroupRequestForm, ConfirmDeletionForm
+from journal.views.notifications import create_notification
 from journal.views.user_management import give_points
 
 

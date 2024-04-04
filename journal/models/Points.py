@@ -1,10 +1,6 @@
 from django.conf import settings
 from django.db import models
-from django.urls import reverse
 from .User import User
-
-from django.db import models
-from django.conf import settings
 
 class Points(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='points')

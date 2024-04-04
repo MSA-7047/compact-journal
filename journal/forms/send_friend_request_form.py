@@ -1,4 +1,3 @@
-
 from django import forms
 from journal.models import User, FriendRequest
 
@@ -23,7 +22,7 @@ class SendFriendRequestForm(forms.Form):
                 return False
 
             elif not User.objects.filter(username=recipient).exists():
-                self.add_error("recipient", "This user doesnt exists")
+                self.add_error("recipient", "This user doesn't exist")
                 return False
 
             else: 

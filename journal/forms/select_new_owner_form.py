@@ -1,5 +1,5 @@
 from django import forms
-from journal.models import User, GroupMembership 
+from journal.models import User
 
 class SelectNewOwnerForm(forms.Form):
     new_owner = forms.ModelChoiceField(queryset=None, empty_label=None)

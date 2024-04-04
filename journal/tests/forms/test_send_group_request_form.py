@@ -3,14 +3,18 @@ from journal.models import User
 from journal.forms import SendGroupRequestForm
 
 class SendGroupRequestFormTest(TestCase):
+
+    fixtures = ['journal/tests/fixtures/default_user.json',
+                'journal/tests/fixtures/other_users.json']
+    
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', email='test@example.com', password='password')
+        self.user = User.objects.get(username='@johndoe')
 
     def test_form_with_current_user(self):
         """Test form initialization with current user."""
         # Create some friends for the user
-        friend1 = User.objects.create_user(username='friend1', email='friend1@example.com', password='password')
-        friend2 = User.objects.create_user(username='friend2', email='friend2@example.com', password='password')
+        friend1 = User.objects.get(username='@janedoe')
+        friend2 = User.objects.get(username='@petrapickles')
         self.user.friends.add(friend1, friend2)
 
         # Initialize form with current user
