@@ -20,9 +20,9 @@ class MarkNotificationAsReadTestCase(TestCase):
 
     def test_mark_notification_as_read(self):
         response = self.client.get(reverse('mark_notification_as_read', args=[self.notification.id]))
-        self.assertEqual(response.status_code, 302)  # Check if the view redirects after marking notification as read
-        self.notification.refresh_from_db()  # Refresh the notification instance from the database
-        self.assertTrue(self.notification.is_read)  # Check if the notification is marked as read
+        self.assertEqual(response.status_code, 302) 
+        self.notification.refresh_from_db() 
+        self.assertTrue(self.notification.is_read)  
         time = self.notification.time_created.strftime("%Y-%m-%d %H:%M:%S")
         storage = get_messages(response.wsgi_request)
         success_message = None
@@ -30,14 +30,14 @@ class MarkNotificationAsReadTestCase(TestCase):
             if message.tags == 'success':
                 success_message = message
                 break
-        self.assertIsNotNone(success_message)  # Check if a success message is returned
-        self.assertEqual(success_message.message, f"Notification created at {time} was marked as read.")  # Check if the success message is correct
+        self.assertIsNotNone(success_message)  
+        self.assertEqual(success_message.message, f"Notification created at {time} was marked as read.") 
 
     def test_mark_all_notification_as_read(self):
         notification1 = Notification.objects.create(user=self.user, message='Test Notification 1', notification_type='info')
         notification2 = Notification.objects.create(user=self.user, message='Test Notification 2', notification_type='info')
         response = self.client.post(reverse('mark_all_notification_as_read'))
-        self.assertEqual(response.status_code, 302)  # Assuming it redirects after marking all notifications as read
+        self.assertEqual(response.status_code, 302) 
         notification1.refresh_from_db()
         notification2.refresh_from_db()
         self.assertTrue(notification1.is_read)

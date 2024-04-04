@@ -7,7 +7,6 @@ class SendFriendRequestFormTest(TestCase):
                 'journal/tests/fixtures/other_users.json']
 
     def setUp(self):
-        # Create a user with some friends for testing
         self.user = User.objects.get(username='@johndoe')
         self.friend1 = User.objects.get(username='@janedoe')
         self.friend2 = User.objects.get(username="@petrapickles")

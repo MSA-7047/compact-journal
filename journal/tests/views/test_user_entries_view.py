@@ -32,14 +32,14 @@ class EntryViewTest(TestCase):
         self.assertTemplateUsed(response, 'view_entry.html')
 
     def test_view_entry_invalid_entry(self):
-        response = self.client.post(reverse('view_entry', args=[999]))  # Non-existent journal ID
+        response = self.client.post(reverse('view_entry', args=[999])) 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('dashboard'))
 
     def test_create_entry(self):
         self.client.post(reverse('delete_entry', args=[self.entry.id]))
         response = self.client.post(reverse('create_entry', args=[self.journal.id]), self.entry_data)
-        self.assertEqual(response.status_code, 302)  # Check if redirect status code is received
+        self.assertEqual(response.status_code, 302)  
         created_entry = Entry.objects.filter(title='New Entry').exists()
         self.assertTrue(created_entry)
     
@@ -47,14 +47,14 @@ class EntryViewTest(TestCase):
         self.client.post(reverse('delete_entry', args=[self.entry.id]))
         self.entry_data = {}
         response = self.client.post(reverse('create_entry', args=[self.journal.id]), self.entry_data)
-        self.assertEqual(response.status_code, 200)  # Check if redirect status code is received
+        self.assertEqual(response.status_code, 200)  
         created_entry = Entry.objects.filter(title='New Entry').exists()
         self.assertFalse(created_entry)
 
     def test_create_entry_user_not_journal_owner(self):
         self.client.post(reverse('delete_entry', args=[self.entry2.id]))
         response = self.client.post(reverse('create_entry', args=[self.journal2.id]), self.entry_data)
-        self.assertEqual(response.status_code, 302)  # Check if redirect status code is received
+        self.assertEqual(response.status_code, 302)  
         self.assertEqual(response.url, reverse('dashboard'))
         created_entry = Entry.objects.filter(title='New Entry').exists()
         self.assertFalse(created_entry)
@@ -85,15 +85,14 @@ class EntryViewTest(TestCase):
         self.assertNotEqual(self.entry.title, 'Updated Entry')
     
     def test_edit_entry_invalid_entry(self):
-        response = self.client.post(reverse('edit_entry', args=[999]))  # Non-existent journal ID
+        response = self.client.post(reverse('edit_entry', args=[999]))  
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('dashboard'))
 
     def test_edit_entry_invalid_entry_owner(self):
-        response = self.client.post(reverse('edit_entry', args=[self.entry2.id]))  # Non-existent journal ID
+        response = self.client.post(reverse('edit_entry', args=[self.entry2.id]))  
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('dashboard'))
-
 
     def test_delete_entry(self):
         response = self.client.post(reverse('delete_entry', args=[self.entry.id]))
@@ -124,11 +123,11 @@ class EntryViewTest(TestCase):
     def test_existing_entry_for_today(self):
         Entry.objects.create(title="Existing Entry", content="Existing Content", summary="Existing Summary", mood="Sad", owner=self.user, journal=self.journal)
         response = self.client.post(reverse('create_entry', args=[self.journal.id]), {'title': 'Existing Entry', 'content': 'New Content', 'summary': 'New Summary', 'mood': 'Happy'})
-        self.assertEqual(response.status_code, 302)  # Check if redirect status code is received
-        self.assertEqual(Entry.objects.filter(title='Existing Entry').count(), 1)  # Check if no additional entry is created
+        self.assertEqual(response.status_code, 302)  
+        self.assertEqual(Entry.objects.filter(title='Existing Entry').count(), 1) 
 
     def test_entry_creation_invalid_journal_id(self):
-        invalid_journal_id = 999  # Assuming there's no journal with this ID
+        invalid_journal_id = 999  
         response = self.client.post(reverse('create_entry', args=[invalid_journal_id]), {'title': 'New Entry', 'content': 'New Content', 'summary': 'New Summary', 'mood': 'Happy'})
-        self.assertEqual(response.status_code, 302)  # Check if redirect status code is received
+        self.assertEqual(response.status_code, 302)  
         self.assertFalse(Entry.objects.filter(title='New Entry').exists())

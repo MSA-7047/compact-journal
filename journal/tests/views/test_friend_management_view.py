@@ -16,9 +16,6 @@ class FriendsViewTest(TestCase):
         self.friend = User.objects.get(username='@janedoe')
         self.client.login(username='@johndoe', password='Password123')
 
-
-
-
     def test_view_friends(self):
         response = self.client.get(reverse('view_friends'))
         self.assertEqual(response.status_code, 200)
@@ -31,10 +28,10 @@ class FriendsViewTest(TestCase):
 
     def test_remove_friend(self):
         self.user.friends.add(self.friend)
-        self.assertEqual(self.user.friends.count(), 1)  # Assuming friend was added successfully
+        self.assertEqual(self.user.friends.count(), 1)  
         response = self.client.post(reverse('remove_friend', args=[self.friend.id]))
-        self.assertEqual(response.status_code, 302)  # Assuming it redirects after removing friend
-        self.assertEqual(self.user.friends.count(), 0)  # Assuming friend was removed successfully
+        self.assertEqual(response.status_code, 302)  
+        self.assertEqual(self.user.friends.count(), 0)  
 
     def test_send_friend_request(self):
         response = self.client.post(reverse('send_request', args=[self.user.id]), {'recipient': self.friend.username})
@@ -57,7 +54,6 @@ class FriendsViewTest(TestCase):
         friend_request = FriendRequest.objects.create(recipient=self.user, sender=self.friend)
         response = self.client.post(reverse('accept_friend_request', args=[friend_request.id]))
         self.assertEqual(response.status_code, 302)
-        # Verify that the friend relationship is established
         self.assertTrue(self.friend.friends.filter(username='@johndoe').exists())
         self.assertTrue(self.user.friends.filter(username='@janedoe').exists())
 
@@ -66,7 +62,7 @@ class FriendsViewTest(TestCase):
     def test_reject_invitation(self):
         friend_request = FriendRequest.objects.create(recipient=self.user, sender=self.friend)
         response = self.client.post(reverse('reject_friend_request', args=[friend_request.id]))
-        self.assertEqual(response.status_code, 302)  # Assuming it redirects after rejecting request
+        self.assertEqual(response.status_code, 302)  
         friend_request.refresh_from_db()
         self.assertFalse(friend_request.is_accepted)
         self.assertEqual(friend_request.status, 'rejected')
@@ -75,6 +71,5 @@ class FriendsViewTest(TestCase):
 
         friend_request = FriendRequest.objects.create(recipient=self.friend, sender=self.user)
         response = self.client.post(reverse('delete_sent_request', args=[friend_request.id]))
-        self.assertEqual(response.status_code, 302)  # Assuming it redirects after deleting request
-        # Verify that the friend request is deleted
+        self.assertEqual(response.status_code, 302)  
         self.assertFalse(FriendRequest.objects.filter(sender=self.user, recipient=self.friend).exists())

@@ -43,7 +43,7 @@ class TemplateViewsTestCase(TestCase):
             'description': '',
             'bio': ''
         })
-        self.assertEqual(response.status_code, 200)  # Redirects after successful form submission
+        self.assertEqual(response.status_code, 200) 
         self.assertFalse(Template.objects.filter(title='').exists())
 
     def test_select_template_view(self):
@@ -53,14 +53,14 @@ class TemplateViewsTestCase(TestCase):
 
     def test_delete_template_view(self):
         response = self.client.post(reverse('delete_template', args=[self.template.id, self.journal.id]))
-        self.assertEqual(response.status_code, 302)  # Redirects after successful deletion
+        self.assertEqual(response.status_code, 302) 
 
         # Ensure the template is deleted
         self.assertFalse(Template.objects.filter(id=self.template.id).exists())
 
     def test_create_journal_from_template_view(self):
         response = self.client.post(reverse('create_journal_with_template', args=[self.template.id, self.journal.id]))
-        self.assertEqual(response.status_code, 302)  # Redirects after successful creation
+        self.assertEqual(response.status_code, 302)  
 
         # Ensure an entry is created
         self.assertTrue(Entry.objects.filter(title=self.template.title).exists())
@@ -75,7 +75,7 @@ class TemplateViewsTestCase(TestCase):
             'description': 'Updated Template Description',
             'bio': 'Updated Template Content'
         })
-        self.assertEqual(response.status_code, 302)  # Redirects after successful form submission
+        self.assertEqual(response.status_code, 302) 
 
         # Ensure the template is updated
         self.template.refresh_from_db()
