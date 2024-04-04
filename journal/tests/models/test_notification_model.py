@@ -4,6 +4,7 @@ from journal.models import Notification, User
 
 
 class NotificationModelTest(TestCase):
+    """"""
 
     fixtures = [
         'journal/tests/fixtures/default_user.json',

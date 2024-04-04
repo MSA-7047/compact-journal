@@ -5,7 +5,7 @@ from django.utils import timezone
 
 
 class GroupEntryModelTest(TestCase):
-    """Unit tests for GroupEntry Model Class"""
+    """Test Suite for GroupEntry Model Class"""
 
     fixtures = ["journal/tests/fixtures/default_user.json"]
 

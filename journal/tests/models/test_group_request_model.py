@@ -3,8 +3,7 @@ from django.core.exceptions import ValidationError
 from journal.models import Group, GroupRequest, User, GroupMembership
 
 class GroupRequestTestCase(TestCase):
-     """Unit tests for the Group Request model."""
-     
+
     fixtures = ['journal/tests/fixtures/default_user.json',
                 'journal/tests/fixtures/other_users.json']
 

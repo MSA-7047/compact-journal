@@ -7,7 +7,7 @@ from django.utils import timezone
 
 
 class GroupMembershipModelTest(TestCase):
-    """Unit tests for GroupMembership Model Class"""
+    """Test Suite for GroupMembership Model Class"""
 
     fixtures = ['journal/tests/fixtures/default_user.json',
                 'journal/tests/fixtures/other_users.json']

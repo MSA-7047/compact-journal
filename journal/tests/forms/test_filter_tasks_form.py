@@ -20,7 +20,7 @@ class EntryFilterFormTest(TestCase):
     def test_filter_entries_by_entry_date(self):
         form_data = {'entry_date': '24h'}
         form = EntryFilterForm(user=self.user, data=form_data)
-        self.assertTrue(form.is_valid()) 
+        self.assertTrue(form.is_valid())  # Ensure form is valid before accessing cleaned_data
         filtered_entries = form.filter_entries(journal=self.journal).order_by('id')
         expected_entries = Entry.objects.filter(entry_date__gte=timezone.now() - timedelta(days=1), journal=self.journal).order_by('id')
         self.assertQuerysetEqual(filtered_entries, expected_entries, transform=lambda x: x)
@@ -28,7 +28,7 @@ class EntryFilterFormTest(TestCase):
     def test_filter_entries_by_mood(self):
         form_data = {'mood': 'Happy'}
         form = EntryFilterForm(user=self.user, data=form_data)
-        self.assertTrue(form.is_valid())  
+        self.assertTrue(form.is_valid())  # Ensure form is valid before accessing cleaned_data
         filtered_entries = form.filter_entries(journal=self.journal)
         expected_entries = Entry.objects.filter(mood='Happy', journal=self.journal)
         self.assertQuerysetEqual(filtered_entries, expected_entries, transform=lambda x: x)
@@ -36,7 +36,7 @@ class EntryFilterFormTest(TestCase):
     def test_filter_entries_by_title_search(self):
         form_data = {'title_search': 'Entry 1'}
         form = EntryFilterForm(user=self.user, data=form_data)
-        self.assertTrue(form.is_valid())  
+        self.assertTrue(form.is_valid())  # Ensure form is valid before accessing cleaned_data
         filtered_entries = form.filter_entries(journal=self.journal)
         expected_entries = Entry.objects.filter(title__icontains='Entry 1', journal=self.journal)
         self.assertQuerysetEqual(filtered_entries, expected_entries, transform=lambda x: x)
@@ -44,7 +44,7 @@ class EntryFilterFormTest(TestCase):
     def test_filter_entries_no_filters(self):
         form_data = {}
         form = EntryFilterForm(user=self.user, data=form_data)
-        self.assertTrue(form.is_valid()) 
+        self.assertTrue(form.is_valid())  # Ensure form is valid before accessing cleaned_data
         filtered_entries = form.filter_entries(journal=self.journal).order_by('id')
         expected_entries = Entry.objects.filter(journal=self.journal).order_by('id')
         self.assertQuerysetEqual(filtered_entries, expected_entries, transform=lambda x: x)

@@ -3,7 +3,8 @@ from journal.models import Level, User
 
 
 class LevelTestCase(TestCase):
-     """Unit tests for the Level model."""
+
+
     fixtures = ['journal/tests/fixtures/default_user.json']
 
     def setUp(self):

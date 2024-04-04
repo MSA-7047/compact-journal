@@ -50,11 +50,11 @@ class PDFExportViewTest(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/pdf')
-        self.assertTrue(response.content)  
+        self.assertTrue(response.content)  # Ensure content is not empty
 
     def test_export_group_journal_as_PDF(self):
         url = reverse('export_group_journal', kwargs={'group_id': self.group.group_id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/pdf')
-        self.assertTrue(response.content) 
+        self.assertTrue(response.content)  # Ensure content is not empty

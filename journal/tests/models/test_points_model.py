@@ -2,7 +2,7 @@ from django.test import TestCase
 from journal.models import Points, User
 
 class PointsTestCase(TestCase):
-    """Unit tests for the Points model."""
+
     fixtures = [
         'journal/tests/fixtures/default_user.json']
     

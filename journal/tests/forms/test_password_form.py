@@ -4,8 +4,7 @@ from journal.models import User
 from journal.forms import PasswordForm
 
 class PasswordFormTestCase(TestCase):
-    """Unit tests for password form"""
-    
+
     fixtures = ['journal/tests/fixtures/default_user.json']
 
     def setUp(self):

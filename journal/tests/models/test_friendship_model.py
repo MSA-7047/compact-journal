@@ -4,7 +4,6 @@ from journal.models import Friendship, User
 from django.core.exceptions import ValidationError
 
 class FriendshipModelTest(TestCase):
-     """Unit tests for the friendship model."""
 
     fixtures = [
         'journal/tests/fixtures/default_user.json',
