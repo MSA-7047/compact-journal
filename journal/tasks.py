@@ -14,7 +14,9 @@ def send_journal_reminder(user_id):
         Notification.objects.create(notification_type="reminder", message=f"{user.username}, you have one or more journals without an entry for today. Add one now!", user=user)   
     elif todays_entries.exists():
         Notification.objects.create(notification_type="reminder", message=f"Well done {user.username}! You have created an entry for all your journals today.", user=user)
-
+    else:
+        Notification.objects.create(notification_type="reminder", message=f"{user.username}, you have one or more journals without an entry for today. Add one now!", user=user)   
+    
 
 @shared_task
 def send_reminders_to_all_users():
