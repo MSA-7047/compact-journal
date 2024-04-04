@@ -3,7 +3,7 @@
 ## Team members
 The members of the team are:
 - Mohammed (Miqdaad) Al-Hassan
-- MD (Rahat) Hussein
+- MD (Rahat) Hussain
 - Ibrahim Ahmed
 - Mohammed (Sameen) Ahmed
 - Javed Hussain
@@ -15,7 +15,7 @@ The members of the team are:
 The project is called `journaling_app`.  It currently consists of a single app `journal`.
 
 ## Deployed version of the application
-The deployed version of the application can be found at [*enter url here*](*enter_url_here*).
+The deployed version of the application can be found at [https://mmalhassan.pythonanywhere.com/](https://mmalhassan.pythonanywhere.com/).
 
 ## Installation instructions
 To install the software and use it in your local development environment, you must first set up and activate a local development environment.  From the root of the project:
@@ -62,6 +62,8 @@ The packages used by this application are specified in `requirements.txt`
 
 ## References
 ```
+    Usage of generative AI
+        We generally used AI to help debug our code.
 
+        The only functionality generative AI was used for was for Celery which was used to help send reminders to each user
 ```
-*This is where we put our ChatGPT references and whatnot*
