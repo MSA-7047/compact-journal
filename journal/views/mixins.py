@@ -25,7 +25,5 @@ class LoginProhibitedMixin:
                 "'redirect_when_logged_in_url', or an implementation for "
                 "'get_redirect_when_logged_in_url()'."
             )
-        else:
-            return self.redirect_when_logged_in_url
 
-
+        return self.redirect_when_logged_in_url
