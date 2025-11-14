@@ -1,5 +1,15 @@
 # Compact Journal - 5CCS2SEG Large Group Project
 
+## Project Overview
+Compact Journals is a web-based journaling application designed to help users build a daily journaling habit, track multiple aspects of their lives, and improve productivity and well-being. Users can create multiple journals for different purposes, with each journal containing daily entries that function like “pages” in a book. The application also supports collaborative features through groups and friends, allowing shared journaling, accountability, and teamwork. The platform is fully responsive and can be accessed on desktops, tablets, and mobile devices. It was built using Django and Python for the backend, and HTML, CSS, and JavaScript for the frontend.
+
+## Key Features
+Users can create and manage their own accounts, view and update profiles, and personalize their journaling experience. Journals and daily entries can be created, edited, and deleted, with options for public or private visibility. Users can also import multimedia files into entries, use templates to streamline journaling, and export individual or group journals to PDF for offline viewing.
+
+The application includes social and collaborative functionality: users can send friend requests, manage friendships, create and join groups, and collaborate on group journals. Group owners can manage members, create or delete group entries, and transfer ownership when leaving a group. Notifications keep users informed about activity in journals, friendships, and groups.
+
+To encourage engagement, the app implements gamification features. Users earn points for actions like creating journals or entries, leveling up as they accumulate points, with safeguards to prevent point abuse. Daily reminders motivate users to maintain journaling habits, with notifications sent to prompt or congratulate users based on their progress.
+
 ## Team members
 The members of the team Compact Code Works are:
 - Mohammed Miqdaad Al-Hassan
@@ -54,7 +64,7 @@ Run all tests with:
 $ python3 manage.py test
 ```
 
-##Running the Application Locally
+## Running the Application Locally
 Run the Django development server:
 ```
 $ python3 manage.py runserver
