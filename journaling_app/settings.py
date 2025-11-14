@@ -18,7 +18,22 @@ from django.contrib.messages import constants as messages
 BASE_DIR = Path(__file__).resolve().parent.parent
 PROJECT_DIR = os.path.dirname(__file__)
 
+# -------------------------
+# Local development settings for Celery
+# -------------------------
+# The following settings make Celery run synchronously (tasks execute immediately)
+# so that we can test the site locally without needing a Redis broker or running
+# a worker/beat. 
+# 
+# When deploying to production (e.g., PythonAnywhere), revert to the original
+# Redis-based broker settings (see commented block below) so Celery runs
+# asynchronously and scheduled tasks work correctly.
+CELERY_BROKER_URL = 'memory://'  # no external Redis needed
+CELERY_RESULT_BACKEND = 'rpc://'  # optional, for development
+CELERY_TASK_ALWAYS_EAGER = True   # tasks run immediately
 
+"""
+# Original production settings for Celery (keep for deployment)
 CELERY_BROKER_URL = 'redis://:c1zPOpZkO1WTnnPg6ZzAgr63EvejJGDr@redis-12609.c72.eu-west-1-2.ec2.cloud.redislabs.com:12609/0' 
 CELERY_BROKER_BACKEND = 'redis://:c1zPOpZkO1WTnnPg6ZzAgr63EvejJGDr@redis-12609.c72.eu-west-1-2.ec2.cloud.redislabs.com:12609/1'
 
@@ -30,6 +45,7 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(hour=6, minute=0), 
     },
 }
+"""
 
 
 # Quick-start development settings - unsuitable for production
